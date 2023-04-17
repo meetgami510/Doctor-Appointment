@@ -65,3 +65,77 @@ export const registerController = async (req, res) => {
         });
     }
 }
+
+export const getUserDataController = async (req, res) => {
+    try {
+        const user = await userModel.findById({ _id: req.body.userId });
+
+        user.password = undefined;
+        // delete user.password;
+        // console.log(user)
+        if (!user) {
+            res.status(200).send({
+                message: 'user not found',
+                success: false
+            });
+        } else {
+            res.status(200).send({
+                user: user,
+                success: true
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'some thing went wrong',
+            success: false
+        })
+    }
+}
+
+export const getAllNotificationController = async (req, res) => {
+    try {
+        const user = await userModel.findById({ _id: req.body.userId });
+        const seennotifications = user.seennotifications;
+        const notifications = user.notifications;
+        seennotifications.push(...notifications);
+        user.seennotifications = notifications;
+        user.notifications = []
+        const updatedUser = await user.save();
+        updatedUser.password = undefined;
+        res.status(200).send({
+            success: true,
+            message: 'all notifactions marked as read',
+            user: updatedUser
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'error while fetching notifications'
+        })
+    }
+}
+
+export const deleteAllNotificationController = async (req, res) => {
+    try {
+        
+        const user = await userModel.findById({ _id: req.body.userId });
+        user.seennotifications = [];
+        const updatedUser = await user.save();
+        updatedUser.password = undefined;
+        res.status(200).send({
+            success: true,
+            message: 'all notifactions marked as read',
+            user: updatedUser
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'error while fetching notifications'
+        })
+    }
+}

@@ -25,6 +25,7 @@ connectDB();
 // routes
 app.post('/', (req, res) => {
     console.log(req.body);
+    console.log("hello");
     res.send(req.body);
 });
 
