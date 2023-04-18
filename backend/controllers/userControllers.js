@@ -69,10 +69,7 @@ export const registerController = async (req, res) => {
 export const getUserDataController = async (req, res) => {
     try {
         const user = await userModel.findById({ _id: req.body.userId });
-
         user.password = undefined;
-        // delete user.password;
-        // console.log(user)
         if (!user) {
             res.status(200).send({
                 message: 'user not found',
@@ -120,7 +117,6 @@ export const getAllNotificationController = async (req, res) => {
 
 export const deleteAllNotificationController = async (req, res) => {
     try {
-        
         const user = await userModel.findById({ _id: req.body.userId });
         user.seennotifications = [];
         const updatedUser = await user.save();
