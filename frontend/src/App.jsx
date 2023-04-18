@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import { Provider } from 'react-redux';
 import store from "./redux/store"
 import SymptomChecker from "./SymptomChecker";
+import ApplyDoctor from "./pages/ApplyDoctor";
 
 function App() {
   const { loading } = useSelector(state => state.alerts);
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login instance={instance} />} />
           <Route path="/symptomChecker" element={<SymptomChecker />} />
+          <Route path="/apply-doctor" element={<ApplyDoctor />} />
         </Routes>
       </BrowserRouter>
     </CookiesProvider>

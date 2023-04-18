@@ -4,14 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
 import axios from "axios";
 import { CookiesContext } from "../context/CookiesProvider";
+import Layout from "../components/Layout/Layout";
 
 const Login = ({ instance }) => {
     const { setCookies } = useContext(CookiesContext);
     const [userData, setUserData] = useState({ email: '', password: '' });
+
     const handleInputData = (event) => {
         const { name, value } = event.target;
         setUserData(prevState => ({ ...prevState, [name]: value }));
     }
+
     const { email, password } = userData;
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -36,13 +39,13 @@ const Login = ({ instance }) => {
         }
     }
     return (
-        <div>
+        <Layout>
             <form onSubmit={handleSubmit}>
                 <input type="text" value={email} name='email' onChange={handleInputData} />
                 <input type="password" name="password" value={password} onChange={handleInputData} />
                 <button type="submit">login</button>
             </form>
-        </div>
+        </Layout>
     )
 }
 

@@ -1,4 +1,5 @@
 import userModel from '../models/userModels.js';
+import doctorModels from '../models/doctorModels.js'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -132,6 +133,65 @@ export const deleteAllNotificationController = async (req, res) => {
             success: false,
             error,
             message: 'error while fetching notifications'
+        })
+    }
+}
+
+export const applyDoctorController = async (req, res) => {
+    try {
+        console.log(req.body);
+        // const user = req.body;
+        // const checkDoctor = await doctorModel.findOne({ $or: [{ userId: req.body.userId }, { email: user.email }, { phone: user.phone }] });
+        // if (checkDoctor) {
+        //     var message = '';
+        //     if (checkDoctor.userId === req.body.userId) {
+        //         if (checkDoctor.status === 'approved')
+        //             message = 'your request is already accepted';
+        //         else
+        //             message = 'you are already applied';
+        //     } else {
+        //         message = 'emailid and contact number is already exists please give unique one'
+        //     }
+        //     return res.status(200).send({
+        //         message: message,
+        //         success: false
+        //     });
+        // } else {
+        //     const checkUser = await userModel.findOne({ _id: req.body.userId, isDoctor: true });
+        //     if (checkUser) {
+        //         return res.status(200).send({
+        //             message: `user's application is already accepted`,
+        //             success: false
+        //         });
+        //     } else {
+        //         const newDoctor = new doctorModel(user);
+        //         const obj = await newDoctor.save();
+        //         console.log(obj)
+        //         const adminUser = await userModel.findOne({ isAdmin: true });
+        //         console.log(adminUser)
+        //         const notifications = adminUser.notifications;
+        //         notifications.push({
+        //             type: 'apply-doctor-request',
+        //             message: `${newDoctor.firstName} ${newDoctor.lastName}`,
+        //             data: {
+        //                 doctorId: newDoctor._id,
+        //                 name: newDoctor.firstName + " " + newDoctor.lastName,
+        //                 onClickPath: '/admin/doctors'
+        //             }
+        //         });
+        //         await userModel.findByIdAndUpdate(adminUser._id, { notifications });
+        //         res.status(201).send({
+        //             success: true,
+        //             message: 'Doctor acount applied successfully'
+        //         });
+        //     }
+        // }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'error while applying for doctor'
         })
     }
 }

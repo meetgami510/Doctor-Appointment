@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const router = Router();
-import { loginController, registerController,getUserDataController,getAllNotificationController,deleteAllNotificationController } from "../controllers/userControllers.js";
+import { loginController, registerController,getUserDataController,getAllNotificationController,deleteAllNotificationController,applyDoctorController } from "../controllers/userControllers.js";
 
 // ROUTES
 
@@ -18,6 +18,9 @@ router.get('/get-all-notification', getAllNotificationController);
 
 // delete all notifications || delete
 router.delete('/delete-all-notification', deleteAllNotificationController);
+
+// apply doctor || post
+router.post('/apply-doctor', applyDoctorController);
 
 
 
