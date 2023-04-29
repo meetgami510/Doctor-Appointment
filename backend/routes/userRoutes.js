@@ -1,6 +1,7 @@
 import { Router } from 'express';
 const router = Router();
-import { loginController, registerController,getUserDataController,getAllNotificationController,deleteAllNotificationController,applyDoctorController } from "../controllers/userControllers.js";
+import { loginController, registerController, getUserDataController, getAllNotificationController, deleteAllNotificationController, applyDoctorController } from "../controllers/userControllers.js";
+import protect from '../middlerwares/authMiddleware.js';
 
 // ROUTES
 
@@ -11,16 +12,16 @@ router.post('/login', loginController);
 router.post('/register', registerController);
 
 // Auth || get
-router.get('/getUserData', getUserDataController);
+router.get('/getUserData', protect, getUserDataController);
 
 // notification Docotr || get
-router.get('/get-all-notification', getAllNotificationController);
+router.get('/get-all-notification', protect, getAllNotificationController);
 
 // delete all notifications || delete
-router.delete('/delete-all-notification', deleteAllNotificationController);
+router.delete('/delete-all-notification', protect, deleteAllNotificationController);
 
 // apply doctor || post
-router.post('/apply-doctor', applyDoctorController);
+router.post('/apply-doctor', protect, applyDoctorController);
 
 
 

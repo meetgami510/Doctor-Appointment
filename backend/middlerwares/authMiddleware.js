@@ -11,19 +11,18 @@ module.exports = async (req, res, next) => {
                     success: false
                 });
             } else {
-                try{
-                    const userdata = userModel.findOne({_id:decode.id});
-                    if(userdata) {
+                try {
+                    const userdata = userModel.findOne({ _id: decode.id });
+                    if (userdata) {
                         req.body.userId = decode.id;
                         next();
                     }
-                }catch(error) {
+                } catch (error) {
                     return res.status(200).send({
                         message: 'authenitication is failed',
                         success: false
                     });
                 }
-
             }
         })
     } catch (error) {

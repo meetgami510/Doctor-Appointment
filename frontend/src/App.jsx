@@ -7,7 +7,7 @@ import Spinner from "./components/Spinner";
 import Login from "./pages/Login";
 import { Provider } from 'react-redux';
 import store from "./redux/store"
-import SymptomChecker from "./SymptomChecker";
+import SymptomChecker from "./pages/SymptomChecker";
 import ApplyDoctor from "./pages/ApplyDoctor";
 
 function App() {
