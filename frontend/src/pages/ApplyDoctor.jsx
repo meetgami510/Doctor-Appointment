@@ -1,33 +1,37 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../components/Layout/Layout'
-import { Col, Form, Input, Row, TimePicker, message } from "antd";
+import { Col, Form, Input, Row, TimePicker, message ,Checkbox} from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
-import axios from "axios";
+import { CookiesContext } from '../context/CookiesProvider';
+
 // import moment from 'moment';
 
-const ApplyDoctor = () => {
+const ApplyDoctor = ({ axiosInstance }) => {
+    const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    // const { user } = useSelector(state => state.user)
-
+     const { user } = useSelector(state => state.user)
+    const { token } = cookies;
+    //console.log(token);
     const handleFinish = async (values) => {
         // const { token } = cookies;
+        console.log(values);
         try {
             dispatch(showLoading());
-            const res = await axios.post('api/user/apply-doctor'
-                // {
-                //     ...values,
-                //     userId: user._id,
-                //     timings: [
-                //         moment(values.timings[0]).format("HH:mm"),
-                //         moment(values.timings[1]).format("HH:mm"),
-                //     ],
-                // },
+            const res = await axiosInstance.post('/user/apply-doctor',
+                {
+                    ...values,
+                    userId: user._id,
+                    timings: [
+                        "morning",
+                        "evening",
+                    ],
+                },
                 // {
                 //     headers: {
-                //         Authorization: 'Bearer ' + token
+                //         authorization: 'Bearer ' + token
                 //     }
                 // }
                 );
@@ -140,9 +144,16 @@ const ApplyDoctor = () => {
                         </Form.Item>
                     </Col>
                     <Col xs={24} md={24} lg={8}>
-                        <Form.Item label="Timings" name="timings" required>
+                        {/* <Form.Item label="Timings" name="timings" required>
                             <TimePicker.RangePicker format="HH:mm" />
+                        </Form.Item> */}
+
+                        <Form.Item label="Morning" name="morning">
+                            <Checkbox/>
                         </Form.Item>
+                        <Form.Item label="Evening" name="evening">
+                            <Checkbox />
+                        </Form.Item>  
                     </Col>
                     <Col xs={24} md={24} lg={8}></Col>
                     <Col xs={24} md={24} lg={8}>

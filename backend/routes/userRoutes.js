@@ -21,7 +21,7 @@ router.get('/get-all-notification', protect, getAllNotificationController);
 router.delete('/delete-all-notification', protect, deleteAllNotificationController);
 
 // apply doctor || post
-router.post('/apply-doctor', protect, applyDoctorController);
+router.post('/apply-doctor', applyDoctorController);
 
 // get all doctor
 router.get('/getAllDoctor', protect, getAllDoctorController);

@@ -44,10 +44,10 @@ const doctorSchema = new mongoose.Schema(
             type: String,
             default: "pending",
         },
-        timings: {
-            type: Object,
-            required: [true, "wrok timing is required"],
-        },
+        // timings: {
+        //     type: Object,
+        //     required: [true, "wrok timing is required"],
+        // },
     },
     { timestamps: true }
 );
