@@ -52,7 +52,7 @@ export const registerController = async (req, res) => {
             });
         }
         const hashPassword = await bcrypt.hash(password, 10);
-        const newUser = new userModel({ email, hashPassword, name });
+        const newUser = new userModel({ email, password: hashPassword, name });
         const resp = await newUser.save();
         console.log(resp);
         res.status(201).send({
@@ -60,6 +60,7 @@ export const registerController = async (req, res) => {
             success: true
         })
     } catch (error) {
+        console.log(error)
         res.status(500).send({
             message: `Register Controller : ${error.message}`,
             success: false,
@@ -192,6 +193,25 @@ export const applyDoctorController = async (req, res) => {
             success: false,
             error,
             message: 'error while applying for doctor'
+        })
+    }
+}
+
+
+export const getAllDoctorController = async (req, res) => {
+    try {
+        const doctorList = await doctorModel.find({ status: 'approved' });
+        res.status(200).send({
+            success: true,
+            message: 'doctor list fetched successfully',
+            doctorList
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'error while fetching notifications'
         })
     }
 }

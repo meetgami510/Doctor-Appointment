@@ -39,11 +39,6 @@ export const adminMenu = [
         path: "/admin/users",
         icon: "fa-solid fa-user",
     },
-    {
-        name: "Diabetes Predictor",
-        path: "/diabetes-predictor",
-        icon: "fa-solid fa-user-doctor",
-    }
 ];
 
 export const doctorMenu = [
@@ -62,9 +57,4 @@ export const doctorMenu = [
         path: `/doctor/profile`,
         icon: "fa-solid fa-user",
     },
-    {
-        name: "Diabetes Predictor",
-        path: "/diabetes-predictor",
-        icon: "fa-solid fa-user-doctor",
-    }
 ];

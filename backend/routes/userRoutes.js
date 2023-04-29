@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const router = Router();
-import { loginController, registerController, getUserDataController, getAllNotificationController, deleteAllNotificationController, applyDoctorController } from "../controllers/userControllers.js";
+import { loginController, registerController, getUserDataController, getAllNotificationController, deleteAllNotificationController, applyDoctorController, getAllDoctorController } from "../controllers/userControllers.js";
 import protect from '../middlerwares/authMiddleware.js';
 
 // ROUTES
@@ -23,6 +23,8 @@ router.delete('/delete-all-notification', protect, deleteAllNotificationControll
 // apply doctor || post
 router.post('/apply-doctor', protect, applyDoctorController);
 
+// get all doctor
+router.get('/getAllDoctor', protect, getAllDoctorController);
 
 
 export default router;

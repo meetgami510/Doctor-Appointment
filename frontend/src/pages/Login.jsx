@@ -1,12 +1,12 @@
 import { useContext, useState } from "react"
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
 import axios from "axios";
 import { CookiesContext } from "../context/CookiesProvider";
 import Layout from "../components/Layout/Layout";
 
-const Login = ({ instance }) => {
+const Login = ({ axiosInstance }) => {
     const { setCookies } = useContext(CookiesContext);
     const [userData, setUserData] = useState({ email: '', password: '' });
 
@@ -22,12 +22,12 @@ const Login = ({ instance }) => {
         event.preventDefault();
         try {
             dispatch(showLoading());
-            const res = await instance.post('/user/login', { email, password });
+            const res = await axiosInstance.post('/user/login', { email, password });
             dispatch(hideLoading());
             console.log(res.data);
             if (res.data.success) {
                 setCookies('token', res.data.token);
-                alert('registerd successfully!');
+                alert('Login successfully!');
                 navigate('/')
             } else {
                 alert(res.data.message);
@@ -39,13 +39,14 @@ const Login = ({ instance }) => {
         }
     }
     return (
-        <Layout>
+        <>
             <form onSubmit={handleSubmit}>
                 <input type="text" value={email} name='email' onChange={handleInputData} />
                 <input type="password" name="password" value={password} onChange={handleInputData} />
                 <button type="submit">login</button>
             </form>
-        </Layout>
+            <Link to="/register" className="m-2">Not Registered Yet?</Link>
+        </>
     )
 }
 
