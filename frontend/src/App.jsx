@@ -18,14 +18,12 @@ import Users from "./pages/admin/Users"
 import Doctors from "./pages/admin/Doctors"
 
 function App() {
-  const { loading } = useSelector(state => state.alerts);
 
   const axiosInstance = axios.create({ baseURL: 'http://localhost:8080/api' });
 
   return (
     <CookiesProvider>
       <BrowserRouter>
-        {loading && <Spinner />}
         <Routes>
           <Route
             path="/"
@@ -52,11 +50,11 @@ function App() {
             }
           />
           <Route path="/symptomChecker" element={<SymptomChecker />} />
-          <Route 
-            path="/apply-doctor" 
+          <Route
+            path="/apply-doctor"
             element={
               <ProtectedRoute axiosInstance={axiosInstance}>
-                <ApplyDoctor axiosInstance={axiosInstance}/>
+                <ApplyDoctor axiosInstance={axiosInstance} />
               </ProtectedRoute>
             }
           />
@@ -76,7 +74,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/notification" element={<Notification/>} />
+          <Route path="/notification" element={<Notification />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

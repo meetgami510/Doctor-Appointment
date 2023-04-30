@@ -142,10 +142,6 @@ export const applyDoctorController = async (req, res) => {
     try {
         console.log(req.body);
         const user = req.body;
-        // return res.status(201).send({
-        //     success: true,
-        //     message: 'Doctor account applied successfully'
-        // });
         const checkDoctor = await doctorModel.findOne({ $or: [{ userId: req.body.userId }, { email: user.email }, { phone: user.phone }] });
         if (checkDoctor) {
             var message = '';
@@ -184,7 +180,6 @@ export const applyDoctorController = async (req, res) => {
                         onClickPath: '/admin/doctors'
                     }
                 });
-                
                 await userModel.findByIdAndUpdate(adminUser._id, { notifications });
                 res.status(201).send({
                     success: true,

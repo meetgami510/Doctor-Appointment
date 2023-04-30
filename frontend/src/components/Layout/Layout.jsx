@@ -6,8 +6,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../redux/features/userSlice";
 import { Badge } from "antd";
 import { CookiesContext } from "../../context/CookiesProvider";
+import Spinner from "../Spinner";
 
 const Layout = ({ children }) => {
+
+    const { loading } = useSelector(state => state.alerts);
     const { removeCookies } = useContext(CookiesContext);
     const { user } = useSelector((state) => state.user);
     const location = useLocation();
@@ -65,7 +68,9 @@ const Layout = ({ children }) => {
                                 <Link to="/profile">{user?.name}</Link>
                             </div>
                         </div>
-                        <div className="body">{children}</div>
+                        <div className="body">
+                            {loading ? <Spinner /> : <>{children}</>}
+                        </div>
                     </div>
                 </div>
             </div>

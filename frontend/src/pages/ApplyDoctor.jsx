@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import Layout from '../components/Layout/Layout'
-import { Col, Form, Input, Row, TimePicker, message, Checkbox } from "antd";
+import { Col, Form, Input, Row, message, Checkbox } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
@@ -23,16 +23,12 @@ const ApplyDoctor = ({ axiosInstance }) => {
                 {
                     ...values,
                     userId: user._id,
-                    timings: [
-                        "morning",
-                        "evening",
-                    ],
                 },
-                // {
-                //     headers: {
-                //         authorization: 'Bearer ' + token
-                //     }
-                // }
+                {
+                    headers: {
+                        authorization: 'Bearer ' + token
+                    }
+                }
             );
             dispatch(hideLoading());
             if (!res.data.success) {
@@ -49,7 +45,7 @@ const ApplyDoctor = ({ axiosInstance }) => {
         }
     }
     return (
-        <Layout >
+        <Layout>
             <h1 className="text-center">Apply Doctor</h1>
             <Form layout="vertical" onFinish={handleFinish} className="m-3">
                 <h4 className="">Personal Details : </h4>
@@ -143,15 +139,11 @@ const ApplyDoctor = ({ axiosInstance }) => {
                         </Form.Item>
                     </Col>
                     <Col xs={24} md={24} lg={8}>
-                        {/* <Form.Item label="Timings" name="timings" required>
-                            <TimePicker.RangePicker format="HH:mm" />
-                        </Form.Item> */}
-
-                        <Form.Item label="Morning" name="morning">
-                            <Checkbox />
-                        </Form.Item>
-                        <Form.Item label="Evening" name="evening">
-                            <Checkbox />
+                        <Form.Item label="Time" name="slots">
+                            <Checkbox.Group options={[
+                                { label: 'Morning', value: 'morning' },
+                                { label: 'Evening', value: 'evening' },
+                            ]} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} md={24} lg={8}></Col>

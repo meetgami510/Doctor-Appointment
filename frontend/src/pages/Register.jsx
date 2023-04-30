@@ -4,36 +4,36 @@ import { useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../redux/features/alertSlice';
 
 const Register = ({ axiosInstance }) => {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const [userData, setUserData] = useState({ name: '', email: '', password: '' });
-    const { name, email, password } = userData;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [userData, setUserData] = useState({ name: '', email: '', password: '' });
+  const { name, email, password } = userData;
 
-    const handleInputData = (event) => {
-        const { name, value } = event.target;
-        setUserData(prevState => ({ ...prevState, [name]: value }));
+  const handleInputData = (event) => {
+    const { name, value } = event.target;
+    setUserData(prevState => ({ ...prevState, [name]: value }));
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      dispatch(showLoading());
+      const res = await axiosInstance.post('/user/register', userData);
+      dispatch(hideLoading());
+      if (res.data.success) {
+        alert('registerd successfully!');
+        navigate('/login')
+      } else {
+        alert(res.data.message);
+      }
+    } catch (error) {
+      dispatch(hideLoading());
+      alert('some thing went wrong');
     }
+  }
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        try {
-            dispatch(showLoading());
-            const res = await axiosInstance.post('/user/register', userData);
-            dispatch(hideLoading());
-            if (res.data.success) {
-                alert('registerd successfully!');
-                navigate('/login')
-            } else {
-                alert(res.data.message);
-            }
-        } catch (error) {
-            dispatch(hideLoading());
-            alert('some thing went wrong');
-        }
-    }
-
-    return (
-<>
+  return (
+    <>
       <div className="login-root">
         <div
           className="box-root flex-flex flex-direction--column"
@@ -45,7 +45,7 @@ const Register = ({ axiosInstance }) => {
           >
             <div className="box-root padding-top--24 padding-bottom--12 flex-flex flex-justifyContent--center">
               <h2>
-                <a>Create a new account</a>
+                Create a new account
               </h2>
             </div>
             <div className="formbg-outer">
@@ -101,9 +101,9 @@ const Register = ({ axiosInstance }) => {
                           width: "100%",
                           backgroundColor: "rgb(84, 105, 212)",
                         }}
-                        >
+                      >
                         Sign Up
-                        </button>
+                      </button>
                     </div>
                   </form>
                 </div>
@@ -118,7 +118,7 @@ const Register = ({ axiosInstance }) => {
         </div>
       </div>
     </>
-    );
+  );
 }
 
 export default Register;
