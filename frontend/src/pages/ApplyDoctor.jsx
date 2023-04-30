@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../components/Layout/Layout'
-import { Col, Form, Input, Row, TimePicker, message ,Checkbox} from "antd";
+import { Col, Form, Input, Row, TimePicker, message, Checkbox } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
@@ -12,11 +12,10 @@ const ApplyDoctor = ({ axiosInstance }) => {
     const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-     const { user } = useSelector(state => state.user)
-    const { token } = cookies;
-    //console.log(token);
+    const { user } = useSelector(state => state.user)
+
     const handleFinish = async (values) => {
-        // const { token } = cookies;
+        const { token } = cookies;
         console.log(values);
         try {
             dispatch(showLoading());
@@ -34,7 +33,7 @@ const ApplyDoctor = ({ axiosInstance }) => {
                 //         authorization: 'Bearer ' + token
                 //     }
                 // }
-                );
+            );
             dispatch(hideLoading());
             if (!res.data.success) {
                 message.error(res.data.message);
@@ -149,11 +148,11 @@ const ApplyDoctor = ({ axiosInstance }) => {
                         </Form.Item> */}
 
                         <Form.Item label="Morning" name="morning">
-                            <Checkbox/>
+                            <Checkbox />
                         </Form.Item>
                         <Form.Item label="Evening" name="evening">
                             <Checkbox />
-                        </Form.Item>  
+                        </Form.Item>
                     </Col>
                     <Col xs={24} md={24} lg={8}></Col>
                     <Col xs={24} md={24} lg={8}>
