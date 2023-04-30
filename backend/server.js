@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import userRoutes from "./routes/userRoutes.js";
  import adminRoutes from './routes/adminRoutes.js';
-// import doctorRoutes from './routes/doctorRoutes.js';
+ import doctorRoutes from './routes/doctorRoutes.js';
 
 dotenv.config();
 
@@ -34,8 +34,10 @@ app.use('/api/user', userRoutes);
 
 // adminroutes 
  app.use('/api/admin', adminRoutes);
- 
-// app.use('/api/doctor', doctorRoutes);
+
+
+// doctor routes 
+ app.use('/api/doctor', doctorRoutes);
 
 // PORT NUMBER
 const PORT = process.env.PORT || 8080

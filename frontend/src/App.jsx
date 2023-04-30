@@ -16,6 +16,7 @@ import Register from "./pages/Register";
 import Notification from "./pages/Notification";
 import Users from "./pages/admin/Users"
 import Doctors from "./pages/admin/Doctors"
+import BookingPage from "./pages/doctor/BookingPage"
 
 function App() {
 
@@ -74,7 +75,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/doctor/book-appointment/:doctorId"
+            element={
+              <ProtectedRoute axiosInstance={axiosInstance}>
+                <BookingPage  axiosInstance={axiosInstance}/>
+              </ProtectedRoute>
+            }
+          />
           <Route path="/notification" element={<Notification />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
