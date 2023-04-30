@@ -1,7 +1,8 @@
 import React from 'react'
-
+import Layout from '../components/Layout/Layout';
 import _ from 'lodash';
 import { useState } from 'react';
+import '../styles/SymptomChecker.css'
 
 const createPatient = () => {
     const symptoms = {};
@@ -241,45 +242,82 @@ function SymptomChecker() {
         processAns(temp);
     }
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <input type="number" name="age" value={age} placeholder="give your age" onChange={handleChange} />
-                <input type="text" name="sex" value={sex} placeholder="give your gender" onChange={handleChange} />
-                <input type="text" name="text" value={text} placeholder="what are you feeling" onChange={handleChange} />
-                <button type="submit">submit</button>
-            </form>
-            <div className="conditions">
-                {conditions.map(
-                    (c, index) => (
-                        <div
-                            className="condition"
-                            key={index}
-                        >
+        <Layout>
+            
+            {/* <form className="flex justify-center items-center gap-2" onSubmit={handleSubmit}>
+  <input className="border border-gray-300 rounded-md py-2 px-4" type="number" name="age" value={age} placeholder="give your age" onChange={handleChange} />
+  <input className="border border-gray-300 rounded-md py-2 px-4" type="text" name="sex" value={sex} placeholder="give your gender" onChange={handleChange} />
+  <input className="border border-gray-300 rounded-md py-2 px-4" type="text" name="text" value={text} placeholder="what are you feeling" onChange={handleChange} />
+  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Submit</button>
+</form> */}
+<form className="form-container" onSubmit={handleSubmit}>
+      Age :<input className="form-input" type="number" name="age" value={age} placeholder="give your age" onChange={handleChange} />
+      <input className="form-input" type="text" name="sex" value={sex} placeholder="give your gender" onChange={handleChange} />
+      Enter Your Feeling :<input className="form-input" type="text" name="text" value={text} placeholder="what are you feeling" onChange={handleChange} />
+      <button className="form-submit" type="submit">submit</button>
+    </form>
+
+
+                <div className="conditions">
+                    {conditions.map((c, index) => (
+                        <div className="condition" key={index}>
                             <div>name: {c.name}</div>
-                            <div>
-                                common name:{" "}
-                                {c.common_name}
-                            </div>
-                            <div>
-                                probability:{" "}
-                                {c.probability * 100}%
-                            </div>
+                            <div>common name: {c.common_name}</div>
+                            <div>probability: {c.probability * 100}%</div>
                         </div>
-                    )
-                )}
-            </div>
-            {
-                question !== '' && (
-                    <>
+                    ))}
+                </div>
+
+                {question !== '' && (
+                    <div className="question-container">
                         <div>{question}</div>
-                        <button onClick={selectAns} value="present">yes</button>
-                        <button onClick={selectAns} value="absent">no</button>
-                        <button onClick={selectAns} value="unknown">Don't know</button>
-                    </>
-                )
-            }
-        </div>
+                        <button className="question-btn" onClick={selectAns} value="present">yes</button>
+                        <button className="question-btn" onClick={selectAns} value="absent">no</button>
+                        <button className="question-btn" onClick={selectAns} value="unknown">Don't know</button>
+                    </div>
+                )}
+            
+
+
+        </Layout>
     )
 }
 
 export default SymptomChecker
+
+{/* <form onSubmit={handleSubmit}>
+<input type="number" name="age" value={age} placeholder="give your age" onChange={handleChange} />
+<input type="text" name="sex" value={sex} placeholder="give your gender" onChange={handleChange} />
+<input type="text" name="text" value={text} placeholder="what are you feeling" onChange={handleChange} />
+<button type="submit">submit</button>
+</form>
+<div className="conditions">
+{conditions.map(
+    (c, index) => (
+        <div
+            className="condition"
+            key={index}
+        >
+            <div>name: {c.name}</div>
+            <div>
+                common name:{" "}
+                {c.common_name}
+            </div>
+            <div>
+                probability:{" "}
+                {c.probability * 100}%
+            </div>
+        </div>
+    )
+)}
+</div>
+{
+question !== '' && (
+    <>
+        <div>{question}</div>
+        <button onClick={selectAns} value="present">yes</button>
+        <button onClick={selectAns} value="absent">no</button>
+        <button onClick={selectAns} value="unknown">Don't know</button>
+    </>
+)
+} */}

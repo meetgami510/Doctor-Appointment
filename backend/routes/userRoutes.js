@@ -15,7 +15,7 @@ router.post('/register', registerController);
 router.get('/getUserData', protect, getUserDataController);
 
 // notification Docotr || get
-router.get('/get-all-notification', protect, getAllNotificationController);
+router.get('/get-all-notification', getAllNotificationController);
 
 // delete all notifications || delete
 router.delete('/delete-all-notification', protect, deleteAllNotificationController);

@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { setUser } from '../redux/features/userSlice';
 import { CookiesContext } from '../context/CookiesProvider';
 
-const Notification = ({ axiosInstance, removeCookies }) => {
-    const { cookies } = useContext(CookiesContext);
+const Notification = ({ axiosInstance}) => {
+    const { removeCookies ,cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.user);
@@ -22,11 +22,13 @@ const Notification = ({ axiosInstance, removeCookies }) => {
         try {
             const { token } = cookies;
             dispatch(showLoading());
-            const res = await axios.get('/user/get-all-notification', {
-                headers: {
-                    Authorization: 'Bearer ' + token
-                }
-            });
+            const res = await axiosInstance.get('/user/get-all-notification', 
+            // {
+            //     headers: {
+            //         Authorization: 'Bearer ' + token
+            //     }
+            // }
+            );
             dispatch(hideLoading());
             if (res.data.success) {
                 message.success(res.data.message);
