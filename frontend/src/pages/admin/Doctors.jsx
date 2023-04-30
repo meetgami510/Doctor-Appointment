@@ -1,14 +1,14 @@
-import React, {useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../../components/Layout/Layout';
 import axios from 'axios';
-import { hideLoading } from '../../redux/features/alertSlice';
+import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { Table, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
 
 
 const Doctors = ({ axiosInstance }) => {
-    const {removeCookies, cookies } = useContext(CookiesContext);
+    const { removeCookies, cookies } = useContext(CookiesContext);
     const [doctorList, setDoctorList] = useState([]);
 
     const dispatch = useDispatch();
@@ -16,7 +16,8 @@ const Doctors = ({ axiosInstance }) => {
     const handleAccountStats = async (doctorId, status) => {
         const { token } = cookies;
         try {
-            const res = await axios.post('/api/admin/change-account-status', {
+            dispatch(showLoading());
+            const res = await axiosInstance.post('/admin/change-account-status', {
                 doctorId,
                 status
             }, {
