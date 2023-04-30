@@ -5,7 +5,7 @@ import connectDB from "./config/db.js";
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import userRoutes from "./routes/userRoutes.js";
-// import adminRoutes from './routes/adminRoutes.js';
+ import adminRoutes from './routes/adminRoutes.js';
 // import doctorRoutes from './routes/doctorRoutes.js';
 
 dotenv.config();
@@ -31,7 +31,10 @@ app.post('/', (req, res) => {
 
 // routes
 app.use('/api/user', userRoutes);
-// app.use('/api/admin', adminRoutes);
+
+// adminroutes 
+ app.use('/api/admin', adminRoutes);
+ 
 // app.use('/api/doctor', doctorRoutes);
 
 // PORT NUMBER

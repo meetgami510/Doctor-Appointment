@@ -1,18 +1,15 @@
-import userModel from '../models/userModels.js';
+import { Router } from 'express';
+const router = Router();
+
+import protect from '../middlerwares/authMiddleware.js';
+import { getAllDoctorsController, getAllUsersController} from '../controllers/adminControllers.js'
 
 
-const getAllUsersController = async (req, res) => {
-    try {
-        const users = await userModel.find({ '_id': { $ne: req.body.userId } }, { password: 0 });
-        res.status(200).send({
-            success: true,
-            message: 'users data',
-            users
-        })
-    } catch (error) {
-        res.status(500).send({
-            message: `error while fetching users list : ${error.message}`,
-            success: false,
-        });
-    }
-}
+// All Guest User || get
+router.get('/get-all-users', getAllUsersController);
+
+// All Doctor || get
+router.get('/get-all-doctors', protect, getAllDoctorsController);
+
+export default router;
+

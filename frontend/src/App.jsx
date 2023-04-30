@@ -14,6 +14,8 @@ import PublicRoute from "./components/PublicRoute";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
 import Notification from "./pages/Notification";
+import Users from "./pages/admin/Users"
+import Doctors from "./pages/admin/Doctors"
 
 function App() {
   const { loading } = useSelector(state => state.alerts);
@@ -55,6 +57,22 @@ function App() {
             element={
               <ProtectedRoute axiosInstance={axiosInstance}>
                 <ApplyDoctor axiosInstance={axiosInstance}/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/doctors"
+            element={
+              <ProtectedRoute axiosInstance={axiosInstance}>
+                <Doctors axiosInstance={axiosInstance} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute axiosInstance={axiosInstance}>
+                <Users axiosInstance={axiosInstance} />
               </ProtectedRoute>
             }
           />
