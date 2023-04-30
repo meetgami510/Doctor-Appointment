@@ -26,11 +26,10 @@ const Home = ({ axiosInstance }) => {
                     }
                 );
                 dispatch(hideLoading());
-                console.log(res)
                 if (res.data.success) {
                     message.success(res.data.message);
-                    setDoctors(res.data.doctorList);
                     console.log(res.data.doctorList)
+                    setDoctors(res.data.doctorList);
                 } else {
                     message.error(res.data.message);
                 }
@@ -48,7 +47,7 @@ const Home = ({ axiosInstance }) => {
         <Layout>
             <h1 className="text-center">Home Page</h1>
             <Row>
-                {doctors && doctors.map((doctor) => <DoctorList doctor={doctor} />)}
+                {doctors && doctors.map((doctor) => <DoctorList doctor={doctor} key={doctor._id} />)}
             </Row>
         </Layout>
     );

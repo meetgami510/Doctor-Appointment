@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const DoctorList = ({ doctor }) => {
+    console.log(doctor)
     const navigate = useNavigate();
     return (
         <>
@@ -24,7 +25,10 @@ const DoctorList = ({ doctor }) => {
                         <b>Fees Per Cunsaltation</b> {doctor.feesPerCunsaltation}
                     </p>
                     <p>
-                        <b>Timings</b> {doctor.timings[0]} - {doctor.timings[1]}
+                        slots :-
+                        {
+                            doctor.slots.map((val) => <span key={val}>{val}</span>)
+                        }
                     </p>
                 </div>
             </div>
