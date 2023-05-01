@@ -2,6 +2,8 @@ import userModel from '../models/userModels.js';
 import doctorModel from '../models/doctorModels.js'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import appointmentModel from '../models/appointmentModels.js';
+import moment from "moment";
 
 // login call back
 export const loginController = async (req, res) => {
@@ -234,6 +236,41 @@ export const bookAppointmentController = async (req, res) => {
             success: true,
             message: `Appointment booked succesfully`
         })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'error while booking appointment'
+        })
+    }
+}
+
+export const bookingAvailabilityController = async (req, res) => {
+    try {
+        const date = moment(req.body.date, "DD-MM-YY").toISOString();
+        const fromTime = moment(req.body.time, "HH:mm").subtract(1, "hours").toISOString();
+        const toTime = moment(req.body.time, "HH:mm").add(1, "hours").toISOString();
+        const doctorId = req.body.doctorId;
+        const appointments = await appointmentModel.find({
+            doctorId,
+            date,
+            time: {
+                $gte: fromTime,
+                $lte: toTime
+            }
+        });
+        if (appointments.length > 0) {
+            return res.status(200).send({
+                message: 'appointment on this time is already booked',
+                success: true
+            });
+        } else {
+            return res.status(200).send({
+                message: 'appointment on this time is available',
+                success: true,
+            });
+        }
     } catch (error) {
         console.log(error);
         res.status(500).send({
