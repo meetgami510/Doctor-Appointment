@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import Layout from '../../components/Layout/Layout'
 import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { DatePicker, TimePicker, message } from 'antd';
@@ -9,14 +9,22 @@ import moment from 'moment';
 import { CookiesContext } from "../../context/CookiesProvider";
 
 const BookingPage = ({ axiosInstance }) => {
-    const {removeCookies, cookies } = useContext(CookiesContext);
+    const { removeCookies, cookies } = useContext(CookiesContext);
     const [doctor, setDoctor] = useState(null);
     const { user } = useSelector(state => state.user);
+    console.log(user)
     const dispatch = useDispatch();
     const params = useParams();
-    const [date, setDate] = useState("");
-    const [time, setTime] = useState("");
     const [isAvailable, setIsAvailable] = useState(false);
+    const [timingSlot, setTimingSlot] = useState("");
+
+    const arr = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"];
+
+
+    const handleChange = (event) => {
+        setTimingSlot(event.target.value);
+        console.log(event.target.value);
+    };
 
     // get user data
     useEffect(() => {
@@ -28,11 +36,11 @@ const BookingPage = ({ axiosInstance }) => {
                 const res = await axiosInstance.post(
                     '/doctor/getDoctorById',
                     { doctorId: params.doctorId },
-                    // {
-                    //     headers: {
-                    //         authorization: 'Bearer ' + token
-                    //     }
-                    // }
+                    {
+                        headers: {
+                            authorization: 'Bearer ' + token
+                        }
+                    }
                 );
                 dispatch(hideLoading());
                 if (res.data.success) {
@@ -55,19 +63,19 @@ const BookingPage = ({ axiosInstance }) => {
     const handleBooking = async () => {
         const { token } = cookies;
         try {
-            if (!date || !time) {
+            if (!timingSlot) {
                 return alert('date and time is required');
             }
             dispatch(showLoading());
-            console.log(time);
+            console.log(timingSlot);
             const res = await axiosInstance.post(
                 '/user/book-appointment',
                 {
                     doctorId: params.doctorId,
-                    doctorInfo: doctor,
-                    userInfo: user,
-                    date,
-                    time
+                    userName: user.name,
+                    doctorUserId: doctor.userId,
+                    userId: user._id,
+                    timingSlot
                 },
                 {
                     headers: {
@@ -95,7 +103,7 @@ const BookingPage = ({ axiosInstance }) => {
         try {
             dispatch(showLoading());
             const res = await axiosInstance.post('/user/booking-avalibility',
-                { doctorId: params.doctorId, date, time },
+                { doctorId: params.doctorId, timingSlot },
                 {
                     headers: {
                         authorization: 'Bearer ' + token
@@ -131,7 +139,8 @@ const BookingPage = ({ axiosInstance }) => {
                             {doctor.timings && doctor.timings[1]}{" "}
                         </h4>
                         <div className="d-flex flex-column w-50">
-                            <DatePicker
+                            <h4>you are booking appointment for tomorrow</h4>
+                            {/* <DatePicker
                                 className="m-2"
                                 format="DD-MM-YYYY"
                                 onChange={
@@ -140,8 +149,8 @@ const BookingPage = ({ axiosInstance }) => {
                                         setDate(moment(value).format("DD-MM-YYYY"))
                                     }
                                 }
-                            />
-                            <TimePicker
+                            /> */}
+                            {/* <TimePicker
                                 format="HH:mm"
                                 className="m-2"
                                 onChange={
@@ -150,7 +159,18 @@ const BookingPage = ({ axiosInstance }) => {
                                         setTime(moment(value).format("HH:mm"));
                                     }
                                 }
-                            />
+                            /> */}
+                            <div>
+                                <select value={timingSlot} onChange={handleChange}>
+                                    <option value="">-- Select a time --</option>
+                                    {arr.map((time) => (
+                                        <option key={time} value={time}>
+                                            {time}
+                                        </option>
+                                    ))}
+                                </select>
+                                <p>You selected: {timingSlot}</p>
+                            </div>
                             <button className="btn btn-primary mt-2" onClick={checkAvailability}>
                                 Check Availability
                             </button>

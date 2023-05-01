@@ -2,6 +2,8 @@ import userModel from '../models/userModels.js';
 import doctorModel from '../models/doctorModels.js'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import appointmentModel from '../models/appointmentModels.js';
+import moment from 'moment';
 
 // login call back
 export const loginController = async (req, res) => {
@@ -218,28 +220,62 @@ export const getAllDoctorController = async (req, res) => {
 
 export const bookAppointmentController = async (req, res) => {
     try {
-        req.body.date = moment(req.body.date, "DD-MM-YYYY").toISOString();
-        req.body.time = moment(req.body.time, "HH:mm").toISOString();
-        req.body.status = 'pending';
-        const newAppointment = new appointmentModel(req.body);
+        const { doctorId, userId, timingSlot, doctorUserId, userName } = req.body;
+        console.log(req.body);
+        const newAppointment = new appointmentModel({
+            doctor: doctorId, user: userId, time: timingSlot
+        });
+        console.log(newAppointment);
         await newAppointment.save();
-        const user = await userModel.findOne({ _id: req.body.doctorInfo.userId });
-        user.notifications.push({
+        const doctorData = await userModel.findOne({ _id: doctorUserId });
+        doctorData.notifications.push({
             type: 'New-Appointment-request',
-            message: `A new appointment request from ${req.body.userInfo.name}`,
+            message: `A new appointment request from ${userName}`,
             onClickPath: '/user/appointments'
         });
-        await user.save();
+        await doctorData.save();
         res.status(200).send({
             success: true,
             message: `Appointment booked succesfully`
-        })
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
             error,
             message: 'error while booking appointment'
+        })
+    }
+}
+
+export const bookingAvailabilityController = async (req, res) => {
+    try {
+        const { doctorId, userId, timingSlots } = req.body;
+        // console.log(req.body)
+        const date = moment().add(1, 'day').toDate();
+        const appointment = await appointmentModel.findOne({
+            doctor: doctorId,
+            user: userId,
+            time: timingSlots
+        });
+        console.log(appointment)
+        if (appointment) {
+            return res.status(200).send({
+                message: 'appointment on this time is already booked',
+                success: true
+            });
+        } else {
+            return res.status(200).send({
+                message: 'appointment on this time is available',
+                success: true,
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'error while checking availability appointment'
         })
     }
 }

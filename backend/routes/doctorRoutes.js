@@ -5,6 +5,6 @@ import protect from '../middlerwares/authMiddleware.js';
 
 import { getDoctorByIdController } from '../controllers/doctorController.js';
 
-router.post('/getDoctorById', getDoctorByIdController);
+router.post('/getDoctorById', protect, getDoctorByIdController);
 
 export default router;
