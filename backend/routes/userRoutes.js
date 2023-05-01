@@ -42,6 +42,7 @@ router.post('/booking-avalibility', protect, bookingAvailabilityController);
 // book appointment
 router.post("/book-appointment", protect, bookAppointmentController);
 
-
+// booking avliability
+router.post('/booking-avalibility', bookingAvailabilityController);
 
 export default router;

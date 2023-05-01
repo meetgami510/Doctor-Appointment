@@ -1,12 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react'
 import Layout from '../../components/Layout/Layout'
 import { hideLoading, showLoading } from '../../redux/features/alertSlice';
-import { DatePicker, TimePicker, message } from 'antd';
+
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import moment from 'moment';
 import { CookiesContext } from "../../context/CookiesProvider";
+import { message } from 'antd';
 
 const BookingPage = ({ axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);
@@ -61,6 +60,7 @@ const BookingPage = ({ axiosInstance }) => {
     }, [cookies]);
 
     const handleBooking = async () => {
+        console.log(user)
         const { token } = cookies;
         try {
             if (!timingSlot) {
@@ -145,6 +145,7 @@ const BookingPage = ({ axiosInstance }) => {
                                 format="DD-MM-YYYY"
                                 onChange={
                                     (value) => {
+                                        console.log(moment(value).format("DD-MM-YYYY"));
                                         setIsAvailable(false);
                                         setDate(moment(value).format("DD-MM-YYYY"))
                                     }
