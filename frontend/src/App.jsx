@@ -17,6 +17,7 @@ import Notification from "./pages/Notification";
 import Users from "./pages/admin/Users"
 import Doctors from "./pages/admin/Doctors"
 import BookingPage from "./pages/doctor/BookingPage"
+import Profile from "./pages/doctor/Profile";
 
 function App() {
 
@@ -80,6 +81,14 @@ function App() {
             element={
               <ProtectedRoute axiosInstance={axiosInstance}>
                 <BookingPage  axiosInstance={axiosInstance}/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute axiosInstance={axiosInstance}>
+                <Profile  axiosInstance={axiosInstance}/>
               </ProtectedRoute>
             }
           />

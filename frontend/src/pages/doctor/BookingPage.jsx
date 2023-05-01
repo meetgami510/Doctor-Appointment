@@ -53,10 +53,13 @@ const BookingPage = ({ axiosInstance }) => {
     }, [cookies]);
 
     const handleBooking = async () => {
+        console.log(date);
+        console.log(time);
+        console.log(user)
         const { token } = cookies;
         try {
             if (!date || !time) {
-                return alert('date and time is required');
+                return alert('date and time is required'); 
             }
             dispatch(showLoading());
             console.log(time);
@@ -69,11 +72,11 @@ const BookingPage = ({ axiosInstance }) => {
                     date,
                     time
                 },
-                {
-                    headers: {
-                        authorization: 'Bearer ' + token
-                    }
-                }
+                // {
+                //     headers: {
+                //         authorization: 'Bearer ' + token
+                //     }
+                // }
             );
             dispatch(hideLoading());
             if (res.data.success) {
@@ -96,11 +99,11 @@ const BookingPage = ({ axiosInstance }) => {
             dispatch(showLoading());
             const res = await axiosInstance.post('/user/booking-avalibility',
                 { doctorId: params.doctorId, date, time },
-                {
-                    headers: {
-                        authorization: 'Bearer ' + token
-                    }
-                }
+                // {
+                //     headers: {
+                //         authorization: 'Bearer ' + token
+                //     }
+                // }
             );
             dispatch(hideLoading());
             if (res.data.success) {
@@ -136,6 +139,7 @@ const BookingPage = ({ axiosInstance }) => {
                                 format="DD-MM-YYYY"
                                 onChange={
                                     (value) => {
+                                        console.log(moment(value).format("DD-MM-YYYY"));
                                         setIsAvailable(false);
                                         setDate(moment(value).format("DD-MM-YYYY"))
                                     }

@@ -220,6 +220,7 @@ export const getAllDoctorController = async (req, res) => {
 
 export const bookAppointmentController = async (req, res) => {
     try {
+        console.log("hiii");
         req.body.date = moment(req.body.date, "DD-MM-YYYY").toISOString();
         req.body.time = moment(req.body.time, "HH:mm").toISOString();
         req.body.status = 'pending';
