@@ -50,6 +50,14 @@ const doctorSchema = new mongoose.Schema(
             type: String,
             default: "pending",
         },
+        morningTimeslot: {
+            start: { type: String, required: true },
+            end: { type: String, required: true },
+        },
+        eveningTimeslot: {
+            start: { type: String, required: true },
+            end: { type: String, required: true },
+        }
     },
     { timestamps: true }
 );

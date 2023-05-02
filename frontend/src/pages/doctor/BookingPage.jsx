@@ -73,7 +73,7 @@ const BookingPage = ({ axiosInstance }) => {
                 {
                     doctorId: params.doctorId,
                     userName: user.name,
-                    doctorUserId: doctor.userId,
+                    doctorUserId: doctor.user,
                     userId: user._id,
                     timingSlot
                 },

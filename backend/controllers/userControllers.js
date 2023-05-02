@@ -227,6 +227,7 @@ export const bookAppointmentController = async (req, res) => {
         });
         console.log(newAppointment);
         await newAppointment.save();
+        console.log(doctorUserId)
         const doctorData = await userModel.findOne({ _id: doctorUserId });
         doctorData.notifications.push({
             type: 'New-Appointment-request',

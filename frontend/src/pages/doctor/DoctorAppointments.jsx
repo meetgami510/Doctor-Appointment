@@ -39,31 +39,31 @@ const DoctorAppointments = ({ axiosInstance }) => {
         //eslint-disable-next-line
     }, []);
 
-    // const handleStatus = async (record, status) => {
-    //     const { token } = cookies;
-    //     try {
-    //         const res = await axiosInstance.post('/doctor/update-appointment-status',
-    //             {
-    //                 appointmentId: record._id,
-    //                 status
-    //             },
-    //             {
-    //                 headers: {
-    //                     authorization: 'Bearer ' + token
-    //                 }
-    //             });
-    //         if (res.data.success) {
-    //             message.success(res.data.message);
-    //             window.location.reload();
-    //         } else {
-    //             message.error(res.data.message);
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //         dispatch(hideLoading());
-    //         message.error('some thing went wrong');
-    //     }
-    // }
+    const handleStatus = async (record, status) => {
+        const { token } = cookies;
+        try {
+            const res = await axiosInstance.post('/doctor/update-appointment-status',
+                {
+                    appointmentId: record._id,
+                    status
+                },
+                {
+                    headers: {
+                        authorization: 'Bearer ' + token
+                    }
+                });
+            if (res.data.success) {
+                message.success(res.data.message);
+                window.location.reload();
+            } else {
+                message.error(res.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            dispatch(hideLoading());
+            message.error('some thing went wrong');
+        }
+    }
 
     const columns = [
         {
@@ -93,13 +93,13 @@ const DoctorAppointments = ({ axiosInstance }) => {
                         <div className="d-flex">
                             <button
                                 className="btn btn-success"
-                                // onClick={() => handleStatus(record, "approved")}
+                                onClick={() => handleStatus(record, "approved")}
                             >
                                 Approved
                             </button>
                             <button
                                 className="btn btn-danger ms-2"
-                                // onClick={() => handleStatus(record, "reject")}
+                                onClick={() => handleStatus(record, "reject")}
                             >
                                 Reject
                             </button>
