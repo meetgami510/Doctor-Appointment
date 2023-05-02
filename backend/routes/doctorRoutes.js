@@ -3,7 +3,7 @@ const router = Router();
 
 import protect from '../middlerwares/authMiddleware.js';
 
-import { getDoctorByIdController,getDoctorInfoController,updateProfileController } from '../controllers/doctorController.js';
+import { getDoctorByIdController,getDoctorInfoController,updateProfileController,getDoctorAppointmentsController } from '../controllers/doctorController.js';
 
 router.post('/getDoctorById', protect, getDoctorByIdController);
 
@@ -11,6 +11,8 @@ router.post('/getDoctorById', protect, getDoctorByIdController);
 router.get('/getDoctorInfo', protect ,getDoctorInfoController);
 
 router.post('/updateProfile', updateProfileController);
+
+router.get('/doctor-appointments', protect, getDoctorAppointmentsController);
 
 
 export default router;

@@ -40,7 +40,7 @@ export const changeAccountStatusController = async (req, res) => {
         console.log(req.body)
         const doctor = await doctorModel.findByIdAndUpdate(doctorId, { status });
         console.log(doctor)
-        const user = await userModel.findById({ _id: doctor.userId });
+        const user = await userModel.findById({ _id: doctor.user });
         const notifications = user.notifications;
         notifications.push({
             type: 'doctor account status updated',

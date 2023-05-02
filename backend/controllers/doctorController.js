@@ -1,4 +1,4 @@
-// import appointmentModel from "../models/appointmentModels";
+import appointmentModel from "../models/appointmentModels.js";
 import doctorModel from "../models/doctorModels.js";
 import userModel from "../models/userModels.js";
 
@@ -26,7 +26,7 @@ export const getDoctorByIdController = async (req, res) => {
 export const getDoctorInfoController = async (req, res) => {
     try {
         console.log(req.body.userId)
-        const doctor = await doctorModel.findOne({ userId: req.body.userId });
+        const doctor = await doctorModel.findOne({ user: req.body.userId });
         console.log(doctor);
         res.status(200).send({
             success: true,
@@ -46,13 +46,36 @@ export const getDoctorInfoController = async (req, res) => {
 export const updateProfileController = async (req, res) => {
     try {
         const doctor = await doctorModel.findOneAndUpdate(
-            { userId: req.body.userId },
+            { user: req.body.userId },
             req.body
         );
         res.status(200).send({
             success: true,
             message: 'doctor data update successfully',
             doctor
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'doctor profile update issue'
+        })
+    }
+}
+
+export const getDoctorAppointmentsController = async (req, res) => {
+    try {
+        console.log(req.body.userId)
+        const doctor = await doctorModel.findOne({ user: req.body.userId });
+        console.log(doctor);
+        const appointments = await appointmentModel.find({ doctor: doctor._id });
+
+        console.log(appointments);
+        res.status(200).send({
+            success: true,
+            message: 'appointments data fetched successfully',
+            appointments
         })
     } catch (error) {
         console.log(error);

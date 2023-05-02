@@ -144,10 +144,10 @@ export const applyDoctorController = async (req, res) => {
     try {
         console.log(req.body);
         const user = req.body;
-        const checkDoctor = await doctorModel.findOne({ $or: [{ userId: req.body.userId }, { email: user.email }, { phone: user.phone }] });
+        const checkDoctor = await doctorModel.findOne({ $or: [{ user: req.body.userId }, { email: user.email }, { phone: user.phone }] });
         if (checkDoctor) {
             var message = '';
-            if (checkDoctor.userId === req.body.userId) {
+            if (checkDoctor.user === req.body.userId) {
                 if (checkDoctor.status === 'approved')
                     message = 'your request is already accepted';
                 else

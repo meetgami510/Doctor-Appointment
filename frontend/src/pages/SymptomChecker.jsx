@@ -296,7 +296,7 @@ function SymptomChecker() {
             <div>probability: {c.probability * 100}%</div>
           </div>
         ))}
-      </div>
+      </div>  ``
 
       {question !== "" && (
         <div className="question-container">
