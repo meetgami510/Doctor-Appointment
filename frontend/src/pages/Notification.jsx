@@ -1,4 +1,4 @@
-import React, { useContext,useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { hideLoading, showLoading } from '../redux/features/alertSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Tabs, message } from 'antd';
@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { setUser } from '../redux/features/userSlice';
 import { CookiesContext } from '../context/CookiesProvider';
 
-const Notification = ({ axiosInstance}) => {
-    const { removeCookies ,cookies } = useContext(CookiesContext);
+const Notification = ({ axiosInstance }) => {
+    const { removeCookies, cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.user);
@@ -22,12 +22,12 @@ const Notification = ({ axiosInstance}) => {
         try {
             const { token } = cookies;
             dispatch(showLoading());
-            const res = await axiosInstance.get('/user/get-all-notification', 
-            // {
-            //     headers: {
-            //         Authorization: 'Bearer ' + token
-            //     }
-            // }
+            const res = await axiosInstance.get('/user/get-all-notification',
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    }
+                }
             );
             dispatch(hideLoading());
             if (res.data.success) {
@@ -48,7 +48,7 @@ const Notification = ({ axiosInstance}) => {
         try {
             const { token } = cookies;
             dispatch(showLoading());
-            const res = await axios.delete('/user/delete-all-notification', {
+            const res = await axiosInstance.delete('/user/delete-all-notification', {
                 headers: {
                     Authorization: 'Bearer ' + token
                 }

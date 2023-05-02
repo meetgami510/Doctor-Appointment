@@ -279,3 +279,22 @@ export const bookingAvailabilityController = async (req, res) => {
         })
     }
 }
+
+
+export const userAppointmentController = async (req, res) => {
+    try {
+        const appointments = await appointmentModel.find({ user: req.body.userId });
+        res.status(200).send({
+            success: true,
+            message: 'User appointment fetch successfully',
+            appointments
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'error while booking appointment'
+        })
+    }
+}

@@ -10,6 +10,7 @@ import {
     getAllDoctorController,
     bookAppointmentController,
     bookingAvailabilityController,
+    userAppointmentController,
 } from "../controllers/userControllers.js";
 import protect from "../middlerwares/authMiddleware.js";
 
@@ -25,13 +26,13 @@ router.post("/register", registerController);
 router.get("/getUserData", protect, getUserDataController);
 
 // notification Docotr || get
-router.get("/get-all-notification", getAllNotificationController);
+router.get("/get-all-notification", protect, getAllNotificationController);
 
 // delete all notifications || delete
 router.delete("/delete-all-notification", protect, deleteAllNotificationController);
 
 // apply doctor || post
-router.post("/apply-doctor", applyDoctorController);
+router.post("/apply-doctor", protect, applyDoctorController);
 
 // get all doctor
 router.get("/getAllDoctor", protect, getAllDoctorController);
@@ -43,6 +44,9 @@ router.post('/booking-avalibility', protect, bookingAvailabilityController);
 router.post("/book-appointment", protect, bookAppointmentController);
 
 // booking avliability
-router.post('/booking-avalibility', bookingAvailabilityController);
+router.post('/booking-avalibility', protect, bookingAvailabilityController);
+
+// show appointments
+router.get('/user-appointment', protect, userAppointmentController);
 
 export default router;

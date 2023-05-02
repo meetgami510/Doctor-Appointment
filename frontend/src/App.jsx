@@ -18,6 +18,7 @@ import Users from "./pages/admin/Users"
 import Doctors from "./pages/admin/Doctors"
 import BookingPage from "./pages/doctor/BookingPage"
 import Profile from "./pages/doctor/Profile";
+import Appointments from "./pages/Appointments";
 
 function App() {
 
@@ -51,6 +52,14 @@ function App() {
               </PublicRoute>
             }
           />
+          <Route
+            path="/appointments"
+            element={
+              <ProtectedRoute axiosInstance={axiosInstance} >
+                <Appointments axiosInstance={axiosInstance} />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/symptomChecker" element={<SymptomChecker />} />
           <Route
             path="/apply-doctor"
@@ -80,7 +89,7 @@ function App() {
             path="/doctor/book-appointment/:doctorId"
             element={
               <ProtectedRoute axiosInstance={axiosInstance}>
-                <BookingPage  axiosInstance={axiosInstance}/>
+                <BookingPage axiosInstance={axiosInstance} />
               </ProtectedRoute>
             }
           />
@@ -88,12 +97,18 @@ function App() {
             path="/profile"
             element={
               <ProtectedRoute axiosInstance={axiosInstance}>
-                <Profile  axiosInstance={axiosInstance}/>
+                <Profile axiosInstance={axiosInstance} />
               </ProtectedRoute>
             }
           />
-          <Route path="/notification" element={<Notification />} />
-
+          <Route
+            path="/notification"
+            element={
+              <ProtectedRoute axiosInstance={axiosInstance}>
+                <Notification axiosInstance={axiosInstance} />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
