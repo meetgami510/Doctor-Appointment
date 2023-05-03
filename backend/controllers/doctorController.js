@@ -69,7 +69,7 @@ export const getDoctorAppointmentsController = async (req, res) => {
         console.log(req.body.userId)
         const doctor = await doctorModel.findOne({ user: req.body.userId });
         console.log(doctor);
-        if(doctor) {
+        if (doctor) {
             const appointments = await appointmentModel.find({ doctor: doctor._id });
 
             console.log(appointments);
@@ -94,7 +94,7 @@ export const getDoctorAppointmentsController = async (req, res) => {
         })
     }
 }
-                                
+
 export const updateAppointmentStatusController = async (req, res) => {
     try {
         console.log("update");
@@ -124,11 +124,11 @@ export const updateAppointmentStatusController = async (req, res) => {
 
 export const sloatbookingController = async (req, res) => {
     try {
-        const {morningTimeslot , eveningTimeslot} = req.body;
+        // const { morningTimeslot, eveningTimeslot } = req.body;
         console.log(req.body.userId);
         const doctor = await doctorModel.findOneAndUpdate(
             { user: req.body.userId },
-           { morningTimeslot : morningTimeslot, eveningTimeslot:eveningTimeslot}
+            { timeSlot: req.body.timeSlot }
         );
         console.log(doctor);
         return res.status(200).send({

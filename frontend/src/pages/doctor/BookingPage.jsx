@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import Layout from '../../components/Layout/Layout'
 import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 
@@ -16,15 +16,30 @@ const BookingPage = ({ axiosInstance }) => {
     const params = useParams();
     const [isAvailable, setIsAvailable] = useState(false);
     const [timingSlot, setTimingSlot] = useState("");
+    const morningSlots = useRef([]);
+    const eveningSlots = useRef([]);
 
     const arr = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"];
+
+    function generateTimeSlots(start, end) {
+        let timeSlots = [];
+        let hour = parseInt(start);
+        let minute = "00";
+        while (hour < parseInt(end)) {
+            timeSlots.push(hour + ":" + minute);
+            minute = minute === "00" ? "30" : "00";
+            if (minute === "00") hour++;
+        }
+        timeSlots.push(end + ":00");
+        return timeSlots;
+    }
+
 
 
     const handleChange = (event) => {
         setTimingSlot(event.target.value);
         console.log(event.target.value);
     };
-
     // get user data
     useEffect(() => {
         const { token } = cookies;
@@ -45,6 +60,8 @@ const BookingPage = ({ axiosInstance }) => {
                 if (res.data.success) {
                     message.success(res.data.message);
                     setDoctor(res.data.doctor);
+                    morningSlots.current = generateTimeSlots(res.data.doctor.timeSlot.morningStart, res.data.doctor.timeSlot.morningEnd);
+                    eveningSlots.current = generateTimeSlots(res.data.doctor.timeSlot.eveningStart, res.data.doctor.timeSlot.eveningEnd);
                     console.log(res.data.doctor);
                 } else {
                     message.error(res.data.message);
@@ -164,7 +181,12 @@ const BookingPage = ({ axiosInstance }) => {
                             <div>
                                 <select value={timingSlot} onChange={handleChange}>
                                     <option value="">-- Select a time --</option>
-                                    {arr.map((time) => (
+                                    {morningSlots.current.map((time) => (
+                                        <option key={time} value={time}>
+                                            {time}
+                                        </option>
+                                    ))}
+                                    {eveningSlots.current.map((time) => (
                                         <option key={time} value={time}>
                                             {time}
                                         </option>

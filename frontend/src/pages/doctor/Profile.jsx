@@ -13,60 +13,55 @@ const Profile = ({ axiosInstance }) => {
   console.log(user);
   const dispatch = useDispatch();
   const [doctor, setDoctor] = useState(null);
+  const [timeSlot, setTimeSlot] = useState();
 
-  const handleAdd = async (val) => {
+  const updateTimeSlot = async (event) => {
+    event.preventDefault();
     const { token } = cookies;
-    console.log(val);
-    
-    const morningTimeslot = {
-      start: val.timings[0].format("HH:mm A"),
-      end: val.timings[1].format("HH:mm A"),
-    };
-    const eveningTimeslot = {
-      start: val.timings1[0].format("HH:mm A"),
-      end: val.timings1[1].format("HH:mm A"),
-    };
-    console.log(morningTimeslot);
-    console.log(eveningTimeslot);
-
-    const res = await axiosInstance.post("/doctor/sloat-booking",{morningTimeslot,eveningTimeslot},
-    {
-        headers: {
-          authorization: "Bearer " + token,
-        },
+    console.log(timeSlot)
+    if (timeSlot.morningEnd - timeSlot.morningStart > 0 && timeSlot.eveningEnd - timeSlot.eveningStart > 0) {
+      try {
+        const res = await axiosInstance.post("/doctor/sloat-booking", { timeSlot },
+          {
+            headers: {
+              authorization: "Bearer " + token,
+            },
+          }
+        );
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+        alert(error.message);
       }
-    );
-    console.log(res);
-  };
+    } else {
+      alert("time slot must require 1hr diffrence");
+    }
+  }
 
   const handleFinish = async (values) => {
     const { token } = cookies;
     try {
       dispatch(showLoading());
       console.log(values);
-      //   const res = await axiosInstance.post(
-      //     "/doctor/updateProfile",
-      //     {
-      //       ...values,
-      //       userId: user._id,
-      //       // timings: [
-      //       //     moment(values.timings[0]).format("HH:mm"),
-      //       //     moment(values.timings[1]).format("HH:mm"),
-      //       // ],
-      //     }
-      //     // {
-      //     //     headers: {
-      //     //         Authorization: 'Bearer ' + token
-      //     //     }
-      //     // }
-      //   );
-      //   dispatch(hideLoading());
-      //   if (!res.data.success) {
-      //     message.error(res.data.message);
-      //   } else {
-      //     message.success(res.data.message);
-      //   }
-      //   console.log(res.data);
+      const res = await axiosInstance.post(
+        "/doctor/updateProfile",
+        {
+          ...values,
+          userId: user._id,
+        },
+        {
+          headers: {
+            authorization: 'Bearer ' + token
+          }
+        }
+      );
+      dispatch(hideLoading());
+      if (!res.data.success) {
+        message.error(res.data.message);
+      } else {
+        message.success(res.data.message);
+      }
+      console.log(res.data);
     } catch (error) {
       console.log(error);
       dispatch(hideLoading());
@@ -79,18 +74,19 @@ const Profile = ({ axiosInstance }) => {
       const { token } = cookies;
       try {
         dispatch(showLoading());
-        const res = await axiosInstance.get(`/doctor/getDoctorInfo`, 
-        {
-          headers: {
-            authorization: "Bearer " + token,
-          },
-        }
+        const res = await axiosInstance.get(`/doctor/getDoctorInfo`,
+          {
+            headers: {
+              authorization: "Bearer " + token,
+            },
+          }
         );
         dispatch(hideLoading());
         console.log(res.data);
         if (res.data.success) {
           //console.log(res.data.doctor);
           setDoctor(res.data.doctor);
+          setTimeSlot(res.data.doctor.timeSlot);
         } else {
           message.error(res.data.message);
         }
@@ -103,6 +99,14 @@ const Profile = ({ axiosInstance }) => {
     fetchData();
     //eslint-disable-next-line
   }, []);
+
+  console.log(timeSlot)
+  const handleTimeSlot = (e) => {
+    const { name, value } = e.target;
+    setTimeSlot(prevState => ({ ...prevState, [name]: value }))
+  }
+
+
   return (
     <Layout removeCookies={removeCookies}>
       <h1>manage profile</h1>
@@ -114,10 +118,6 @@ const Profile = ({ axiosInstance }) => {
             className="m-3"
             initialValues={{
               ...doctor,
-              // timings: [
-              //     moment(doctor?.timings[0], "HH:mm"),
-              //     moment(doctor?.timings[1], "HH:mm"),
-              // ],
             }}
           >
             <h4 className="">Personal Details : </h4>
@@ -220,19 +220,37 @@ const Profile = ({ axiosInstance }) => {
             </Row>
           </Form>
 
-          <Form onFinish={handleAdd}>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item label="Morning Timeslot" name="timings" required>
-                <TimePicker.RangePicker format="HH" showNow={false} />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item label="Evening Timeslot" name="timings1" required>
-                <TimePicker.RangePicker format="HH" showNow={false} />
-              </Form.Item>
-            </Col>
-            <button type="submit">Add Timeslots</button>
-          </Form>
+          <form onSubmit={updateTimeSlot}>
+            <select name="morningStart" value={timeSlot.morningStart} onChange={handleTimeSlot}>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+            </select>
+            <select name="morningEnd" value={timeSlot.morningEnd} onChange={handleTimeSlot}>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+            </select>
+            <select name="eveningStart" value={timeSlot.eveningStart} onChange={handleTimeSlot}>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+            </select>
+            <select name="eveningEnd" value={timeSlot.eveningEnd} onChange={handleTimeSlot}>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+            </select>
+            <button type="submit">Update Time Slot</button>
+          </form>
         </>
       )}
     </Layout>

@@ -251,13 +251,12 @@ export const bookAppointmentController = async (req, res) => {
 
 export const bookingAvailabilityController = async (req, res) => {
     try {
-        const { doctorId, userId, timingSlots } = req.body;
+        const { doctorId, timingSlot } = req.body;
         // console.log(req.body)
         const date = moment().add(1, 'day').toDate();
         const appointment = await appointmentModel.findOne({
             doctor: doctorId,
-            user: userId,
-            time: timingSlots
+            time: timingSlot
         });
         console.log(appointment)
         if (appointment) {
