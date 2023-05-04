@@ -70,7 +70,12 @@ export const getDoctorAppointmentsController = async (req, res) => {
         const doctor = await doctorModel.findOne({ user: req.body.userId });
         console.log(doctor);
         if (doctor) {
-            const appointments = await appointmentModel.find({ doctor: doctor._id });
+            // const appointments = await appointmentModel.find({ doctor: doctor._id });
+            const appointments = await appointmentModel
+                .find({ doctor: doctor._id })
+                .populate({ path: 'user', select: '-isAdmin -isDoctor -notifications -seennotifications -password' });
+
+            // console.log(appointment)
 
             console.log(appointments);
             return res.status(200).send({
