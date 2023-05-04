@@ -44,17 +44,17 @@ export const loginController = async (req, res) => {
 export const registerController = async (req, res) => {
     console.log(req.body);
     try {
-        const { email, password, name } = req.body;
-
-        const checkUser = await userModel.findOne({ email });
+        const { user } = req.body;
+        const checkUser = await userModel.findOne({ $or: [{ email: user.email }, { phone: user.phone }] });
+        console.log(checkUser);
         if (checkUser) {
             return res.status(200).send({
                 message: 'User Already Exists',
                 success: false
             });
         }
-        const hashPassword = await bcrypt.hash(password, 10);
-        const newUser = new userModel({ email, password: hashPassword, name });
+        user.password = await bcrypt.hash(user.password, 10);
+        const newUser = new userModel(user);
         const resp = await newUser.save();
         console.log(resp);
         res.status(201).send({
@@ -143,51 +143,41 @@ export const deleteAllNotificationController = async (req, res) => {
 export const applyDoctorController = async (req, res) => {
     try {
         console.log(req.body);
-        const user = req.body;
-        const checkDoctor = await doctorModel.findOne({ $or: [{ user: req.body.userId }, { email: user.email }, { phone: user.phone }] });
+        const doctorInfo = req.body;
+
+        const checkDoctor = await doctorModel.findOne({ user: req.body.userId });
         if (checkDoctor) {
             var message = '';
-            if (checkDoctor.user === req.body.userId) {
-                if (checkDoctor.status === 'approved')
-                    message = 'your request is already accepted';
-                else
-                    message = 'you are already applied';
-            } else {
-                message = 'emailid and contact number is already exists please give unique one'
-            }
+            if (checkDoctor.status === 'approved')
+                message = 'your request is already accepted';
+            else
+                message = 'you are already applied';
             return res.status(200).send({
                 message: message,
                 success: false
             });
         } else {
-            const checkUser = await userModel.findOne({ _id: req.body.userId, isDoctor: true });
-            if (checkUser) {
-                return res.status(200).send({
-                    message: `user's application is already accepted`,
-                    success: false
-                });
-            } else {
-                const newDoctor = new doctorModel(user);
-                const obj = await newDoctor.save();
-                console.log(obj)
-                const adminUser = await userModel.findOne({ isAdmin: true });
-                console.log(adminUser)
-                const notifications = adminUser.notifications;
-                notifications.push({
-                    type: 'apply-doctor-request',
-                    message: `${newDoctor.firstName} ${newDoctor.lastName}`,
-                    data: {
-                        doctorId: newDoctor._id,
-                        name: newDoctor.firstName + " " + newDoctor.lastName,
-                        onClickPath: '/admin/doctors'
-                    }
-                });
-                await userModel.findByIdAndUpdate(adminUser._id, { notifications });
-                res.status(201).send({
-                    success: true,
-                    message: 'Doctor account applied successfully'
-                });
-            }
+            const user = await userModel.findById(req.body.userId);
+            const newDoctor = new doctorModel(doctorInfo);
+            const obj = await newDoctor.save();
+            console.log(obj)
+            const adminUser = await userModel.findOne({ isAdmin: true });
+            console.log(adminUser)
+            const notifications = adminUser.notifications;
+            notifications.push({
+                type: 'apply-doctor-request',
+                message: `${user.firstName} ${user.lastName}`,
+                data: {
+                    doctorId: newDoctor._id,
+                    name: user.firstName + " " + user.lastName,
+                    onClickPath: '/admin/doctors'
+                }
+            });
+            await userModel.findByIdAndUpdate(adminUser._id, { notifications });
+            res.status(201).send({
+                success: true,
+                message: 'Doctor account applied successfully'
+            });
         }
     } catch (error) {
         console.log(error);
@@ -220,10 +210,10 @@ export const getAllDoctorController = async (req, res) => {
 
 export const bookAppointmentController = async (req, res) => {
     try {
-        const { doctorId, userId, timingSlot, doctorUserId, userName } = req.body;
+        const { doctorId, userId, timingSlot, doctorUserId, userName,textfeelling } = req.body;
         console.log(req.body);
         const newAppointment = new appointmentModel({
-            doctor: doctorId, user: userId, time: timingSlot
+            doctor: doctorId, user: userId, time: timingSlot,feel:textfeelling
         });
         console.log(newAppointment);
         await newAppointment.save();
@@ -283,7 +273,16 @@ export const bookingAvailabilityController = async (req, res) => {
 
 export const userAppointmentController = async (req, res) => {
     try {
-        const appointments = await appointmentModel.find({ user: req.body.userId });
+        const appointments = await appointmentModel.find({ user: req.body.userId })
+            .populate({
+                path: 'doctor',
+                populate: {
+                    path: 'user',
+                    model: 'user'
+                }
+            });
+        console.log(appointments);
+        console.log(appointments[0].doctor.user.name);
         res.status(200).send({
             success: true,
             message: 'User appointment fetch successfully',

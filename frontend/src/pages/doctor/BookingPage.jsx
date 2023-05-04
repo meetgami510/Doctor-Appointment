@@ -16,6 +16,7 @@ const BookingPage = ({ axiosInstance }) => {
     const params = useParams();
     const [isAvailable, setIsAvailable] = useState(false);
     const [timingSlot, setTimingSlot] = useState("");
+    const [textfeelling,setTextfeelling] = useState("");
     const morningSlots = useRef([]);
     const eveningSlots = useRef([]);
 
@@ -40,6 +41,10 @@ const BookingPage = ({ axiosInstance }) => {
         setTimingSlot(event.target.value);
         console.log(event.target.value);
     };
+
+    const feellingchange = (event) => {
+        setTextfeelling(event.target.value);
+    }
     // get user data
     useEffect(() => {
         const { token } = cookies;
@@ -92,7 +97,8 @@ const BookingPage = ({ axiosInstance }) => {
                     userName: user.name,
                     doctorUserId: doctor.user,
                     userId: user._id,
-                    timingSlot
+                    timingSlot,
+                    textfeelling
                 },
                 {
                     headers: {
@@ -198,10 +204,12 @@ const BookingPage = ({ axiosInstance }) => {
                                 Check Availability
                             </button>
                             {
-                                isAvailable &&
+                                isAvailable && <>
+                                Enter Your Feelling : <input type="TextArea" onChange={feellingchange}/> 
                                 <button className="btn btn-dark mt-2" onClick={handleBooking}>
                                     Book Now
                                 </button>
+                                </>
                             }
                         </div>
                     </div>

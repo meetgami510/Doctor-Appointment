@@ -25,6 +25,10 @@ const appointmentSchema = new Schema(
             type: String,
             required: true,
         },
+        feel: {
+            type:String,
+            required: true,
+        }
 
     },
     { timestamps: true }
