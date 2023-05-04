@@ -6,7 +6,8 @@ import axios from 'axios';
 import Layout from '../../components/Layout/Layout';
 import moment from "moment";
 import { CookiesContext } from "../../context/CookiesProvider";
-import Appointment from './Appointment';
+import Appointment from '../../components/Appointments/Appointment';
+import Appointments from '../../components/Appointments/Appointments';
 
 const DoctorAppointments = ({ axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);
@@ -41,14 +42,7 @@ const DoctorAppointments = ({ axiosInstance }) => {
     }, []);
 
     return (
-        <Layout removeCookies={removeCookies}>
-            <h1>Appointment Lists</h1>
-            {
-                appointments.map((appointment) => (
-                    <Appointment appointment={appointment} axiosInstance={axiosInstance} />
-                ))
-            }
-        </Layout>
+        <Appointments axiosInstance={axiosInstance} appointments={appointments} isDoctor={true} />
     )
 }
 
