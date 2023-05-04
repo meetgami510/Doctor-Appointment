@@ -15,11 +15,11 @@ function Appointments({ axiosInstance, appointments, isDoctor }) {
                         <th scope="col">Date</th>
                         <th scope="col">Time</th>
                         <th scope="col">Actions</th>
+                        <th scope="col" >show Details</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-
                         appointments.map((appointment) => (
                             <Appointment appointment={appointment} axiosInstance={axiosInstance} isDoctor={true} />
                         ))

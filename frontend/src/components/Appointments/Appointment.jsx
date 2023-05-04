@@ -4,9 +4,13 @@ import { message } from "antd";
 import { useDispatch } from "react-redux";
 import { hideLoading } from "../../redux/features/alertSlice";
 import '../../styles/Appointment.css'
+import ShowDetails from "./ShowDetails";
 function Appointment({ appointment, axiosInstance, isDoctor }) {
     const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
+
+    const [editModalShow, setEditModalShow] = React.useState(false);
+    const [currentItem,setCurrentItem] = React.useState(false);
     const [appointmentStatus, setAppointmentStatus] = useState(
         appointment.status
     );
@@ -63,7 +67,8 @@ function Appointment({ appointment, axiosInstance, isDoctor }) {
                         </div>
                     ) : appointmentStatus}
                 </td>
-
+                <td scope="col" style={{ cursor: "pointer", padding: "10px" }} onClick={() => { setEditModalShow(true); setCurrentItem(appointment); }} > <i style={{ fontSize: "13px", color: "#0077b6" }} class="fas fa-edit"></i> </td>
+                <ShowDetails show={editModalShow} onHide={() => setEditModalShow(false)} data={appointment} />
             </tr>
         </>
         // <div key={appointment._id}>
