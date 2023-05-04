@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
-import { CookiesContext } from '../../context/CookiesProvider';
+import { CookiesContext } from '../context/CookiesProvider';
 import { message } from 'antd';
 import { useDispatch } from 'react-redux';
-import { hideLoading } from '../../redux/features/alertSlice';
+import { hideLoading } from '../redux/features/alertSlice';
 
-function Appointment({ appointment, axiosInstance }) {
+function Appointment({ appointment, axiosInstance, isDoctor }) {
     const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
     const [appointmentStatus, setAppointmentStatus] = useState(appointment.status)
@@ -35,12 +35,21 @@ function Appointment({ appointment, axiosInstance }) {
         }
     }
 
+    const handler = () => {
+        if (isDoctor) {
+
+        } else {
+
+        }
+    }
+
     return (
         <div key={appointment._id}>
+
             <span>{appointment.user.name}</span> &nbsp;
             <span>{appointment.date}</span> &nbsp;
             <span>{appointment.time}</span> &nbsp;
-            {appointmentStatus === "pending" ? (
+            {true === isDoctor && appointmentStatus === "pending" ? (
                 <div className="d-flex">
                     <button
                         className="btn btn-success"
@@ -56,6 +65,7 @@ function Appointment({ appointment, axiosInstance }) {
                     </button>
                 </div>
             ) : appointmentStatus}
+            <button onClick={handler}>Description</button>
         </div>
     )
 }

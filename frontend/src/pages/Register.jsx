@@ -6,8 +6,8 @@ import { showLoading, hideLoading } from '../redux/features/alertSlice';
 const Register = ({ axiosInstance }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [userData, setUserData] = useState({ name: '', email: '', password: '' });
-  const { name, email, password } = userData;
+  const [userData, setUserData] = useState({ email: '', password: '', firstName: '', lastName: '', phone: '', address: '' });
+  const { email, password, firstName, lastName, phone, address } = userData;
 
   const handleInputData = (event) => {
     const { name, value } = event.target;
@@ -18,7 +18,7 @@ const Register = ({ axiosInstance }) => {
     event.preventDefault();
     try {
       dispatch(showLoading());
-      const res = await axiosInstance.post('/user/register', userData);
+      const res = await axiosInstance.post('/user/register', { user: userData });
       dispatch(hideLoading());
       if (res.data.success) {
         alert('registerd successfully!');
@@ -54,13 +54,13 @@ const Register = ({ axiosInstance }) => {
                   {/* <span className="padding-bottom--15">Sign in to your account</span>  */}
                   <form id="stripe-login" onSubmit={handleSubmit}>
                     <div className="form-group padding-bottom--24">
-                      <label htmlFor="name">Name</label>
+                      <label htmlFor="address">Address</label>
                       <input
                         type="text"
                         className="form-control"
-                        name="name"
-                        id="name"
-                        value={name}
+                        name="address"
+                        id="address"
+                        value={address}
                         onChange={handleInputData}
                         // placeholder="Your professional name here"
                         required
@@ -73,6 +73,42 @@ const Register = ({ axiosInstance }) => {
                         name="email"
                         id="email"
                         value={email}
+                        className="form-control"
+                        onChange={handleInputData}
+                        required
+                      />
+                    </div>
+                    <div className="form-group padding-bottom--24">
+                      <label htmlFor="phone">Contact No</label>
+                      <input
+                        type="text"
+                        name="phone"
+                        id="phone"
+                        value={phone}
+                        className="form-control"
+                        onChange={handleInputData}
+                        required
+                      />
+                    </div>
+                    <div className="form-group padding-bottom--24">
+                      <label htmlFor="firstName">First Name</label>
+                      <input
+                        type="text"
+                        name="firstName"
+                        id="firstName"
+                        value={firstName}
+                        className="form-control"
+                        onChange={handleInputData}
+                        required
+                      />
+                    </div>
+                    <div className="form-group padding-bottom--24">
+                      <label htmlFor="lastName">Last Name</label>
+                      <input
+                        type="text"
+                        name="lastName"
+                        id="lastName"
+                        value={lastName}
                         className="form-control"
                         onChange={handleInputData}
                         required

@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { hideLoading } from '../../redux/features/alertSlice';
-import { Table, message } from 'antd';
+import { message } from 'antd';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
 import Layout from '../../components/Layout/Layout';
-import moment from "moment";
 import { CookiesContext } from "../../context/CookiesProvider";
-import Appointment from './Appointment';
+import Appointment from '../../components/Appointment';
 
 const DoctorAppointments = ({ axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);
