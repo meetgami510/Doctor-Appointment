@@ -12,7 +12,7 @@ const DoctorList = ({ doctor }) => {
                 onClick={() => navigate(`/doctor/book-appointment/${doctor._id}`)}
             >
                 <div className="card-header">
-                    Dr. {doctor.firstName} {doctor.lastName}
+                    Dr. {doctor.user.firstName} {doctor.user.lastName}
                 </div>
                 <div className="card-body">
                     <p>
@@ -27,7 +27,10 @@ const DoctorList = ({ doctor }) => {
                     <p>
                         slots :-
                         {
-                            doctor.slots.map((val) => <span key={val}>{val}</span>)
+                            <>
+                                <span> {doctor.timeSlot.morningStart + " to " + doctor.timeSlot.morningEnd}</span> |
+                                <span> {doctor.timeSlot.eveningStart + " to " + doctor.timeSlot.eveningEnd}</span>
+                            </>
                         }
                     </p>
                 </div>

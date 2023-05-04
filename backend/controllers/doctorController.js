@@ -6,7 +6,7 @@ import userModel from "../models/userModels.js";
 export const getDoctorByIdController = async (req, res) => {
     try {
         console.log(req.body.doctorId);
-        const doctor = await doctorModel.findById({ _id: req.body.doctorId });
+        const doctor = await doctorModel.findById({ _id: req.body.doctorId }).populate("user");
         console.log(doctor);
         res.status(200).send({
             success: true,

@@ -19,7 +19,10 @@ export const loginController = async (req, res) => {
                     success: false
                 });
             } else {
-                const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+                var userType = "patient";
+                if (user.isDoctor) userType = "doctor";
+                else if (user.isAdmin) userType = "admin";
+                const token = jwt.sign({ id: user._id, userType }, process.env.JWT_SECRET, { expiresIn: '1d' });
                 return res.status(200).send({
                     message: 'Login successfully',
                     token,
@@ -192,7 +195,8 @@ export const applyDoctorController = async (req, res) => {
 
 export const getAllDoctorController = async (req, res) => {
     try {
-        const doctorList = await doctorModel.find({ status: 'approved' });
+        const doctorList = await doctorModel.find({ status: 'approved' }).populate('user');
+        console.log(doctorList);
         res.status(200).send({
             success: true,
             message: 'doctor list fetched successfully',
@@ -210,10 +214,10 @@ export const getAllDoctorController = async (req, res) => {
 
 export const bookAppointmentController = async (req, res) => {
     try {
-        const { doctorId, userId, timingSlot, doctorUserId, userName,textfeelling } = req.body;
+        const { doctorId, userId, timingSlot, doctorUserId, userName, textfeelling } = req.body;
         console.log(req.body);
         const newAppointment = new appointmentModel({
-            doctor: doctorId, user: userId, time: timingSlot,feel:textfeelling
+            doctor: doctorId, user: userId, time: timingSlot, feel: textfeelling
         });
         console.log(newAppointment);
         await newAppointment.save();
@@ -293,7 +297,7 @@ export const userAppointmentController = async (req, res) => {
         res.status(500).send({
             success: false,
             error,
-            message: 'error while booking appointment'
+            message: 'server error, Please try again'
         })
     }
 }

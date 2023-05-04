@@ -15,6 +15,7 @@ const protect = async (req, res, next) => {
                     const userdata = userModel.findOne({ _id: decode.id });
                     if (userdata) {
                         req.body.userId = decode.id;
+                        req.body.userType = decode.userType;
                         next();
                     }
                 } catch (error) {

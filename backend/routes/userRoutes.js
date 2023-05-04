@@ -13,6 +13,7 @@ import {
     userAppointmentController,
 } from "../controllers/userControllers.js";
 import protect from "../middlerwares/authMiddleware.js";
+import { getAppointmentsController } from "../controllers/commonControllers.js";
 
 // ROUTES
 
@@ -47,6 +48,6 @@ router.post("/book-appointment", protect, bookAppointmentController);
 router.post('/booking-avalibility', protect, bookingAvailabilityController);
 
 // show appointments
-router.get('/user-appointment', protect, userAppointmentController);
+router.get('/appointments', protect, getAppointmentsController);
 
 export default router;

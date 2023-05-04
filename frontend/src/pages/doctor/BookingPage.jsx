@@ -16,7 +16,7 @@ const BookingPage = ({ axiosInstance }) => {
     const params = useParams();
     const [isAvailable, setIsAvailable] = useState(false);
     const [timingSlot, setTimingSlot] = useState("");
-    const [textfeelling,setTextfeelling] = useState("");
+    const [textfeelling, setTextfeelling] = useState("");
     const morningSlots = useRef([]);
     const eveningSlots = useRef([]);
 
@@ -154,7 +154,7 @@ const BookingPage = ({ axiosInstance }) => {
                 {doctor && (
                     <div>
                         <h4>
-                            Dr.{doctor.firstName} {doctor.lastName}
+                            Dr.{doctor.user.firstName} {doctor.user.lastName}
                         </h4>
                         <h4>Fees : {doctor.feesPerCunsaltation}</h4>
                         <h4>
@@ -205,10 +205,10 @@ const BookingPage = ({ axiosInstance }) => {
                             </button>
                             {
                                 isAvailable && <>
-                                Enter Your Feelling : <input type="TextArea" onChange={feellingchange}/> 
-                                <button className="btn btn-dark mt-2" onClick={handleBooking}>
-                                    Book Now
-                                </button>
+                                    Enter Your Feelling : <input type="TextArea" onChange={feellingchange} />
+                                    <button className="btn btn-dark mt-2" onClick={handleBooking}>
+                                        Book Now
+                                    </button>
                                 </>
                             }
                         </div>

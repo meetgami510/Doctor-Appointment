@@ -16,7 +16,7 @@ const DoctorAppointments = ({ axiosInstance }) => {
         const fetchData = async () => {
             const { token } = cookies;
             try {
-                const res = await axiosInstance.get('/doctor/doctor-appointments',
+                const res = await axiosInstance.get('/doctor/appointments',
                     {
                         headers: {
                             authorization: 'Bearer ' + token
