@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@reduxjs/toolkit": "^1.9.4",
+    "@zegocloud/zego-uikit-prebuilt": "^1.8.1",
     "antd": "^5.4.6",
     "axios": "^1.3.5",
     "moment": "^2.29.4",

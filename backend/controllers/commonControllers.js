@@ -3,6 +3,7 @@ import doctorModels from "../models/doctorModels.js";
 
 export const getAppointmentsController = async (req, res) => {
     try {
+        console.log('hello')
         if ("doctor" === req.body.userType) {
             const doctor = await doctorModels.findOne({ user: req.body.userId });
             console.log(doctor);
@@ -10,7 +11,6 @@ export const getAppointmentsController = async (req, res) => {
                 const appointments = await appointmentModel
                     .find({ doctor: doctor._id })
                     .populate({ path: 'user', select: '-isAdmin -isDoctor -notifications -seennotifications -password' });
-
                 console.log(appointments);
                 return res.status(200).send({
                     success: true,
@@ -27,7 +27,7 @@ export const getAppointmentsController = async (req, res) => {
                         model: 'user'
                     }
                 });
-            res.status(200).send({
+            return res.status(200).send({
                 success: true,
                 message: 'User appointment fetch successfully',
                 appointments

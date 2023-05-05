@@ -4,8 +4,9 @@ import { hideLoading } from '../redux/features/alertSlice';
 import { message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from '../context/CookiesProvider';
+import Appointments from '../components/Appointments/Appointments';
 
-const Appointments = ({ axiosInstance }) => {
+const UserAppointments = ({ axiosInstance }) => {
     const [appointments, setAppointments] = useState([]);
     const { removeCookies, cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
@@ -13,7 +14,7 @@ const Appointments = ({ axiosInstance }) => {
         const fetchData = async () => {
             const { token } = cookies;
             try {
-                const res = await axiosInstance.get('/user/appointment',
+                const res = await axiosInstance.get('/user/appointments',
                     {
                         headers: {
                             authorization: 'Bearer ' + token
@@ -37,10 +38,10 @@ const Appointments = ({ axiosInstance }) => {
     }, []);
 
     return (
-        <Layout removeCookies={removeCookies}>
-            <Appointments axiosInstance={axiosInstance} appointments={appointments} isDoctor={false} />
-        </Layout>
+
+        <Appointments axiosInstance={axiosInstance} appointments={appointments} isDoctor={false} />
+
     )
 }
 
-export default Appointments
+export default UserAppointments

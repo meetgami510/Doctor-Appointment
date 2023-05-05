@@ -214,13 +214,14 @@ export const getAllDoctorController = async (req, res) => {
 
 export const bookAppointmentController = async (req, res) => {
     try {
-        const { doctorId, userId, timingSlot, doctorUserId, userName, textfeelling } = req.body;
+        const { doctorId, userId, timingSlot, doctorUserId, userName, textfeelling, meetingMode } = req.body;
         console.log(req.body);
         const newAppointment = new appointmentModel({
-            doctor: doctorId, user: userId, time: timingSlot, feel: textfeelling
+            doctor: doctorId, user: userId, time: timingSlot, feel: textfeelling, meetingMode
         });
         console.log(newAppointment);
-        await newAppointment.save();
+        const temp = await newAppointment.save();
+        console.log(temp)
         console.log(doctorUserId)
         const doctorData = await userModel.findOne({ _id: doctorUserId });
         doctorData.notifications.push({
@@ -246,7 +247,6 @@ export const bookAppointmentController = async (req, res) => {
 export const bookingAvailabilityController = async (req, res) => {
     try {
         const { doctorId, timingSlot } = req.body;
-        // console.log(req.body)
         const date = moment().add(1, 'day').toDate();
         const appointment = await appointmentModel.findOne({
             doctor: doctorId,
@@ -256,7 +256,7 @@ export const bookingAvailabilityController = async (req, res) => {
         if (appointment) {
             return res.status(200).send({
                 message: 'appointment on this time is already booked',
-                success: true
+                success: false
             });
         } else {
             return res.status(200).send({

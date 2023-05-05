@@ -5,6 +5,7 @@ import { CookiesContext } from '../../context/CookiesProvider';
 
 function Appointments({ axiosInstance, appointments, isDoctor }) {
     const { removeCookies, cookies } = useContext(CookiesContext);
+    console.log(appointments)
     return (
         <Layout removeCookies={removeCookies}>
             <h1>Appointment Lists</h1>
@@ -14,6 +15,7 @@ function Appointments({ axiosInstance, appointments, isDoctor }) {
                         <th scope="col" >Name</th>
                         <th scope="col">Date</th>
                         <th scope="col">Time</th>
+                        <th schope="col">Meeting Mode</th>
                         <th scope="col">Actions</th>
                         <th scope="col" >show Details</th>
                     </tr>
@@ -21,7 +23,7 @@ function Appointments({ axiosInstance, appointments, isDoctor }) {
                 <tbody>
                     {
                         appointments.map((appointment) => (
-                            <Appointment appointment={appointment} axiosInstance={axiosInstance} isDoctor={true} />
+                            <Appointment appointment={appointment} axiosInstance={axiosInstance} isDoctor={isDoctor} />
                         ))
                     }
                 </tbody>

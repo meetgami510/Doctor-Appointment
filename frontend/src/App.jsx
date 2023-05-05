@@ -18,8 +18,10 @@ import Users from "./pages/admin/Users"
 import Doctors from "./pages/admin/Doctors"
 import BookingPage from "./pages/doctor/BookingPage"
 import Profile from "./pages/doctor/Profile";
-import Appointments from "./pages/Appointments";
+import Appointments from "./pages/UserAppointments";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments"
+import UserAppointments from "./pages/UserAppointments";
+import VideoMeeting from "./pages/VideoMeeting";
 function App() {
 
   const axiosInstance = axios.create({ baseURL: 'http://localhost:8080/api' });
@@ -56,7 +58,7 @@ function App() {
             path="/appointments"
             element={
               <ProtectedRoute axiosInstance={axiosInstance} >
-                <Appointments axiosInstance={axiosInstance} />
+                <UserAppointments axiosInstance={axiosInstance} />
               </ProtectedRoute>
             }
           />
@@ -110,10 +112,18 @@ function App() {
             }
           />
           <Route
+            path="/video-meeting/:roomId"
+            element={
+              <ProtectedRoute axiosInstance={axiosInstance}>
+                <VideoMeeting axiosInstance={axiosInstance} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/doctor-appointments"
             element={
               <ProtectedRoute axiosInstance={axiosInstance}>
-                <DoctorAppointments  axiosInstance={axiosInstance}/>
+                <DoctorAppointments axiosInstance={axiosInstance} />
               </ProtectedRoute>
             }
           />

@@ -1,7 +1,7 @@
 import appointmentModel from "../models/appointmentModels.js";
 import doctorModel from "../models/doctorModels.js";
 import userModel from "../models/userModels.js";
-
+import { v4 as uuidv4 } from 'uuid';
 
 export const getDoctorByIdController = async (req, res) => {
     try {
@@ -104,8 +104,11 @@ export const updateAppointmentStatusController = async (req, res) => {
     try {
         console.log("update");
         const { appointmentId, status } = req.body;
-        const appointment = await appointmentModel.findByIdAndUpdate(appointmentId, { status });
-        //console.log(appointment);
+
+        const meetingLink = `http://localhost:3000/video-meeting/${uuidv4()}`; // generates a unique ID
+
+        const appointment = await appointmentModel.findByIdAndUpdate(appointmentId, { status, meetingLink });
+        console.log(appointment)
         const user = await userModel.findOne({ _id: appointment.user });
         user.notifications.push({
             type: "status-update",

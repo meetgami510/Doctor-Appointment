@@ -3,20 +3,30 @@ import Layout from '../../components/Layout/Layout'
 import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CookiesContext } from "../../context/CookiesProvider";
 import { message } from 'antd';
+import moment from 'moment';
 
 const BookingPage = ({ axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);
     const [doctor, setDoctor] = useState(null);
     const { user } = useSelector(state => state.user);
+    const navigate = useNavigate();
+    console.log(moment().add(1, 'day').format('YYYY-MM-DD'))
     console.log(user)
     const dispatch = useDispatch();
     const params = useParams();
-    const [isAvailable, setIsAvailable] = useState(false);
-    const [timingSlot, setTimingSlot] = useState("");
-    const [textfeelling, setTextfeelling] = useState("");
+
+    const [appointmentInfo, setAppointmentInfo] = useState({
+        isAvailable: false,
+        timingSlot: "",
+        meetingMode: "offline",
+        textfeelling: ""
+    });
+
+    const { isAvailable, timingSlot, meetingMode, textfeelling } = appointmentInfo;
+
     const morningSlots = useRef([]);
     const eveningSlots = useRef([]);
 
@@ -35,16 +45,13 @@ const BookingPage = ({ axiosInstance }) => {
         return timeSlots;
     }
 
-
-
     const handleChange = (event) => {
-        setTimingSlot(event.target.value);
-        console.log(event.target.value);
-    };
-
-    const feellingchange = (event) => {
-        setTextfeelling(event.target.value);
+        const { name, value } = event.target;
+        console.log(event.target)
+        console.log(event.target.value)
+        setAppointmentInfo(prevState => ({ ...prevState, [name]: value }))
     }
+
     // get user data
     useEffect(() => {
         const { token } = cookies;
@@ -95,10 +102,11 @@ const BookingPage = ({ axiosInstance }) => {
                 {
                     doctorId: params.doctorId,
                     userName: user.name,
-                    doctorUserId: doctor.user,
+                    doctorUserId: doctor.user._id,
                     userId: user._id,
                     timingSlot,
-                    textfeelling
+                    textfeelling,
+                    meetingMode
                 },
                 {
                     headers: {
@@ -109,8 +117,7 @@ const BookingPage = ({ axiosInstance }) => {
             dispatch(hideLoading());
             if (res.data.success) {
                 message.success(res.data.message);
-                setDoctor(res.data.doctor);
-                console.log(res.data.doctor);
+                navigate('/')
             } else {
                 message.error(res.data.message);
             }
@@ -135,7 +142,7 @@ const BookingPage = ({ axiosInstance }) => {
             );
             dispatch(hideLoading());
             if (res.data.success) {
-                setIsAvailable(true);
+                setAppointmentInfo(prevState => ({ ...prevState, isAvailable: true }));
                 message.success(res.data.message);
             } else {
                 message.error(res.data.message);
@@ -163,29 +170,8 @@ const BookingPage = ({ axiosInstance }) => {
                         </h4>
                         <div className="d-flex flex-column w-50">
                             <h4>you are booking appointment for tomorrow</h4>
-                            {/* <DatePicker
-                                className="m-2"
-                                format="DD-MM-YYYY"
-                                onChange={
-                                    (value) => {
-                                        console.log(moment(value).format("DD-MM-YYYY"));
-                                        setIsAvailable(false);
-                                        setDate(moment(value).format("DD-MM-YYYY"))
-                                    }
-                                }
-                            /> */}
-                            {/* <TimePicker
-                                format="HH:mm"
-                                className="m-2"
-                                onChange={
-                                    (value) => {
-                                        setIsAvailable(false);
-                                        setTime(moment(value).format("HH:mm"));
-                                    }
-                                }
-                            /> */}
                             <div>
-                                <select value={timingSlot} onChange={handleChange}>
+                                <select name="timingSlot" value={timingSlot} onChange={handleChange}>
                                     <option value="">-- Select a time --</option>
                                     {morningSlots.current.map((time) => (
                                         <option key={time} value={time}>
@@ -200,12 +186,18 @@ const BookingPage = ({ axiosInstance }) => {
                                 </select>
                                 <p>You selected: {timingSlot}</p>
                             </div>
+                            <div>
+                                <select name="meetingMode" onChange={handleChange} value={meetingMode}>
+                                    <option value="online">Virtual Meeting</option>
+                                    <option value="offline">Physical Meeting</option>
+                                </select>
+                            </div>
                             <button className="btn btn-primary mt-2" onClick={checkAvailability}>
                                 Check Availability
                             </button>
                             {
                                 isAvailable && <>
-                                    Enter Your Feelling : <input type="TextArea" onChange={feellingchange} />
+                                    Enter Your Feelling : <input name="textfeelling" type="TextArea" onChange={handleChange} />
                                     <button className="btn btn-dark mt-2" onClick={handleBooking}>
                                         Book Now
                                     </button>

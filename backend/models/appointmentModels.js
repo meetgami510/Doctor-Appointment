@@ -15,7 +15,10 @@ const appointmentSchema = new Schema(
         },
         date: {
             type: Date,
-            default: moment().add(1, 'day').toDate()
+            default: () => moment().add(1, 'day').toDate(),
+            get: function (value) {
+                return moment(value).format('YYYY-MM-DD');
+            },
         },
         status: {
             type: String,
@@ -26,10 +29,16 @@ const appointmentSchema = new Schema(
             required: true,
         },
         feel: {
-            type:String,
+            type: String,
             required: true,
+        },
+        meetingMode: {
+            type: String,
+            required: true
+        },
+        meetingLink: {
+            type: String,
         }
-
     },
     { timestamps: true }
 );
