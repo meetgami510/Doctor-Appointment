@@ -19,7 +19,8 @@ export const getAllUsersController = async (req, res) => {
 
 export const getAllDoctorsController = async (req, res) => {
     try {
-        const doctors = await doctorModel.find({}, { password: 0 });
+        const doctors = await doctorModel.find({}, { password: 0 }).populate("user");
+        console.log(doctors)
         res.status(200).send({
             success: true,
             message: 'users data',

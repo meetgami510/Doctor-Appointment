@@ -35,6 +35,11 @@ const doctorSchema = new mongoose.Schema(
             morningEnd: { type: String, required: true },
             eveningStart: { type: String, required: true },
             eveningEnd: { type: String, required: true },
+        },
+        pdf :{
+            filename : String,
+            contentType: String,
+            data: Buffer
         }
     },
     { timestamps: true }

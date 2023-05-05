@@ -152,3 +152,23 @@ export const sloatbookingController = async (req, res) => {
         })
     }
 }
+
+export const uploadDocumentpdfController = async(req,res) => {
+    try{
+        const doctor = await doctorModel.findOne({ user: req.body.userId });
+        if(!doctor) {
+            return res.status(404).send({
+                success: false,
+                error,
+                message: 'Doctor is not'
+            });
+        }
+    }catch(error){
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'error while upload file'
+        })       
+    }
+}

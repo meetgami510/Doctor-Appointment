@@ -5,6 +5,7 @@ import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { Table, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
+import AllDoctors from '../../components/DoctorAppointments/AllDoctors';
 
 
 const Doctors = ({ axiosInstance }) => {
@@ -66,44 +67,42 @@ const Doctors = ({ axiosInstance }) => {
         //eslint-disable-next-line
     }, []);
 
-    const columns = [
-        {
-            title: "Name",
-            dataIndex: "name",
-            render: (text, record) => (
-                <span>
-                    {record.firstName} {record.lastName}
-                </span>
-            ),
-        },
-        {
-            title: "Status",
-            dataIndex: "status",
-        },
-        {
-            title: "phone",
-            dataIndex: "phone",
-        },
-        {
-            title: "Actions",
-            dataIndex: "actions",
-            render: (text, record) => (
-                <div className="d-flex">
-                    {record.status === "pending" ? (
-                        <button className="btn btn-success" onClick={() => { handleAccountStats(record._id, 'approved') }}>Approve</button>
-                    ) : (
-                        <button className="btn btn-danger" onClick={() => { handleAccountStats(record._id, 'pending') }}>Reject</button>
-                    )}
-                </div>
-            ),
-        },
-    ];
+    // const columns = [
+    //     {
+    //         title: "Name",
+    //         dataIndex: "name",
+    //         render: (text, record) => (
+    //             <span>
+    //                 {record.firstName} {record.lastName}
+    //             </span>
+    //         ),
+    //     },
+    //     {
+    //         title: "Status",
+    //         dataIndex: "status",
+    //     },
+    //     {
+    //         title: "phone",
+    //         dataIndex: "phone",
+    //     },
+    //     {
+    //         title: "Actions",
+    //         dataIndex: "actions",
+    //         render: (text, record) => (
+    //             <div className="d-flex">
+    //                 {record.status === "pending" ? (
+    //                     <button className="btn btn-success" onClick={() => { handleAccountStats(record._id, 'approved') }}>Approve</button>
+    //                 ) : (
+    //                     <button className="btn btn-danger" onClick={() => { handleAccountStats(record._id, 'pending') }}>Reject</button>
+    //                 )}
+    //             </div>
+    //         ),
+    //     },
+    // ];
 
     return (
-        <Layout removeCookies={removeCookies} >
-            <h1 className="text-center m-3">All Doctors</h1>
-            <Table columns={columns} dataSource={doctorList} />
-        </Layout>
+    
+        <AllDoctors axiosInstance={axiosInstance} doctorList={doctorList} />
     )
 }
 

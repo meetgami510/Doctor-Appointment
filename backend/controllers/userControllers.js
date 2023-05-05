@@ -147,7 +147,7 @@ export const applyDoctorController = async (req, res) => {
     try {
         console.log(req.body);
         const doctorInfo = req.body;
-
+        console.log(req.body);
         const checkDoctor = await doctorModel.findOne({ user: req.body.userId });
         if (checkDoctor) {
             var message = '';
