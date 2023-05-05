@@ -1,0 +1,86 @@
+
+.header {
+    text-align: center;
+}
+
+.firstname {
+  display: inline-block;
+  font-weight: bold;
+  color: #333;
+}
+.doctor-name {
+  display: inline-block;
+  margin-left: 5px; /* optional */
+}
+
+.info-container {
+  background-color: #f2f2f2;
+  padding: 10px;
+  justify-content: center;
+  margin: 0 auto;
+  text-align: center;
+  width: 30rem;
+  border-radius: 2rem;
+}
+
+.sloat-time, .sloat-option, .select-sloat,.select-sloat1 {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px; 
+}
+
+.sloat-option {
+  width: 10rem;
+  height: 2rem
+}
+.select-sloat1 {
+  font-size: large;
+  color: black;
+  margin-left: 1rem;
+}
+
+.booking-form{
+  background-color: #f2f2f2;
+  padding: 10px;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+  width: 50rem;
+  border-radius: 2rem;
+  
+} 
+
+.meet-mode, .mode-select {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px; 
+  margin-top: 1rem;
+  text-align: center;
+  align-items: center;
+}
+
+.meet-mode {
+  width: 10rem;
+  height:2rem
+}
+.feeling-textarea , .feeling-label {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px; 
+  margin-top: 1rem;
+ 
+}
+
+.mode-butn {
+  margin-left: 5rem;
+}
+
+.feeling-textarea {
+  width: 20rem;
+}
+
+.final-btn{
+  margin-top: 2rem;
+}
+
+  
