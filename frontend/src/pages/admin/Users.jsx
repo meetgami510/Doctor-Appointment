@@ -1,10 +1,11 @@
 import React, {useContext, useEffect, useState } from 'react';
 import Layout from '../../components/Layout/Layout';
 import axios from 'axios';
-import { hideLoading } from '../../redux/features/alertSlice';
+import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { Table, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
+import { getAllguestuserData } from '../../components/Action/admin/getAllusersdata';
 
 const Users = ({ axiosInstance }) => {
     const {removeCookies, cookies } = useContext(CookiesContext);
@@ -14,25 +15,14 @@ const Users = ({ axiosInstance }) => {
     useEffect(() => {
         const { token } = cookies;
         const fetchData = async () => {
-            try {
-                const res = await axiosInstance.get('/admin/get-all-users', 
-                // {
-                //     headers: {
-                //         Authorization: 'Bearer ' + token
-                //     }
-                // }
-                );
-                dispatch(hideLoading());
-                if (res.data.success) {
-                    console.log(res.data.users);
-                    setUserList(res.data.users);
-                } else {
-                    message.error(res.data.message);
-                }
-            } catch (error) {
-                console.log(error);
-                dispatch(hideLoading());
-                message.error('some thing went wrong');
+            dispatch(showLoading());
+            const responce = await getAllguestuserData(token);
+            dispatch(hideLoading());
+            if (responce.type === 'data') {
+                message.success(responce.message);
+                setUserList(responce.guestList);
+            } else {
+                message.error(responce.type);
             }
         }
         fetchData();

@@ -6,6 +6,8 @@ import { Table, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
 import AllDoctors from '../../components/DoctorAppointments/AllDoctors';
+import { getAlldoctorsData } from '../../components/Action/admin/getAllusersdata';
+import { doctorStatus } from '../../components/Action/admin/usersStatus';
 
 
 const Doctors = ({ axiosInstance }) => {
@@ -18,21 +20,14 @@ const Doctors = ({ axiosInstance }) => {
         const { token } = cookies;
         try {
             dispatch(showLoading());
-            const res = await axiosInstance.post('/admin/change-account-status', {
-                doctorId,
-                status
-            }, {
-                headers: {
-                    Authorization: 'Bearer ' + token
-                }
-            });
+            const responce = await doctorStatus(token,doctorId,status);
+
             dispatch(hideLoading());
-            if (res.data.success) {
-                message.success(res.data.message);
-                console.log(res.data.user)
+            if (responce.type === 'data') {
+                message.success(responce.message);
                 window.location.reload();
             } else {
-                message.error(res.data.message);
+                message.error(responce.message);
             }
         } catch (error) {
             console.log(error);
@@ -45,17 +40,16 @@ const Doctors = ({ axiosInstance }) => {
         const { token } = cookies;
         const fetchData = async () => {
             try {
-                const res = await axiosInstance.get('/admin/get-all-doctors', {
-                    headers: {
-                        Authorization: 'Bearer ' + token
-                    }
-                });
+                dispatch(showLoading());
+
+                const responce = await getAlldoctorsData(token);
+                
                 dispatch(hideLoading());
-                if (res.data.success) {
-                    console.log(res.data.doctors);
-                    setDoctorList(res.data.doctors);
+                if (responce.type === 'data') { 
+                    message.success(responce.message);
+                    setDoctorList(responce.doctorList);
                 } else {
-                    message.error(res.data.message);
+                    message.error(responce.message);
                 }
             } catch (error) {
                 console.log(error);
@@ -66,39 +60,6 @@ const Doctors = ({ axiosInstance }) => {
         fetchData();
         //eslint-disable-next-line
     }, []);
-
-    // const columns = [
-    //     {
-    //         title: "Name",
-    //         dataIndex: "name",
-    //         render: (text, record) => (
-    //             <span>
-    //                 {record.firstName} {record.lastName}
-    //             </span>
-    //         ),
-    //     },
-    //     {
-    //         title: "Status",
-    //         dataIndex: "status",
-    //     },
-    //     {
-    //         title: "phone",
-    //         dataIndex: "phone",
-    //     },
-    //     {
-    //         title: "Actions",
-    //         dataIndex: "actions",
-    //         render: (text, record) => (
-    //             <div className="d-flex">
-    //                 {record.status === "pending" ? (
-    //                     <button className="btn btn-success" onClick={() => { handleAccountStats(record._id, 'approved') }}>Approve</button>
-    //                 ) : (
-    //                     <button className="btn btn-danger" onClick={() => { handleAccountStats(record._id, 'pending') }}>Reject</button>
-    //                 )}
-    //             </div>
-    //         ),
-    //     },
-    // ];
 
     return (
     

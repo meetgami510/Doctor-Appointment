@@ -6,7 +6,7 @@ import { changeAccountStatusController, getAllDoctorsController, getAllUsersCont
 
 
 // All Guest User || get
-router.get('/get-all-users', getAllUsersController);
+router.get('/get-all-users',protect, getAllUsersController);
 
 // All Doctor || get
 router.get('/get-all-doctors', protect, getAllDoctorsController);
