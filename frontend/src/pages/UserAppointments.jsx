@@ -5,6 +5,7 @@ import { message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from '../context/CookiesProvider';
 import Appointments from '../components/Appointments/Appointments';
+import { getUserAppointments } from '../components/Action/users/bookingappointment';
 
 const UserAppointments = ({ axiosInstance }) => {
     const [appointments, setAppointments] = useState([]);
@@ -14,18 +15,14 @@ const UserAppointments = ({ axiosInstance }) => {
         const fetchData = async () => {
             const { token } = cookies;
             try {
-                const res = await axiosInstance.get('/user/appointments',
-                    {
-                        headers: {
-                            authorization: 'Bearer ' + token
-                        }
-                    });
-                if (res.data.success) {
-                    message.success(res.data.message);
-                    console.log(res.data.appointments);
-                    setAppointments(res.data.appointments)
+                const responce = await getUserAppointments(token);
+
+                if (responce.type === 'data') {
+                    message.success(responce.message);
+                    console.log(responce.appointmentsList);
+                    setAppointments(responce.appointmentsList)
                 } else {
-                    message.error(res.data.message);
+                    message.error(responce.message);
                 }
             } catch (error) {
                 console.log(error);

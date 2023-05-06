@@ -5,6 +5,7 @@ import { Row, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import DoctorList from '../components/DoctorList';
 import { CookiesContext } from '../context/CookiesProvider';
+import { getAlldoctor } from '../components/Action/users/getGuestUsers';
 
 const Home = ({ axiosInstance }) => {
     const { cookies } = useContext(CookiesContext);
@@ -17,21 +18,15 @@ const Home = ({ axiosInstance }) => {
         const getDoctorData = async () => {
             try {
                 dispatch(showLoading());
-                const res = await axiosInstance.get(
-                    '/user/getAllDoctor',
-                    {
-                        headers: {
-                            authorization: 'Bearer ' + token
-                        }
-                    }
-                );
+                const responce = await getAlldoctor(token);
+
                 dispatch(hideLoading());
-                if (res.data.success) {
-                    message.success(res.data.message);
-                    console.log(res.data.doctorList)
-                    setDoctors(res.data.doctorList);
+                if (responce.type === 'data') {
+                    message.success(responce.message);
+                    console.log(responce.doctorList)
+                    setDoctors(responce.doctorList);
                 } else {
-                    message.error(res.data.message);
+                    message.error(responce.message);
                 }
             } catch (error) {
                 console.log(error);

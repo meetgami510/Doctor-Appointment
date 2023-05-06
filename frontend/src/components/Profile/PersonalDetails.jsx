@@ -4,6 +4,7 @@ import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { CookiesContext } from '../../context/CookiesProvider';
 import { setUser } from '../../redux/features/userSlice';
+import { updatePersonalData } from '../Action/users/getGuestUsers';
 
 function PersonalDetails({ axiosInstance }) {
     const { cookies } = useContext(CookiesContext);
@@ -13,28 +14,18 @@ function PersonalDetails({ axiosInstance }) {
         const { token } = cookies;
         try {
             dispatch(showLoading());
-            console.log(values);
-            const res = await axiosInstance.post(
-                "/user/update-personal-details",
-                {
-                    ...values,
-                },
-                {
-                    headers: {
-                        authorization: 'Bearer ' + token
-                    }
-                }
-            );
-            console.log(res)
+
+            const responce = await updatePersonalData(token,values);
+
             dispatch(hideLoading());
-            if (!res.data.success) {
-                message.error(res.data.message);
+            
+            if (responce.type === 'data') {
+                message.success(responce.message);
+                dispatch(setUser(responce.userList));
             } else {
-                message.success(res.data.message);
-                console.log(res.data.user)
-                dispatch(setUser(res.data.user));
+                message.error(responce.message);
             }
-            console.log(res.data);
+            
         } catch (error) {
             console.log(error);
             dispatch(hideLoading());

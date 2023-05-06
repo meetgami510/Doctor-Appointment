@@ -6,6 +6,7 @@ import { hideLoading, showLoading } from '../redux/features/alertSlice';
 import { setUser } from '../redux/features/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { CookiesContext } from '../context/CookiesProvider';
+import { getUserData } from './Action/users/getGuestUsers';
 
 const ProtectedRoute = ({ children, axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);
@@ -19,17 +20,10 @@ const ProtectedRoute = ({ children, axiosInstance }) => {
             try {
                 if (token) {
                     dispatch(showLoading());
-                    console.log('we are here')
-                    const res = await axiosInstance.get('/user/getUserData',
-                        {
-                            headers: {
-                                Authorization: 'Bearer ' + token
-                            }
-                        }
-                    )
+                    const responce = await getUserData(token);
                     dispatch(hideLoading());
-                    if (res.data.success) {
-                        dispatch(setUser(res.data.user));
+                    if (responce.type === 'data') {
+                        dispatch(setUser(responce.userList));
                     } else {
                         removeCookies('token');
                         navigate('/login');

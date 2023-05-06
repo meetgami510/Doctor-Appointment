@@ -7,6 +7,7 @@ import Layout from '../components/Layout/Layout';
 import { useNavigate } from 'react-router-dom';
 import { setUser } from '../redux/features/userSlice';
 import { CookiesContext } from '../context/CookiesProvider';
+import { deletAllNotifications, getAllNotifications } from '../components/Action/users/bookingappointment';
 
 const Notification = ({ axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);
@@ -22,20 +23,17 @@ const Notification = ({ axiosInstance }) => {
         try {
             const { token } = cookies;
             dispatch(showLoading());
-            const res = await axiosInstance.get('/user/get-all-notification',
-                {
-                    headers: {
-                        Authorization: 'Bearer ' + token
-                    }
-                }
-            );
+
+            const responce = await getAllNotifications(token);
+
             dispatch(hideLoading());
-            if (res.data.success) {
-                message.success(res.data.message);
-                console.log(res.data.user)
-                dispatch(setUser(res.data.user))
+
+            if (responce.type === 'data') {
+                message.success(responce.message);
+                console.log(responce.userList)
+                dispatch(setUser(responce.userList))
             } else {
-                message.error(res.data.message);
+                message.error(responce.message);
             }
         } catch (error) {
             console.log(error);
@@ -48,18 +46,14 @@ const Notification = ({ axiosInstance }) => {
         try {
             const { token } = cookies;
             dispatch(showLoading());
-            const res = await axiosInstance.delete('/user/delete-all-notification', {
-                headers: {
-                    Authorization: 'Bearer ' + token
-                }
-            });
+            const responce = await deletAllNotifications(token);
             dispatch(hideLoading());
-            if (res.data.success) {
-                message.success(res.data.message);
-                console.log(res.data.user)
-                dispatch(setUser(res.data.user))
+            if (responce.type === 'data') {
+                message.success(responce.message);
+                console.log(responce.userList)
+                dispatch(setUser(responce.userList))
             } else {
-                message.error(res.data.message);
+                message.error(responce.message);
             }
         } catch (error) {
             console.log(error);

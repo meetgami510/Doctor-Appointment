@@ -8,6 +8,7 @@ import { CookiesContext } from "../../context/CookiesProvider";
 import { message } from "antd";
 import moment from "moment";
 import { getdoctorthroughid } from "../../components/Action/doctors/getdoctorInfo";
+import { chechbookingAvalability, userbooking } from "../../components/Action/users/bookingappointment";
 
 const BookingPage = ({ axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);
@@ -50,6 +51,7 @@ const BookingPage = ({ axiosInstance }) => {
                 const responce = await getdoctorthroughid(token,params);
                 
                 dispatch(hideLoading());
+                
                 if (responce.type === 'data') {
                     message.success(responce.message);
                     setDoctor(responce.doctorList);
@@ -82,30 +84,16 @@ const BookingPage = ({ axiosInstance }) => {
                 return alert("date and time is required");
             }
             dispatch(showLoading());
-            console.log(textfeelling)
-            const res = await axiosInstance.post(
-                "/user/book-appointment",
-                {
-                    doctorId: params.doctorId,
-                    userName: user.name,
-                    doctorUserId: doctor.user._id,
-                    userId: user._id,
-                    timingSlot,
-                    textfeelling,
-                    meetingMode,
-                },
-                {
-                    headers: {
-                        authorization: "Bearer " + token,
-                    },
-                }
-            );
+
+            const responce = await userbooking(token,params,user,doctor,timingSlot,textfeelling,meetingMode);
+
             dispatch(hideLoading());
-            if (res.data.success) {
-                message.success(res.data.message);
+
+            if (responce.type === 'data') {
+                message.success(responce.message);
                 navigate("/");
             } else {
-                message.error(res.data.message);
+                message.error(responce.message);
             }
         } catch (error) {
             console.log(error);
@@ -122,24 +110,18 @@ const BookingPage = ({ axiosInstance }) => {
         const { token } = cookies;
         try {
             dispatch(showLoading());
-            const res = await axiosInstance.post(
-                "/user/booking-avalibility",
-                { doctorId: params.doctorId, timingSlot },
-                {
-                    headers: {
-                        authorization: "Bearer " + token,
-                    },
-                }
-            );
+
+            const responce = await chechbookingAvalability(token ,params,timingSlot)
+
             dispatch(hideLoading());
-            if (res.data.success) {
+            if (responce.type === 'data') {
                 setAppointmentInfo((prevState) => ({
                     ...prevState,
                     isAvailable: true,
                 }));
-                message.success(res.data.message);
+                message.success(responce.message);
             } else {
-                message.error(res.data.message);
+                message.error(responce.message);
             }
         } catch (error) {
             console.log(error);
