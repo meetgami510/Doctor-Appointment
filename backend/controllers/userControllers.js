@@ -215,14 +215,18 @@ export const getAllDoctorController = async (req, res) => {
 export const bookAppointmentController = async (req, res) => {
     try {
         const { doctorId, userId, timingSlot, doctorUserId, userName, textfeelling, meetingMode } = req.body;
-        console.log(req.body);
+        const date = moment().add(1, 'day').toDate().toLocaleDateString();
+        console.log(date)
+        if ("" === textfeelling) {
+            return res.status(200).send({
+                success: false,
+                message: 'Please enter feeling'
+            })
+        }
         const newAppointment = new appointmentModel({
-            doctor: doctorId, user: userId, time: timingSlot, feel: textfeelling, meetingMode
+            doctor: doctorId, user: userId, time: timingSlot, feel: textfeelling, meetingMode, date
         });
-        console.log(newAppointment);
         const temp = await newAppointment.save();
-        console.log(temp)
-        console.log(doctorUserId)
         const doctorData = await userModel.findOne({ _id: doctorUserId });
         doctorData.notifications.push({
             type: 'New-Appointment-request',
@@ -247,10 +251,19 @@ export const bookAppointmentController = async (req, res) => {
 export const bookingAvailabilityController = async (req, res) => {
     try {
         const { doctorId, timingSlot } = req.body;
-        const date = moment().add(1, 'day').toDate();
+        if ("" === timingSlot) {
+            return res.status(200).send({
+                message: 'please give time slot value',
+                success: false,
+            });
+        }
+        const date = moment().add(1, 'day').toDate().toLocaleDateString();
+        console.log(date);
+        console.log(timingSlot);
         const appointment = await appointmentModel.findOne({
             doctor: doctorId,
-            time: timingSlot
+            time: timingSlot,
+            date
         });
         console.log(appointment)
         if (appointment) {
@@ -298,6 +311,30 @@ export const userAppointmentController = async (req, res) => {
             success: false,
             error,
             message: 'server error, Please try again'
+        })
+    }
+}
+
+export const updatePersonalDetails = async (req, res) => {
+    try {
+        console.log(req.body);
+        const user = await userModel.findByIdAndUpdate(
+            req.body.userId,
+            req.body,
+            { new: true }
+        );
+        console.log(user)
+        res.status(200).send({
+            success: true,
+            message: 'personal details update successfully',
+            user
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'personal details update issue'
         })
     }
 }

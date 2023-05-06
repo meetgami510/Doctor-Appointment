@@ -58,6 +58,7 @@ const Layout = ({ children }) => {
                     <div className="content">
                         <div className="header">
                             <div className="header-content" style={{ cursor: 'pointer' }}>
+                                <Link to="/profile">{user?.firstName + " " + user?.lastName}</Link>
                                 <Badge
                                     count={user && user.notifications.length}
                                     onClick={() => {
@@ -65,7 +66,7 @@ const Layout = ({ children }) => {
                                     }}>
                                     <i className="fa-solid fa-bell"></i>
                                 </Badge>
-                                <Link to="/profile">{user?.name}</Link>
+
                             </div>
                         </div>
                         <div className="body">

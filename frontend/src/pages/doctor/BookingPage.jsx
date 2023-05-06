@@ -31,30 +31,6 @@ const BookingPage = ({ axiosInstance }) => {
     const morningSlots = useRef([]);
     const eveningSlots = useRef([]);
 
-    const arr = [
-        "09:00",
-        "09:30",
-        "10:00",
-        "10:30",
-        "11:00",
-        "11:30",
-        "12:00",
-        "12:30",
-    ];
-
-    function generateTimeSlots(start, end) {
-        let timeSlots = [];
-        let hour = parseInt(start);
-        let minute = "00";
-        while (hour < parseInt(end)) {
-            timeSlots.push(hour + ":" + minute);
-            minute = minute === "00" ? "30" : "00";
-            if (minute === "00") hour++;
-        }
-        timeSlots.push(end + ":00");
-        return timeSlots;
-    }
-
     const handleChange = (event) => {
         const { name, value } = event.target;
         console.log(event.target);
@@ -112,7 +88,7 @@ const BookingPage = ({ axiosInstance }) => {
                 return alert("date and time is required");
             }
             dispatch(showLoading());
-            console.log(timingSlot);
+            console.log(textfeelling)
             const res = await axiosInstance.post(
                 "/user/book-appointment",
                 {
@@ -145,6 +121,10 @@ const BookingPage = ({ axiosInstance }) => {
     };
 
     const checkAvailability = async (req, res) => {
+        if ("" === timingSlot) {
+            alert("please give time slot value");
+            return;
+        }
         const { token } = cookies;
         try {
             dispatch(showLoading());
@@ -198,7 +178,7 @@ const BookingPage = ({ axiosInstance }) => {
                             </div>
                         </div>
                         <h5 className="booking-subtitle">
-                                You are booking an appointment for tomorrow :
+                            You are booking an appointment for tomorrow :
                         </h5>
                         <div className="booking-form ">
 
@@ -223,8 +203,6 @@ const BookingPage = ({ axiosInstance }) => {
                                         </option>
                                     ))}
                                 </select>
-                                <p className="select-sloat">You selected: 
-                                <div className="select-sloat1">{timingSlot}</div></p>
                             </div>
                             <div className="meeting-mode-select">
                                 <h5 className="mode-select">Select You Mode : </h5>
@@ -238,26 +216,26 @@ const BookingPage = ({ axiosInstance }) => {
                                     <option value="offline">Physical Meeting</option>
                                 </select>
                                 <button
-                                className="btn btn-primary mt-2 mode-butn"
-                                onClick={checkAvailability}
-                            >
-                                Check Availability
-                            </button>
+                                    className="btn btn-primary mt-2 mode-butn"
+                                    onClick={checkAvailability}
+                                >
+                                    Check Availability
+                                </button>
                             </div>
 
                             {isAvailable && (
                                 <>
-                                <div>
-                                    <h5 htmlFor="text-feeling" className="feeling-label">
-                                        Enter Your Feeling:
-                                    </h5>
-                                    <textarea
-                                        id="text-feeling"
-                                        name="textfeeling"
-                                        className="feeling-textarea"
-                                        onChange={handleChange}
-                                    />
-                                </div>
+                                    <div>
+                                        <h5 htmlFor="text-feeling" className="feeling-label">
+                                            Enter Your Feeling:
+                                        </h5>
+                                        <textarea
+                                            id="text-feeling"
+                                            name="textfeelling"
+                                            className="feeling-textarea"
+                                            onChange={handleChange}
+                                        />
+                                    </div>
                                     <button className="btn btn-dark mt-2 final-btn" onClick={handleBooking}>
                                         Book Now
                                     </button>
@@ -273,58 +251,16 @@ const BookingPage = ({ axiosInstance }) => {
 
 export default BookingPage;
 
-{
-    /* <Layout removeCookies={removeCookies}>
-  <h3>Booking Page</h3>
-  <div className="container m-2">
-      {doctor && (
-          <div>
-              <h4>
-                  Dr.{doctor.user.firstName} {doctor.user.lastName}
-              </h4>
-              <h4>Fees : {doctor.feesPerCunsaltation}</h4>
-              <h4>
-                  Timings : {doctor.timings && doctor.timings[0]} -{" "}
-                  {doctor.timings && doctor.timings[1]}{" "}
-              </h4>
-              <div className="d-flex flex-column w-50">
-                  <h4>you are booking appointment for tomorrow</h4>
-                  <div>
-                      <select name="timingSlot" value={timingSlot} onChange={handleChange}>
-                          <option value="">-- Select a time --</option>
-                          {morningSlots.current.map((time) => (
-                              <option key={time} value={time}>
-                                  {time}
-                              </option>
-                          ))}
-                          {eveningSlots.current.map((time) => (
-                              <option key={time} value={time}>
-                                  {time}
-                              </option>
-                          ))}
-                      </select>
-                      <p>You selected: {timingSlot}</p>
-                  </div>
-                  <div>
-                      <select name="meetingMode" onChange={handleChange} value={meetingMode}>
-                          <option value="online">Virtual Meeting</option>
-                          <option value="offline">Physical Meeting</option>
-                      </select>
-                  </div>
-                  <button className="btn btn-primary mt-2" onClick={checkAvailability}>
-                      Check Availability
-                  </button>
-                  {
-                      isAvailable && <>
-                          Enter Your Feelling : <input name="textfeelling" type="TextArea" onChange={handleChange} />
-                          <button className="btn btn-dark mt-2" onClick={handleBooking}>
-                              Book Now
-                          </button>
-                      </>
-                  }
-              </div>
-          </div>
-      )}
-  </div>
-  </Layout> */
+
+function generateTimeSlots(start, end) {
+    let timeSlots = [];
+    let hour = parseInt(start);
+    let minute = "00";
+    while (hour < parseInt(end)) {
+        timeSlots.push(hour + ":" + minute);
+        minute = minute === "00" ? "30" : "00";
+        if (minute === "00") hour++;
+    }
+    timeSlots.push(end + ":00");
+    return timeSlots;
 }

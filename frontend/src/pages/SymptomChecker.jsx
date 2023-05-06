@@ -296,7 +296,7 @@ function SymptomChecker() {
             <div>probability: {c.probability * 100}%</div>
           </div>
         ))}
-      </div>  ``
+      </div>
 
       {question !== "" && (
         <div className="question-container">
@@ -317,42 +317,3 @@ function SymptomChecker() {
 }
 
 export default SymptomChecker;
-
-{
-  /* <form onSubmit={handleSubmit}>
-<input type="number" name="age" value={age} placeholder="give your age" onChange={handleChange} />
-<input type="text" name="sex" value={sex} placeholder="give your gender" onChange={handleChange} />
-<input type="text" name="text" value={text} placeholder="what are you feeling" onChange={handleChange} />
-<button type="submit">submit</button>
-</form>
-<div className="conditions">
-{conditions.map(
-    (c, index) => (
-        <div
-            className="condition"
-            key={index}
-        >
-            <div>name: {c.name}</div>
-            <div>
-                common name:{" "}
-                {c.common_name}
-            </div>
-            <div>
-                probability:{" "}
-                {c.probability * 100}%
-            </div>
-        </div>
-    )
-)}
-</div>
-{
-question !== '' && (
-    <>
-        <div>{question}</div>
-        <button onClick={selectAns} value="present">yes</button>
-        <button onClick={selectAns} value="absent">no</button>
-        <button onClick={selectAns} value="unknown">Don't know</button>
-    </>
-)
-} */
-}

@@ -125,12 +125,3 @@ const Login = ({ axiosInstance }) => {
 }
 
 export default Login;
-
-{/* <>
-<form onSubmit={handleSubmit}>
-    <input type="text" value={email} name='email' onChange={handleInputData} />
-    <input type="password" name="password" value={password} onChange={handleInputData} />
-    <button type="submit">login</button>
-</form>
-<Link to="/register" className="m-2">Not Registered Yet?</Link>
-</> */}

@@ -26,7 +26,7 @@ export const getDoctorByIdController = async (req, res) => {
 export const getDoctorInfoController = async (req, res) => {
     try {
         console.log(req.body.userId)
-        const doctor = await doctorModel.findOne({ user: req.body.userId });
+        const doctor = await doctorModel.findOne({ user: req.body.userId }).populate("user");
         console.log(doctor);
         res.status(200).send({
             success: true,
@@ -43,11 +43,13 @@ export const getDoctorInfoController = async (req, res) => {
     }
 }
 
-export const updateProfileController = async (req, res) => {
+export const updateProfessionalController = async (req, res) => {
     try {
+        console.log(req.body)
         const doctor = await doctorModel.findOneAndUpdate(
             { user: req.body.userId },
-            req.body
+            req.body,
+            { new: true }
         );
         res.status(200).send({
             success: true,
@@ -153,22 +155,22 @@ export const sloatbookingController = async (req, res) => {
     }
 }
 
-export const uploadDocumentpdfController = async(req,res) => {
-    try{
+export const uploadDocumentpdfController = async (req, res) => {
+    try {
         const doctor = await doctorModel.findOne({ user: req.body.userId });
-        if(!doctor) {
+        if (!doctor) {
             return res.status(404).send({
                 success: false,
                 error,
                 message: 'Doctor is not'
             });
         }
-    }catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
             error,
             message: 'error while upload file'
-        })       
+        })
     }
 }

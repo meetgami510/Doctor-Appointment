@@ -17,11 +17,13 @@ import Notification from "./pages/Notification";
 import Users from "./pages/admin/Users"
 import Doctors from "./pages/admin/Doctors"
 import BookingPage from "./pages/doctor/BookingPage"
-import Profile from "./pages/doctor/Profile";
+import Profile from "./pages/doctor/DoctorProfile";
 import Appointments from "./pages/UserAppointments";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments"
 import UserAppointments from "./pages/UserAppointments";
 import VideoMeeting from "./pages/VideoMeeting";
+import DoctorProfile from "./pages/doctor/DoctorProfile";
+import UserProfile from "./pages/UserProfile";
 function App() {
 
   const axiosInstance = axios.create({ baseURL: 'http://localhost:8080/api' });
@@ -99,7 +101,15 @@ function App() {
             path="/doctor/profile"
             element={
               <ProtectedRoute axiosInstance={axiosInstance}>
-                <Profile axiosInstance={axiosInstance} />
+                <DoctorProfile axiosInstance={axiosInstance} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute axiosInstance={axiosInstance}>
+                <UserProfile axiosInstance={axiosInstance} />
               </ProtectedRoute>
             }
           />

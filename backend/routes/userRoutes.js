@@ -11,6 +11,7 @@ import {
     bookAppointmentController,
     bookingAvailabilityController,
     userAppointmentController,
+    updatePersonalDetails,
 } from "../controllers/userControllers.js";
 import protect from "../middlerwares/authMiddleware.js";
 import { getAppointmentsController } from "../controllers/commonControllers.js";
@@ -49,5 +50,7 @@ router.post('/booking-avalibility', protect, bookingAvailabilityController);
 
 // show appointments
 router.get('/appointments', protect, getAppointmentsController);
+
+router.post('/update-personal-details', protect, updatePersonalDetails)
 
 export default router;
