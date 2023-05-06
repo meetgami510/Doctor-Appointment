@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { hideLoading } from "../../redux/features/alertSlice";
 import '../../styles/Appointment.css'
 import ShowDetails from "./ShowDetails";
+import { updateDoctorappointmentstatus } from "../Action/doctors/appointmentStatus";
 function Appointment({ appointment, axiosInstance, isDoctor }) {
     const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
@@ -20,23 +21,12 @@ function Appointment({ appointment, axiosInstance, isDoctor }) {
     const handleStatus = async (record, status) => {
         const { token } = cookies;
         try {
-            const res = await axiosInstance.post(
-                "/doctor/update-appointment-status",
-                {
-                    appointmentId: record._id,
-                    status,
-                },
-                {
-                    headers: {
-                        authorization: "Bearer " + token,
-                    },
-                }
-            );
-            if (res.data.success) {
-                message.success(res.data.message);
-                setAppointmentStatus(status);
+            const responce = await updateDoctorappointmentstatus(token,record,status);
+            if (responce.type === 'data') {
+                message.success(responce.message);
+                setAppointmentStatus(responce.updateStatus);
             } else {
-                message.error(res.data.message);
+                message.error(responce.message);
             }
         } catch (error) {
             console.log(error);

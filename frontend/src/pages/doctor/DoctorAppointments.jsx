@@ -6,6 +6,7 @@ import Layout from '../../components/Layout/Layout';
 import { CookiesContext } from "../../context/CookiesProvider";
 import Appointment from '../../components/Appointments/Appointment';
 import Appointments from '../../components/Appointments/Appointments';
+import { getdoctorAppointment } from '../../components/Action/doctors/appointmentStatus';
 
 const DoctorAppointments = ({ axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);
@@ -16,23 +17,17 @@ const DoctorAppointments = ({ axiosInstance }) => {
         const fetchData = async () => {
             const { token } = cookies;
             try {
-                const res = await axiosInstance.get('/doctor/appointments',
-                    {
-                        headers: {
-                            authorization: 'Bearer ' + token
-                        }
-                    });
-                if (res.data.success) {
-                    message.success(res.data.message);
-                    console.log(res.data.appointments);
-                    setAppointments(res.data.appointments);
+                const responce = await getdoctorAppointment(token);
+                
+                if (responce.type === 'data') {
+                    message.success(responce.message);
+                    console.log(responce.appointmentList);
+                    setAppointments(responce.appointmentList);
                 } else {
-                    message.error(res.data.message);
+                    message.error(responce.message);
                 }
             } catch (error) {
-                console.log(error);
-                dispatch(hideLoading());
-                message.error('some thing went wrong');
+                message.error("some thing is wrong");
             }
         }
         fetchData();

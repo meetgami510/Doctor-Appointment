@@ -16,25 +16,25 @@ const Doctors = ({ axiosInstance }) => {
 
     const dispatch = useDispatch();
 
-    const handleAccountStats = async (doctorId, status) => {
-        const { token } = cookies;
-        try {
-            dispatch(showLoading());
-            const responce = await doctorStatus(token,doctorId,status);
+    // const handleAccountStats = async (doctorId, status) => {
+    //     const { token } = cookies;
+    //     try {
+    //         dispatch(showLoading());
+    //         const responce = await doctorStatus(token,doctorId,status);
 
-            dispatch(hideLoading());
-            if (responce.type === 'data') {
-                message.success(responce.message);
-                window.location.reload();
-            } else {
-                message.error(responce.message);
-            }
-        } catch (error) {
-            console.log(error);
-            dispatch(hideLoading());
-            message.error('some thing went wrong');
-        }
-    }
+    //         dispatch(hideLoading());
+    //         if (responce.type === 'data') {
+    //             message.success(responce.message);
+    //             window.location.reload();
+    //         } else {
+    //             message.error(responce.message);
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //         dispatch(hideLoading());
+    //         message.error('some thing went wrong');
+    //     }
+    // }
 
     useEffect(() => {
         const { token } = cookies;

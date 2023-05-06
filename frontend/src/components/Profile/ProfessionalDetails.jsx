@@ -3,6 +3,7 @@ import { Col, Form, Input, Row, message } from "antd";
 import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from '../../context/CookiesProvider';
+import { updateProfessional } from '../Action/doctors/appointmentStatus';
 
 function ProfessionalDetails({ doctor, axiosInstance, setDoctor }) {
     const dispatch = useDispatch();
@@ -12,28 +13,17 @@ function ProfessionalDetails({ doctor, axiosInstance, setDoctor }) {
         try {
             dispatch(showLoading());
             console.log(values);
-            const res = await axiosInstance.post(
-                "/doctor/update-professional-details",
-                {
-                    ...values,
-                },
-                {
-                    headers: {
-                        authorization: 'Bearer ' + token
-                    }
-                }
-            );
-            console.log(res)
-            dispatch(hideLoading());
-            if (!res.data.success) {
-                message.error(res.data.message);
-            } else {
-                message.success(res.data.message);
-                console.log(res.data.user)
-                setDoctor(res.data.doctor)
+            const responce = await updateProfessional(token,values);
 
+            console.log(responce)
+            dispatch(hideLoading());
+            if (responce.type === 'data') {
+                message.success(responce.message);
+                setDoctor(responce.updateList)
+                
+            } else {
+                message.error(responce.message);
             }
-            console.log(res.data);
         } catch (error) {
             console.log(error);
             dispatch(hideLoading());

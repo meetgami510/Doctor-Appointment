@@ -9,6 +9,8 @@ import { CookiesContext } from "../../context/CookiesProvider";
 import { setUser } from "../../redux/features/userSlice";
 import PersonalDetails from "../../components/Profile/PersonalDetails";
 import ProfessionalDetails from "../../components/Profile/ProfessionalDetails";
+import { getallDoctorInfo } from "../../components/Action/doctors/getdoctorInfo";
+import { doctorSlotbooking } from "../../components/Action/doctors/appointmentStatus";
 
 const DoctorProfile = ({ axiosInstance }) => {
   const { removeCookies, cookies } = useContext(CookiesContext);
@@ -24,14 +26,12 @@ const DoctorProfile = ({ axiosInstance }) => {
     console.log(timeSlot)
     if (timeSlot.morningEnd - timeSlot.morningStart > 0 && timeSlot.eveningEnd - timeSlot.eveningStart > 0) {
       try {
-        const res = await axiosInstance.post("/doctor/sloat-booking", { timeSlot },
-          {
-            headers: {
-              authorization: "Bearer " + token,
-            },
-          }
-        );
-        console.log(res);
+        const responce = await doctorSlotbooking(token,timeSlot);
+        if(responce.type === 'data') {
+          message.success(responce.message);
+        }else{
+          message.error(responce.message);
+        }
       } catch (error) {
         console.log(error);
         alert(error.message);
@@ -46,21 +46,17 @@ const DoctorProfile = ({ axiosInstance }) => {
       const { token } = cookies;
       try {
         dispatch(showLoading());
-        const res = await axiosInstance.get(`/doctor/getDoctorInfo`,
-          {
-            headers: {
-              authorization: "Bearer " + token,
-            },
-          }
-        );
+
+        const responce = await getallDoctorInfo(token);
+        
         dispatch(hideLoading());
-        console.log(res.data);
-        if (res.data.success) {
-          console.log(res.data.doctor);
-          setDoctor(res.data.doctor);
-          setTimeSlot(res.data.doctor.timeSlot);
+        
+        if (responce.type === 'data') {
+          console.log(responce.doctorList);
+          setDoctor(responce.doctorList);
+          setTimeSlot(responce.timeSlot);
         } else {
-          message.error(res.data.message);
+          message.error(responce.message);
         }
       } catch (error) {
         console.log(error);

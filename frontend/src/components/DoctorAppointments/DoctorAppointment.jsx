@@ -5,6 +5,7 @@ import { message } from "antd";
 
 import { hideLoading,showLoading } from "../../redux/features/alertSlice";
 import ViewDoctor from "./ViewDoctor";
+import { doctorStatus } from "../Action/admin/usersStatus";
 
 const DoctorAppointment = ({doctor,axiosInstance}) => {
     const [appointmentStatus, setAppointmentStatus] = useState(
@@ -22,20 +23,14 @@ const DoctorAppointment = ({doctor,axiosInstance}) => {
         const { token } = cookies;
         try {
             dispatch(showLoading());
-            const res = await axiosInstance.post('/admin/change-account-status', {
-                doctorId,
-                status
-            }, {
-                headers: {
-                    Authorization: 'Bearer ' + token
-                }
-            });
+            const responce = await doctorStatus(token,doctorId,status);
+
             dispatch(hideLoading());
-            if (res.data.success) {
-                message.success(res.data.message);
-                console.log(res.data.user)
+            if (responce.type === 'data') {
+                message.success(responce.message);
+                window.location.reload();
             } else {
-                message.error(res.data.message);
+                message.error(responce.message);
             }
         } catch (error) {
             console.log(error);

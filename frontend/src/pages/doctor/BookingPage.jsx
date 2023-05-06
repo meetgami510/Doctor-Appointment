@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CookiesContext } from "../../context/CookiesProvider";
 import { message } from "antd";
 import moment from "moment";
+import { getdoctorthroughid } from "../../components/Action/doctors/getdoctorInfo";
 
 const BookingPage = ({ axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);
@@ -45,30 +46,23 @@ const BookingPage = ({ axiosInstance }) => {
             try {
                 console.log(params.doctorId);
                 dispatch(showLoading());
-                const res = await axiosInstance.post(
-                    "/doctor/getDoctorById",
-                    { doctorId: params.doctorId },
-                    {
-                        headers: {
-                            authorization: "Bearer " + token,
-                        },
-                    }
-                );
+
+                const responce = await getdoctorthroughid(token,params);
+                
                 dispatch(hideLoading());
-                if (res.data.success) {
-                    message.success(res.data.message);
-                    setDoctor(res.data.doctor);
+                if (responce.type === 'data') {
+                    message.success(responce.message);
+                    setDoctor(responce.doctorList);
                     morningSlots.current = generateTimeSlots(
-                        res.data.doctor.timeSlot.morningStart,
-                        res.data.doctor.timeSlot.morningEnd
+                        responce.morningStart,
+                        responce.morningEnd
                     );
                     eveningSlots.current = generateTimeSlots(
-                        res.data.doctor.timeSlot.eveningStart,
-                        res.data.doctor.timeSlot.eveningEnd
+                        responce.eveningStart,
+                        responce.eveningEnd
                     );
-                    console.log(res.data.doctor);
                 } else {
-                    message.error(res.data.message);
+                    message.error(responce.message);
                 }
             } catch (error) {
                 console.log(error);
