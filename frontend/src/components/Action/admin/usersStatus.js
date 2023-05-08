@@ -1,8 +1,7 @@
 import axiosInstance from '../../../utilities/axiosInstance';
 
-const doctorStatus = async (token,doctorId,status) => { 
+const doctorStatus = async (token, doctorId, status) => {
     try {
-        
         const res = await axiosInstance.post('/admin/change-account-status', {
             doctorId,
             status
@@ -11,26 +10,25 @@ const doctorStatus = async (token,doctorId,status) => {
                 Authorization: 'Bearer ' + token
             }
         });
-        
         if (res.data.success) {
             return {
-                type : "data",
-                doctorList : res.data.user,
-                message:res.data.message
+                type: "data",
+                doctorList: res.data.user,
+                message: res.data.message
             }
         } else {
             return {
-                type : "error",
-                message:res.data.message
+                type: "error",
+                message: res.data.message
             }
         }
     } catch (error) {
         console.log(error);
         return {
-            type : "error",
-            message:"server Error"
+            type: "error",
+            message: "server Error please try again"
         }
     }
 }
 
-export {doctorStatus}
+export { doctorStatus }

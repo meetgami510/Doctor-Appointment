@@ -1,14 +1,13 @@
-import React, {useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../../components/Layout/Layout';
-import axios from 'axios';
 import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { Table, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
 import { getAllguestuserData } from '../../components/Action/admin/getAllusersdata';
 
-const Users = ({ axiosInstance }) => {
-    const {removeCookies, cookies } = useContext(CookiesContext);
+const Users = () => {
+    const { removeCookies, cookies } = useContext(CookiesContext);
     const [userList, setUserList] = useState([]);
     const dispatch = useDispatch();
 

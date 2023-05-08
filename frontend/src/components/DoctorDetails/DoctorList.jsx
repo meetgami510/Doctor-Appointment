@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import Layout from "../Layout/Layout";
 import { CookiesContext } from "../../context/CookiesProvider";
-import DoctorAppointment from "./DoctorAppointment";
+import DoctorDetails from "./DoctorDetails";
 
-const AllDoctors = ({ doctorList }) => {
-  const { removeCookies, cookies } = useContext(CookiesContext);
+const DoctorList = ({ doctorList }) => {
+  const { removeCookies } = useContext(CookiesContext);
   return (
     <Layout removeCookies={removeCookies}>
       <h1>Doctor List</h1>
@@ -21,7 +21,7 @@ const AllDoctors = ({ doctorList }) => {
         <tbody>
           {
             doctorList.map((doctor) => (
-              <DoctorAppointment doctor={doctor} />
+              <DoctorDetails key={doctor._id} doctor={doctor} />
             ))
           }
         </tbody>
@@ -30,4 +30,4 @@ const AllDoctors = ({ doctorList }) => {
   );
 };
 
-export default AllDoctors;
+export default DoctorList;
