@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import appointmentModel from '../models/appointmentModels.js';
 import moment from 'moment';
+import twilio from "twilio";
 
 // login call back
 export const loginController = async (req, res) => {
@@ -43,6 +44,48 @@ export const loginController = async (req, res) => {
     }
 }
 
+export const sendOtp = async (req, res) => {
+    try {
+        const accountSid = process.env.ACCOUNT_SID;
+        const authToken = process.env.AUTH_TOKEN;
+        const verifySid = process.env.VERIFY_SID;
+        const client = twilio(accountSid, authToken);
+        const contact = "9033107408";
+        const rsp = await client.verify.v2.services(verifySid)
+            .verifications.create({ to: `+91${contact}`, channel: "sms" });
+        return res.status(200).send({
+            message: "response is sent successfully",
+            success: true,
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: `Register Controller : ${error.message}`,
+            success: false,
+        });
+    }
+}
+
+export const verifyOtp = async (req, res) => {
+    const { contact, otp } = req.body;
+    const accountSid = process.env.ACCOUNT_SID;
+    const authToken = process.env.AUTH_TOKEN;
+    const verifySid = process.env.VERIFY_SID;
+    const client = twilio(accountSid, authToken);
+    const { status } = await client.verify.v2
+        .services(verifySid)
+        .verificationChecks.create({ to: `+91${contact}`, code: otp });
+    if ("pending" === status) {
+        return res.status(200).json({
+            success: false
+        })
+    } else {
+        return res.status(200).json({
+            success: true
+        })
+    }
+}
+
 // register call back
 export const registerController = async (req, res) => {
     console.log(req.body);
@@ -56,6 +99,7 @@ export const registerController = async (req, res) => {
                 success: false
             });
         }
+
         user.password = await bcrypt.hash(user.password, 10);
         const newUser = new userModel(user);
         const resp = await newUser.save();
@@ -66,7 +110,7 @@ export const registerController = async (req, res) => {
         })
     } catch (error) {
         console.log(error)
-        res.status(500).send({
+        return res.status(500).send({
             message: `Register Controller : ${error.message}`,
             success: false,
         });

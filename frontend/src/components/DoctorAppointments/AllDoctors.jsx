@@ -8,7 +8,7 @@ const AllDoctors = ({ doctorList }) => {
   return (
     <Layout removeCookies={removeCookies}>
       <h1>Doctor List</h1>
-      <table class="table table-hover table-bordered table-striped">
+      <table className="table table-hover table-bordered table-striped">
         <thead>
           <tr className="font-size-14">
             <th scope="col">Name</th>

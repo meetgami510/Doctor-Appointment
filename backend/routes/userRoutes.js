@@ -12,6 +12,8 @@ import {
     bookingAvailabilityController,
     userAppointmentController,
     updatePersonalDetails,
+    sendOtp,
+    verifyOtp,
 } from "../controllers/userControllers.js";
 import protect from "../middlerwares/authMiddleware.js";
 import { getAppointmentsController } from "../controllers/commonControllers.js";
@@ -23,6 +25,12 @@ router.post("/login", loginController);
 
 // REGISTER || post
 router.post("/register", registerController);
+
+// SENT OTP
+router.get("/send-otp", sendOtp);
+
+// VERIFY OTP
+router.post("/verify-otp", verifyOtp);
 
 // Auth || get
 router.get("/getUserData", protect, getUserDataController);
@@ -51,6 +59,6 @@ router.post('/booking-avalibility', protect, bookingAvailabilityController);
 // show appointments
 router.get('/appointments', protect, getAppointmentsController);
 
-router.post('/update-personal-details', protect, updatePersonalDetails)
+router.post('/update-personal-details', protect, updatePersonalDetails);
 
 export default router;

@@ -50,7 +50,7 @@ const ShowDetails = ({ show, appointment, isDoctor, onHide, appointmentStatus })
             "approved" === appointmentStatus && "online" === appointment.meetingMode &&
             <>
               <span className="key">Meeting Link :</span>
-              <span className="value">{appointment.meetingLink}</span>
+              <a href={appointment.meetingLink} alt="#" target="_blank" rel="noopener noreferrer"> join Meeting</a>
             </>
           }
         </Form>

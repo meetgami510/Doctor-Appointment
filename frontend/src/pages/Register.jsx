@@ -9,164 +9,209 @@ const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [userData, setUserData] = useState({ email: '', password: '', firstName: '', lastName: '', phone: '', address: '' });
+  const [otp, setOtp] = useState("");
+  const [validation, setValidation] = useState(false);
+
   const { email, password, firstName, lastName, phone, address } = userData;
+
 
   const handleInputData = (event) => {
     const { name, value } = event.target;
     setUserData(prevState => ({ ...prevState, [name]: value }));
   }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const sentOtp = async (event) => {
+    if (event) event.preventDefault();
     try {
       dispatch(showLoading());
-      const res = await axiosInstance.post('/user/register', { user: userData });
+      const { data: resp } = await axiosInstance.get('/user/send-otp');
       dispatch(hideLoading());
-      if (res.data.success) {
-        alert('registerd successfully!');
-        navigate('/login')
+      console.log(resp)
+      if (resp.success) {
+        alert('otp sent successfully');
       } else {
-        alert(res.data.message);
+        console.log(resp)
+        alert("server error please try again");
       }
     } catch (error) {
       dispatch(hideLoading());
       console.log(error)
-      alert('some thing went wrong');
+      alert("server error please try again");
+    }
+  }
+
+  const checkValidation = async (event) => {
+    event.preventDefault();
+    try {
+      dispatch(showLoading());
+      //  before register we require one phase check validation || for this we will create one backend api 
+      //  validateRegistration()
+
+      // if validation is successfull then we need setState of validation as true
+      // then call to sent otp function
+      setValidation(true);
+      dispatch(hideLoading());
+      sentOtp();
+    } catch (error) {
+      dispatch(hideLoading());
+      console.log(error)
+      alert("server error please try again");
+    }
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const { data: resp } = await axiosInstance.post('/user//verify-otp', { contact: userData.phone, otp });
+      console.log(resp);
+      if (resp.success) {
+        const res = await axiosInstance.post('/user/register', { user: userData });
+        dispatch(hideLoading());
+        if (res.data.success) {
+          alert('registerd successfully!');
+          navigate('/login')
+        } else {
+          alert(res.data.message);
+        }
+      } else {
+        alert("otp is not match");
+      }
+    } catch (error) {
+      dispatch(hideLoading());
+      console.log(error)
+      alert("server error please try again");
     }
   }
 
   return (
     <>
-      <div className="login-root">
-        <div
-          className="box-root flex-flex flex-direction--column"
-          style={{ minHeight: "100vh", flexGrow: 1 }}
-        >
+      {false === validation ?
+        <div className="login-root">
           <div
-            className="box-root  flex-flex flex-direction--column"
-            style={{ flexGrow: 1, zIndex: 9 }}
+            className="box-root flex-flex flex-direction--column"
+            style={{ minHeight: "100vh", flexGrow: 1 }}
           >
-            <div className="box-root padding-top--24 padding-bottom--12 flex-flex flex-justifyContent--center">
-              <h2>
-                Create a new account
-              </h2>
-            </div>
-            <div className="formbg-outer">
-              <div className="formbg">
-                <div className="formbg-inner padding-horizontal--48">
-                  {/* <span className="padding-bottom--15">Sign in to your account</span>  */}
-                  <form id="stripe-login" onSubmit={handleSubmit}>
-                    <div className="form-group padding-bottom--24">
-                      <label htmlFor="address">Address</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="address"
-                        id="address"
-                        value={address}
-                        onChange={handleInputData}
-                        // placeholder="Your professional name here"
-                        required
-                      />
-                    </div>
-                    <div className="form-group padding-bottom--24">
-                      <label htmlFor="email">Email</label>
-                      <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        value={email}
-                        className="form-control"
-                        onChange={handleInputData}
-                        required
-                      />
-                    </div>
-                    <div className="form-group padding-bottom--24">
-                      <label htmlFor="phone">Contact No</label>
-                      <input
-                        type="text"
-                        name="phone"
-                        id="phone"
-                        value={phone}
-                        className="form-control"
-                        onChange={handleInputData}
-                        required
-                      />
-                    </div>
-                    <div className="form-group padding-bottom--24">
-                      <label htmlFor="firstName">First Name</label>
-                      <input
-                        type="text"
-                        name="firstName"
-                        id="firstName"
-                        value={firstName}
-                        className="form-control"
-                        onChange={handleInputData}
-                        required
-                      />
-                    </div>
-                    <div className="form-group padding-bottom--24">
-                      <label htmlFor="lastName">Last Name</label>
-                      <input
-                        type="text"
-                        name="lastName"
-                        id="lastName"
-                        value={lastName}
-                        className="form-control"
-                        onChange={handleInputData}
-                        required
-                      />
-                    </div>
-                    <div className="form-group padding-bottom--24">
-                      <label htmlFor="password">Password</label>
-                      <input
-                        type="password"
-                        className="form-control"
-                        name="password"
-                        id="password"
-                        value={password}
-                        onChange={handleInputData}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <button
-                        type="submit"
-                        name="submit"
-                        value="SIGNUP"
-                        // onClick={myregister}
-                        className="btn btn-primary"
-                        style={{
-                          width: "100%",
-                          backgroundColor: "rgb(84, 105, 212)",
-                        }}
-                      >
-                        Sign Up
-                      </button>
-                    </div>
-                  </form>
-                </div>
+            <div
+              className="box-root  flex-flex flex-direction--column"
+              style={{ flexGrow: 1, zIndex: 9 }}
+            >
+              <div className="box-root padding-top--24 padding-bottom--12 flex-flex flex-justifyContent--center">
+                <h2>
+                  Create a new account
+                </h2>
               </div>
-              <div className="footer-link padding-top--12 padding-bottom--12">
-                <span>
-                  Already have an account? <a href="/login">Login</a>
-                </span>
+              <div className="formbg-outer">
+                <div className="formbg">
+                  <div className="formbg-inner padding-horizontal--48">
+                    <form id="stripe-login" onSubmit={checkValidation}>
+                      <div className="form-group padding-bottom--24">
+                        <label htmlFor="address">Address</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="address"
+                          id="address"
+                          value={address}
+                          onChange={handleInputData}
+                          // placeholder="Your professional name here"
+                          required
+                        />
+                      </div>
+                      <div className="form-group padding-bottom--24">
+                        <label htmlFor="email">Email</label>
+                        <input
+                          type="email"
+                          name="email"
+                          id="email"
+                          value={email}
+                          className="form-control"
+                          onChange={handleInputData}
+                          required
+                        />
+                      </div>
+                      <div className="form-group padding-bottom--24">
+                        <label htmlFor="phone">Contact No</label>
+                        <input
+                          type="text"
+                          name="phone"
+                          id="phone"
+                          value={phone}
+                          className="form-control"
+                          onChange={handleInputData}
+                          required
+                        />
+                      </div>
+                      <div className="form-group padding-bottom--24">
+                        <label htmlFor="firstName">First Name</label>
+                        <input
+                          type="text"
+                          name="firstName"
+                          id="firstName"
+                          value={firstName}
+                          className="form-control"
+                          onChange={handleInputData}
+                          required
+                        />
+                      </div>
+                      <div className="form-group padding-bottom--24">
+                        <label htmlFor="lastName">Last Name</label>
+                        <input
+                          type="text"
+                          name="lastName"
+                          id="lastName"
+                          value={lastName}
+                          className="form-control"
+                          onChange={handleInputData}
+                          required
+                        />
+                      </div>
+                      <div className="form-group padding-bottom--24">
+                        <label htmlFor="password">Password</label>
+                        <input
+                          type="password"
+                          className="form-control"
+                          name="password"
+                          id="password"
+                          value={password}
+                          onChange={handleInputData}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <button
+                          type="submit"
+                          name="submit"
+                          value="SIGNUP"
+                          // onClick={myregister}
+                          className="btn btn-primary"
+                          style={{
+                            width: "100%",
+                            backgroundColor: "rgb(84, 105, 212)",
+                          }}
+                        >
+                          Sign Up
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div className="footer-link padding-top--12 padding-bottom--12">
+                  <span>
+                    Already have an account? <a href="/login">Login</a>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </div> :
+        <form onSubmit={handleSubmit}>
+          <input type="text" value={otp} name="otp" onChange={(e) => setOtp(e.target.value)} />
+          <button onClick={sentOtp}>resend otp</button>
+          <button type="submit">submit</button>
+        </form>
+      }
     </>
   );
 }
 
 export default Register;
-
-{/* <div>
-<form onSubmit={handleSubmit}>
-    <input type="text" name="name" value={name} onChange={handleInputData} />
-    <input type="text" value={email} name='email' onChange={handleInputData} />
-    <input type="password" name="password" value={password} onChange={handleInputData} />
-    <button type="submit">register</button>
-</form>
-</div> */}

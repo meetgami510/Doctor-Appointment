@@ -60,7 +60,7 @@ function Appointment({ appointment, isDoctor }) {
                         </div>
                     ) : appointmentStatus}
                 </td>
-                <td scope="col" style={{ cursor: "pointer", padding: "10px" }} onClick={() => { setEditModalShow(true); setCurrentItem(appointment); }} > <i style={{ fontSize: "13px", color: "#0077b6" }} class="fas fa-edit"></i> </td>
+                <td scope="col" style={{ cursor: "pointer", padding: "10px" }} onClick={() => { setEditModalShow(true); setCurrentItem(appointment); }} > <i style={{ fontSize: "13px", color: "#0077b6" }} className="fas fa-edit"></i> </td>
                 <ShowDetails show={editModalShow} onHide={() => setEditModalShow(false)} appointmentStatus={appointmentStatus} appointment={appointment} isDoctor={isDoctor} />
             </tr>
         </>
