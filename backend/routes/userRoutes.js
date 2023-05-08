@@ -12,6 +12,8 @@ import {
     bookingAvailabilityController,
     userAppointmentController,
     updatePersonalDetails,
+    makePaymentController,
+    paymentVerificatonController,
     sendOtp,
     verifyOtp,
 } from "../controllers/userControllers.js";
@@ -27,7 +29,7 @@ router.post("/login", loginController);
 router.post("/register", registerController);
 
 // SENT OTP
-router.get("/send-otp", sendOtp);
+router.post("/send-otp", sendOtp);
 
 // VERIFY OTP
 router.post("/verify-otp", verifyOtp);
@@ -60,5 +62,9 @@ router.post('/booking-avalibility', protect, bookingAvailabilityController);
 router.get('/appointments', protect, getAppointmentsController);
 
 router.post('/update-personal-details', protect, updatePersonalDetails);
+
+router.post('/orders',makePaymentController);
+
+router.post('/verify',paymentVerificatonController);
 
 export default router;

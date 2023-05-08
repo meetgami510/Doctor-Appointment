@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken';
 import appointmentModel from '../models/appointmentModels.js';
 import moment from 'moment';
 import twilio from "twilio";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 
 // login call back
 export const loginController = async (req, res) => {
@@ -50,7 +52,8 @@ export const sendOtp = async (req, res) => {
         const authToken = process.env.AUTH_TOKEN;
         const verifySid = process.env.VERIFY_SID;
         const client = twilio(accountSid, authToken);
-        const contact = "9033107408";
+        const contact = req.body.contact;
+        //console.log(req.body);
         const rsp = await client.verify.v2.services(verifySid)
             .verifications.create({ to: `+91${contact}`, channel: "sms" });
         return res.status(200).send({
@@ -58,6 +61,7 @@ export const sendOtp = async (req, res) => {
             success: true,
         })
     } catch (error) {
+        console.log("send OTP")
         console.log(error)
         res.status(500).send({
             message: `Register Controller : ${error.message}`,
@@ -379,6 +383,64 @@ export const updatePersonalDetails = async (req, res) => {
             success: false,
             error,
             message: 'personal details update issue'
+        })
+    }
+}
+
+export const makePaymentController = async (req,res) => {
+    try{
+        const instance = new Razorpay({
+            key_id : process.env.KEY_ID,
+            key_secret : process.env.KEY_SECRET,
+        });
+
+        const option = {
+            amount : req.body.amount*100,
+            currency: "INR",
+            receipt:crypto.randomBytes(10).toString("hex")
+        }
+        instance.orders.create(option,(error,order) => {
+            if(error) {
+                console.log(error);
+                return res.status(500).json({message: "Somthing Went Wrong"});
+
+            }
+            res.status(200).json({data : order});
+        })
+    }catch(error){
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'Payment is Fauild'
+        })
+    }
+}
+
+export const paymentVerificatonController = async (req,res) => { 
+    try{
+        const {r_order_id,r_payment_id ,r_signature} = req.body;
+
+        const sign = r_order_id + "|" + r_payment_id;
+
+        const expectedSign = crypto.createHmc("sha256",process.env.KEY_SECRET).update(sign.toString()).digest("hex");
+
+        if(r_signature === expectedSign) {
+            return res.status(200).json({
+                message : "payment verified succeffully",
+            })
+        }else{
+            return res.status(200).json({
+                message : "Invalid signature sent",
+            })
+        }
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'Payment is not Verified'
         })
     }
 }

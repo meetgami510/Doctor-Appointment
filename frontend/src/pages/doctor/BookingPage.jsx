@@ -9,8 +9,10 @@ import { message } from "antd";
 import moment from "moment";
 import { getdoctorthroughid } from "../../components/Action/doctors/getdoctorInfo";
 import { chechbookingAvalability, userbooking } from "../../components/Action/users/bookingappointment";
+import axiosInstance from '../../utilities/axiosInstance';
 
-const BookingPage = ({ axiosInstance }) => {
+
+const BookingPage = () => {
     const { removeCookies, cookies } = useContext(CookiesContext);
     const [doctor, setDoctor] = useState(null);
     const { user } = useSelector((state) => state.user);
@@ -80,21 +82,48 @@ const BookingPage = ({ axiosInstance }) => {
         console.log(user);
         const { token } = cookies;
         try {
-            if (!timingSlot) {
-                return alert("date and time is required");
+            // if (!timingSlot) {
+            //     return alert("date and time is required");
+            // }
+            // dispatch(showLoading());
+
+            // const responce = await userbooking(token,params,user,doctor,timingSlot,textfeelling,meetingMode);
+
+            // dispatch(hideLoading());
+
+            // if (responce.type === 'data') {
+            //     message.success(responce.message);
+            //     navigate("/");
+            // } else {
+            //     message.error(responce.message);
+            // }
+
+            const {data} = await axiosInstance.post('/user/orders',{amount: 300});
+            console.log(data);
+
+            const options = {
+                key :"rzp_test_d1W95fgZdAjWf9",
+                amount: data.data.amount,
+                currency: data.currency,
+                description: "Test Transaction",
+                order_id: data.id,
+                handler: async (response) => {
+                    try {
+                        const { newdata } = await axiosInstance.post("/user/verify", response);
+                        console.log(newdata);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                },
+                theme: {
+                    color: "#3399cc",
+                },
             }
-            dispatch(showLoading());
-
-            const responce = await userbooking(token,params,user,doctor,timingSlot,textfeelling,meetingMode);
-
-            dispatch(hideLoading());
-
-            if (responce.type === 'data') {
-                message.success(responce.message);
-                navigate("/");
-            } else {
-                message.error(responce.message);
-            }
+            
+            if (typeof window !== "undefined") {
+                const rzp1 = new window.Razorpay(options);
+                rzp1.open();
+              }              
         } catch (error) {
             console.log(error);
             dispatch(hideLoading());

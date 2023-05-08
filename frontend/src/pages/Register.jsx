@@ -24,7 +24,7 @@ const Register = () => {
     if (event) event.preventDefault();
     try {
       dispatch(showLoading());
-      const { data: resp } = await axiosInstance.get('/user/send-otp');
+      const { data: resp } = await axiosInstance.post('/user/send-otp',{contact:userData.phone});
       dispatch(hideLoading());
       console.log(resp)
       if (resp.success) {
