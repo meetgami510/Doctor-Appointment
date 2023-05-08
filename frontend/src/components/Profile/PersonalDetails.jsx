@@ -6,7 +6,7 @@ import { CookiesContext } from '../../context/CookiesProvider';
 import { setUser } from '../../redux/features/userSlice';
 import { updatePersonalData } from '../Action/users/getGuestUsers';
 
-function PersonalDetails({ axiosInstance }) {
+function PersonalDetails() {
     const { cookies } = useContext(CookiesContext);
     const { user } = useSelector((state) => state.user);
     const dispatch = useDispatch();
@@ -15,17 +15,17 @@ function PersonalDetails({ axiosInstance }) {
         try {
             dispatch(showLoading());
 
-            const responce = await updatePersonalData(token,values);
+            const responce = await updatePersonalData(token, values);
 
             dispatch(hideLoading());
-            
+
             if (responce.type === 'data') {
                 message.success(responce.message);
                 dispatch(setUser(responce.userList));
             } else {
                 message.error(responce.message);
             }
-            
+
         } catch (error) {
             console.log(error);
             dispatch(hideLoading());

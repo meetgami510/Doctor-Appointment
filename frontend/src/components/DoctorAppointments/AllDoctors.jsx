@@ -3,7 +3,7 @@ import Layout from "../Layout/Layout";
 import { CookiesContext } from "../../context/CookiesProvider";
 import DoctorAppointment from "./DoctorAppointment";
 
-const AllDoctors = ({ axiosInstance, doctorList }) => {
+const AllDoctors = ({ doctorList }) => {
   const { removeCookies, cookies } = useContext(CookiesContext);
   return (
     <Layout removeCookies={removeCookies}>
@@ -19,11 +19,11 @@ const AllDoctors = ({ axiosInstance, doctorList }) => {
           </tr>
         </thead>
         <tbody>
-        {
+          {
             doctorList.map((doctor) => (
-                <DoctorAppointment axiosInstance={axiosInstance} doctor={doctor} />
+              <DoctorAppointment doctor={doctor} />
             ))
-        }
+          }
         </tbody>
       </table>
     </Layout>

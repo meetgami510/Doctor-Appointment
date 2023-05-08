@@ -7,8 +7,9 @@ import { CookiesContext } from "../context/CookiesProvider";
 import Layout from "../components/Layout/Layout";
 import '../styles/Login.css'
 import Spinner from "../components/Spinner";
+import axiosInstance from "../utilities/axiosInstance";
 
-const Login = ({ axiosInstance }) => {
+const Login = () => {
   const { setCookies } = useContext(CookiesContext);
 
   const { loading } = useSelector(state => state.alerts);

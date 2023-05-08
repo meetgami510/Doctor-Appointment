@@ -1,15 +1,15 @@
 import React, { useContext, useState } from 'react';
 import Layout from '../components/Layout/Layout'
-import { Form, Input, Button, Row, Col, Checkbox, Upload } from "antd";
+import { Form, Input, Button, Row, Col, Checkbox, Upload, message } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import { CookiesContext } from '../context/CookiesProvider';
 import { UploadOutlined } from '@ant-design/icons';
-
+import axiosInstance from '../utilities/axiosInstance';
 // import moment from 'moment';
 
-const ApplyDoctor = ({ axiosInstance }) => {
+const ApplyDoctor = () => {
     const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
     const [file, setFile] = useState(null);
@@ -19,10 +19,10 @@ const ApplyDoctor = ({ axiosInstance }) => {
     const handleFileChange = (info) => {
         const { status, originFileObj } = info.file;
         if (status === 'done') {
-          setFile(originFileObj);
+            setFile(originFileObj);
         }
-      };
-    
+    };
+
     const [timeSlot, setTimeSlot] = useState({
         morningStart: 9,
         morningEnd: 13,
@@ -34,39 +34,39 @@ const ApplyDoctor = ({ axiosInstance }) => {
 
     const handleFinish = async (values) => {
         const { token } = cookies;
-        console.log(values);
-        // if (timeSlot.morningEnd - timeSlot.morningStart > 0 && timeSlot.eveningEnd - timeSlot.eveningStart > 0) {
-        //     try {
-        //         dispatch(showLoading());
-        //         const res = await axiosInstance.post('/user/apply-doctor',
-        //             {
-        //                 ...values,
-        //                 timeSlot,
-        //                 user: user._id,
-        //                 file
-        //             },
-        //             {
-        //                 headers: {
-        //                     authorization: 'Bearer ' + token
-        //                 }
-        //             }
-        //         );
-        //         dispatch(hideLoading());
-        //         if (!res.data.success) {
-        //             message.error(res.data.message);
-        //         } else {
-        //             message.success(res.data.message);
-        //             navigate('/');
-        //         }
-        //         console.log(res.data)
-        //     } catch (error) {
-        //         console.log(error);
-        //         dispatch(hideLoading());
-        //         message.error('some thing went wrong');
-        //     }
-        // } else {
-        //     alert("time slot must require 1hr diffrence");
-        // }
+        // console.log(values);
+        if (timeSlot.morningEnd - timeSlot.morningStart > 0 && timeSlot.eveningEnd - timeSlot.eveningStart > 0) {
+            try {
+                dispatch(showLoading());
+                const res = await axiosInstance.post('/user/apply-doctor',
+                    {
+                        ...values,
+                        timeSlot,
+                        user: user._id,
+                        file
+                    },
+                    {
+                        headers: {
+                            authorization: 'Bearer ' + token
+                        }
+                    }
+                );
+                dispatch(hideLoading());
+                if (!res.data.success) {
+                    message.error(res.data.message);
+                } else {
+                    message.success(res.data.message);
+                    navigate('/');
+                }
+                console.log(res.data)
+            } catch (error) {
+                console.log(error);
+                dispatch(hideLoading());
+                message.error('some thing went wrong');
+            }
+        } else {
+            alert("time slot must require 1hr diffrence");
+        }
     }
     const handleTimeSlot = (e) => {
         const { name, value } = e.target;
@@ -114,14 +114,6 @@ const ApplyDoctor = ({ axiosInstance }) => {
                             rules={[{ required: true }]}
                         >
                             <Input type="text" placeholder="your contact no" />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} md={24} lg={8}>
-                        <Form.Item label="Time" name="slots">
-                            <Checkbox.Group options={[
-                                { label: 'Morning', value: 'morning' },
-                                { label: 'Evening', value: 'evening' },
-                            ]} />
                         </Form.Item>
                     </Col>
                     <select name="morningStart" value={timeSlot.morningStart} onChange={handleTimeSlot}>

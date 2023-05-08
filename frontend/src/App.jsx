@@ -26,8 +26,6 @@ import DoctorProfile from "./pages/doctor/DoctorProfile";
 import UserProfile from "./pages/UserProfile";
 function App() {
 
-  const axiosInstance = axios.create({ baseURL: 'http://localhost:8080/api' });
-
   return (
     <CookiesProvider>
       <BrowserRouter>
@@ -35,32 +33,32 @@ function App() {
           <Route
             path="/"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance}>
-                <Home axiosInstance={axiosInstance} />
+              <ProtectedRoute >
+                <Home />
               </ProtectedRoute>
             }
           />
           <Route
             path="/login"
             element={
-              <PublicRoute axiosInstance={axiosInstance}>
-                <Login axiosInstance={axiosInstance} />
+              <PublicRoute  >
+                <Login />
               </PublicRoute>
             }
           />
           <Route
             path="/register"
             element={
-              <PublicRoute axiosInstance={axiosInstance} >
-                <Register axiosInstance={axiosInstance} />
+              <PublicRoute   >
+                <Register />
               </PublicRoute>
             }
           />
           <Route
             path="/appointments"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance} >
-                <UserAppointments axiosInstance={axiosInstance} />
+              <ProtectedRoute   >
+                <UserAppointments />
               </ProtectedRoute>
             }
           />
@@ -68,72 +66,72 @@ function App() {
           <Route
             path="/apply-doctor"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance}>
-                <ApplyDoctor axiosInstance={axiosInstance} />
+              <ProtectedRoute  >
+                <ApplyDoctor />
               </ProtectedRoute>
             }
           />
           <Route
             path="/admin/doctors"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance}>
-                <Doctors axiosInstance={axiosInstance} />
+              <ProtectedRoute  >
+                <Doctors />
               </ProtectedRoute>
             }
           />
           <Route
             path="/admin/users"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance}>
-                <Users axiosInstance={axiosInstance} />
+              <ProtectedRoute  >
+                <Users />
               </ProtectedRoute>
             }
           />
           <Route
             path="/doctor/book-appointment/:doctorId"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance}>
-                <BookingPage axiosInstance={axiosInstance} />
+              <ProtectedRoute  >
+                <BookingPage />
               </ProtectedRoute>
             }
           />
           <Route
             path="/doctor/profile"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance}>
-                <DoctorProfile axiosInstance={axiosInstance} />
+              <ProtectedRoute  >
+                <DoctorProfile />
               </ProtectedRoute>
             }
           />
           <Route
             path="/profile"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance}>
-                <UserProfile axiosInstance={axiosInstance} />
+              <ProtectedRoute  >
+                <UserProfile />
               </ProtectedRoute>
             }
           />
           <Route
             path="/notification"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance}>
-                <Notification axiosInstance={axiosInstance} />
+              <ProtectedRoute  >
+                <Notification />
               </ProtectedRoute>
             }
           />
           <Route
             path="/video-meeting/:roomId"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance}>
-                <VideoMeeting axiosInstance={axiosInstance} />
+              <ProtectedRoute  >
+                <VideoMeeting />
               </ProtectedRoute>
             }
           />
           <Route
             path="/doctor-appointments"
             element={
-              <ProtectedRoute axiosInstance={axiosInstance}>
-                <DoctorAppointments axiosInstance={axiosInstance} />
+              <ProtectedRoute  >
+                <DoctorAppointments />
               </ProtectedRoute>
             }
           />

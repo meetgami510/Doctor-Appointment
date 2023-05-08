@@ -3,7 +3,7 @@ import Layout from '../Layout/Layout'
 import Appointment from './Appointment'
 import { CookiesContext } from '../../context/CookiesProvider';
 
-function Appointments({ axiosInstance, appointments, isDoctor }) {
+function Appointments({ appointments, isDoctor }) {
     const { removeCookies, cookies } = useContext(CookiesContext);
     console.log(appointments)
     return (
@@ -23,7 +23,7 @@ function Appointments({ axiosInstance, appointments, isDoctor }) {
                 <tbody>
                     {
                         appointments.map((appointment) => (
-                            <Appointment appointment={appointment} axiosInstance={axiosInstance} isDoctor={isDoctor} />
+                            <Appointment appointment={appointment} isDoctor={isDoctor} />
                         ))
                     }
                 </tbody>

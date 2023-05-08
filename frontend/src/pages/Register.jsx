@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../redux/features/alertSlice';
+import axiosInstance from '../utilities/axiosInstance';
 
-const Register = ({ axiosInstance }) => {
+
+const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [userData, setUserData] = useState({ email: '', password: '', firstName: '', lastName: '', phone: '', address: '' });
@@ -28,6 +30,7 @@ const Register = ({ axiosInstance }) => {
       }
     } catch (error) {
       dispatch(hideLoading());
+      console.log(error)
       alert('some thing went wrong');
     }
   }

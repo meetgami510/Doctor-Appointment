@@ -6,7 +6,7 @@ import { hideLoading } from "../../redux/features/alertSlice";
 import '../../styles/Appointment.css'
 import ShowDetails from "./ShowDetails";
 import { updateDoctorappointmentstatus } from "../Action/doctors/appointmentStatus";
-function Appointment({ appointment, axiosInstance, isDoctor }) {
+function Appointment({ appointment, isDoctor }) {
     const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
 
@@ -21,7 +21,7 @@ function Appointment({ appointment, axiosInstance, isDoctor }) {
     const handleStatus = async (record, status) => {
         const { token } = cookies;
         try {
-            const responce = await updateDoctorappointmentstatus(token,record,status);
+            const responce = await updateDoctorappointmentstatus(token, record, status);
             if (responce.type === 'data') {
                 message.success(responce.message);
                 setAppointmentStatus(responce.updateStatus);
@@ -39,7 +39,7 @@ function Appointment({ appointment, axiosInstance, isDoctor }) {
         <>
             <tr key={appointment._id} className="font-size-14">
                 <td scope="row">{isDoctor ? (appointment.user.firstName + " " + appointment.user.lastName) : (appointment.doctor.user.firstName + " " + appointment.doctor.user.lastName)}</td>
-                <td scope="row">{appointment.date.substring(0,10)}</td>
+                <td scope="row">{appointment.date.substring(0, 10)}</td>
                 <td scope="row">{appointment.time}</td>
                 <td scope="row">{appointment.meetingMode}</td>
                 <td scope="row">
