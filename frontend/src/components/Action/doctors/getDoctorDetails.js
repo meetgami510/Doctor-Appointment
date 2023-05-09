@@ -1,8 +1,7 @@
 import axiosInstance from '../../../utilities/axiosInstance';
 
-const getallDoctorInfo = async (token) => {
+export const getDoctorDetails = async (token) => {
   try {
-
     const res = await axiosInstance.get(`/doctor/getDoctorInfo`,
       {
         headers: {
@@ -10,12 +9,10 @@ const getallDoctorInfo = async (token) => {
         },
       }
     );
-
-
     if (res.data.success) {
       return {
         type: "data",
-        doctorList: res.data.doctor,
+        doctor: res.data.doctor,
         timeSlot: res.data.doctor.timeSlot,
         message: res.data.message
       }
@@ -28,16 +25,14 @@ const getallDoctorInfo = async (token) => {
   } catch (error) {
     return {
       type: "error",
-      message: "has some error"
+      message: "server error please try again"
     }
   }
 }
 
-
-const getdoctorthroughid = async (token, params) => {
+export const getdoctorthroughid = async (token, params) => {
   try {
     console.log(params.doctorId);
-
     const res = await axiosInstance.post(
       "/doctor/getDoctorById",
       { doctorId: params.doctorId },
@@ -69,9 +64,7 @@ const getdoctorthroughid = async (token, params) => {
   } catch (error) {
     return {
       type: 'error',
-      message: "some thing went wrong"
+      message: "server error please try again"
     }
   }
 }
-
-export { getallDoctorInfo, getdoctorthroughid }

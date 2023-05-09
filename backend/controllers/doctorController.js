@@ -25,7 +25,6 @@ export const getDoctorByIdController = async (req, res) => {
 
 export const getDoctorInfoController = async (req, res) => {
     try {
-        console.log(req.body.userId)
         const doctor = await doctorModel.findOne({ user: req.body.userId }).populate("user");
         console.log(doctor);
         res.status(200).send({
@@ -39,29 +38,6 @@ export const getDoctorInfoController = async (req, res) => {
             success: false,
             error,
             message: 'error in fetching doctor details'
-        })
-    }
-}
-
-export const updateProfessionalController = async (req, res) => {
-    try {
-        console.log(req.body)
-        const doctor = await doctorModel.findOneAndUpdate(
-            { user: req.body.userId },
-            req.body,
-            { new: true }
-        );
-        res.status(200).send({
-            success: true,
-            message: 'doctor data update successfully',
-            doctor
-        })
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            success: false,
-            error,
-            message: 'doctor profile update issue'
         })
     }
 }
@@ -102,13 +78,34 @@ export const getDoctorAppointmentsController = async (req, res) => {
     }
 }
 
+export const updateProfessionalDetailsController = async (req, res) => {
+    try {
+        console.log(req.body)
+        const doctor = await doctorModel.findOneAndUpdate(
+            { user: req.body.userId },
+            req.body,
+            { new: true }
+        );
+        res.status(200).send({
+            success: true,
+            message: 'doctor data update successfully',
+            doctor
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'server please try again'
+        })
+    }
+}
+
 export const updateAppointmentStatusController = async (req, res) => {
     try {
         console.log("update");
         const { appointmentId, status } = req.body;
-
         const meetingLink = `http://localhost:3000/video-meeting/${uuidv4()}`; // generates a unique ID
-
         const appointment = await appointmentModel.findByIdAndUpdate(appointmentId, { status, meetingLink });
         console.log(appointment)
         const user = await userModel.findOne({ _id: appointment.user });
@@ -134,7 +131,6 @@ export const updateAppointmentStatusController = async (req, res) => {
 
 export const sloatbookingController = async (req, res) => {
     try {
-        // const { morningTimeslot, eveningTimeslot } = req.body;
         console.log(req.body.userId);
         const doctor = await doctorModel.findOneAndUpdate(
             { user: req.body.userId },

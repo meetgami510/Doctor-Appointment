@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CookiesContext } from "../../context/CookiesProvider";
 import { message } from "antd";
 import moment from "moment";
-import { getdoctorthroughid } from "../../components/Action/doctors/getdoctorInfo";
+import { getdoctorthroughid } from "../../components/Action/doctors/getDoctorDetails";
 import { chechbookingAvalability, userbooking } from "../../components/Action/users/bookingappointment";
 import axiosInstance from '../../utilities/axiosInstance';
 
@@ -46,32 +46,22 @@ const BookingPage = () => {
     useEffect(() => {
         const { token } = cookies;
         const getDoctorData = async () => {
-            try {
-                console.log(params.doctorId);
-                dispatch(showLoading());
-
-                const responce = await getdoctorthroughid(token,params);
-                
-                dispatch(hideLoading());
-                
-                if (responce.type === 'data') {
-                    message.success(responce.message);
-                    setDoctor(responce.doctorList);
-                    morningSlots.current = generateTimeSlots(
-                        responce.morningStart,
-                        responce.morningEnd
-                    );
-                    eveningSlots.current = generateTimeSlots(
-                        responce.eveningStart,
-                        responce.eveningEnd
-                    );
-                } else {
-                    message.error(responce.message);
-                }
-            } catch (error) {
-                console.log(error);
-                dispatch(hideLoading());
-                message.error("some thing went wrong");
+            dispatch(showLoading());
+            const responce = await getdoctorthroughid(token, params);
+            dispatch(hideLoading());
+            if (responce.type === 'data') {
+                message.success(responce.message);
+                setDoctor(responce.doctorList);
+                morningSlots.current = generateTimeSlots(
+                    responce.morningStart,
+                    responce.morningEnd
+                );
+                eveningSlots.current = generateTimeSlots(
+                    responce.eveningStart,
+                    responce.eveningEnd
+                );
+            } else {
+                message.error(responce.message);
             }
         };
         getDoctorData();
@@ -137,25 +127,17 @@ const BookingPage = () => {
             return;
         }
         const { token } = cookies;
-        try {
-            dispatch(showLoading());
-
-            const responce = await chechbookingAvalability(token ,params,timingSlot)
-
-            dispatch(hideLoading());
-            if (responce.type === 'data') {
-                setAppointmentInfo((prevState) => ({
-                    ...prevState,
-                    isAvailable: true,
-                }));
-                message.success(responce.message);
-            } else {
-                message.error(responce.message);
-            }
-        } catch (error) {
-            console.log(error);
-            dispatch(hideLoading());
-            message.error("some thing went wrong");
+        dispatch(showLoading());
+        const responce = await chechbookingAvalability(token, params, timingSlot)
+        dispatch(hideLoading());
+        if (responce.type === 'data') {
+            setAppointmentInfo((prevState) => ({
+                ...prevState,
+                isAvailable: true,
+            }));
+            message.success(responce.message);
+        } else {
+            message.error(responce.message);
         }
     };
 
@@ -176,7 +158,6 @@ const BookingPage = () => {
                                 <h4 className="firstname">Per Consultant Fees:</h4>
                                 <h5 className="doctor-name"> {doctor.feesPerCunsaltation}</h5>
                             </div>
-
                             <div>
                                 <h4 className="firstname">Speciallization:</h4>
                                 <h5 className="doctor-name"> {doctor.feesPerCunsaltation}</h5>
@@ -186,9 +167,7 @@ const BookingPage = () => {
                             You are booking an appointment for tomorrow :
                         </h5>
                         <div className="booking-form ">
-
                             <div className="time-select">
-
                                 <h5 className="sloat-time">Select Your Booking Slot :</h5>
                                 <select
                                     className="sloat-option"
@@ -227,7 +206,6 @@ const BookingPage = () => {
                                     Check Availability
                                 </button>
                             </div>
-
                             {isAvailable && (
                                 <>
                                     <div>

@@ -3,9 +3,9 @@ import { Col, Form, Input, Row, message } from "antd";
 import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from '../../context/CookiesProvider';
-import { updateProfessional } from '../Action/doctors/appointmentStatus';
+import { updateProfessional } from '../Action/doctors/updateDoctorDetails';
 
-function ProfessionalDetails({ doctor, axiosInstance, setDoctor }) {
+function DoctorProfessionalDetails({ doctor, setDoctor }) {
     const dispatch = useDispatch();
     const { cookies } = useContext(CookiesContext);
     const updateProfessionalDetails = async (values) => {
@@ -13,14 +13,12 @@ function ProfessionalDetails({ doctor, axiosInstance, setDoctor }) {
         try {
             dispatch(showLoading());
             console.log(values);
-            const responce = await updateProfessional(token,values);
-
+            const responce = await updateProfessional(token, values);
             console.log(responce)
             dispatch(hideLoading());
             if (responce.type === 'data') {
                 message.success(responce.message);
                 setDoctor(responce.updateList)
-                
             } else {
                 message.error(responce.message);
             }
@@ -90,4 +88,4 @@ function ProfessionalDetails({ doctor, axiosInstance, setDoctor }) {
     )
 }
 
-export default ProfessionalDetails
+export default DoctorProfessionalDetails

@@ -1,21 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/features/alertSlice";
-import { Col, Form, Input, Row, TimePicker, message } from "antd";
-import moment from "moment";
+import { message } from "antd";
 import { CookiesContext } from "../../context/CookiesProvider";
-import { setUser } from "../../redux/features/userSlice";
 import PersonalDetails from "../../components/Profile/PersonalDetails";
-import ProfessionalDetails from "../../components/Profile/ProfessionalDetails";
-import { getallDoctorInfo } from "../../components/Action/doctors/getdoctorInfo";
-import { doctorSlotbooking } from "../../components/Action/doctors/appointmentStatus";
+import DoctorProfessionalDetails from "../../components/Profile/DoctorProfessionalDetails";
+import { getDoctorDetails } from "../../components/Action/doctors/getDoctorDetails";
+import { updateDoctorTimeSlot } from "../../components/Action/doctors/updateDoctorDetails";
+import ShowTimeSlot from "../../components/Profile/ShowTimeSlot";
 
-const DoctorProfile = ({ axiosInstance }) => {
+const DoctorProfile = () => {
   const { removeCookies, cookies } = useContext(CookiesContext);
-  const { user } = useSelector((state) => state.user);
-  console.log(user);
   const dispatch = useDispatch();
   const [doctor, setDoctor] = useState(null);
   const [timeSlot, setTimeSlot] = useState();
@@ -25,16 +21,13 @@ const DoctorProfile = ({ axiosInstance }) => {
     const { token } = cookies;
     console.log(timeSlot)
     if (timeSlot.morningEnd - timeSlot.morningStart > 0 && timeSlot.eveningEnd - timeSlot.eveningStart > 0) {
-      try {
-        const responce = await doctorSlotbooking(token,timeSlot);
-        if(responce.type === 'data') {
-          message.success(responce.message);
-        }else{
-          message.error(responce.message);
-        }
-      } catch (error) {
-        console.log(error);
-        alert(error.message);
+      dispatch(showLoading());
+      const response = await updateDoctorTimeSlot(token, timeSlot);
+      dispatch(hideLoading());
+      if (response.type === 'data') {
+        message.success(response.message);
+      } else {
+        message.error(response.message);
       }
     } else {
       alert("time slot must require 1hr diffrence");
@@ -44,72 +37,34 @@ const DoctorProfile = ({ axiosInstance }) => {
   useEffect(() => {
     const fetchData = async () => {
       const { token } = cookies;
-      try {
-        dispatch(showLoading());
-
-        const responce = await getallDoctorInfo(token);
-        
-        dispatch(hideLoading());
-        
-        if (responce.type === 'data') {
-          console.log(responce.doctorList);
-          setDoctor(responce.doctorList);
-          setTimeSlot(responce.timeSlot);
-        } else {
-          message.error(responce.message);
-        }
-      } catch (error) {
-        console.log(error);
-        dispatch(hideLoading());
-        message.error("some thing went wrong");
+      dispatch(showLoading());
+      const response = await getDoctorDetails(token);
+      dispatch(hideLoading());
+      if (response.type === 'data') {
+        message.success(response.message)
+        setDoctor(response.doctor);
+        setTimeSlot(response.timeSlot);
+      } else {
+        message.error(response.message);
       }
     };
     fetchData();
     //eslint-disable-next-line
   }, []);
 
-  console.log(timeSlot)
   const handleTimeSlot = (e) => {
     const { name, value } = e.target;
     setTimeSlot(prevState => ({ ...prevState, [name]: value }))
   }
 
-
   return (
     <Layout removeCookies={removeCookies}>
       {doctor && (
         <>
-          <PersonalDetails axiosInstance={axiosInstance} />
-          <ProfessionalDetails axiosInstance={axiosInstance} doctor={doctor} setDoctor={setDoctor} />
+          <PersonalDetails />
+          <DoctorProfessionalDetails doctor={doctor} setDoctor={setDoctor} />
           <form onSubmit={updateTimeSlot}>
-            <select name="morningStart" value={timeSlot.morningStart} onChange={handleTimeSlot}>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-            </select>
-            <select name="morningEnd" value={timeSlot.morningEnd} onChange={handleTimeSlot}>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-            </select>
-            <select name="eveningStart" value={timeSlot.eveningStart} onChange={handleTimeSlot}>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
-              <option value="19">19</option>
-              <option value="20">20</option>
-            </select>
-            <select name="eveningEnd" value={timeSlot.eveningEnd} onChange={handleTimeSlot}>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
-              <option value="19">19</option>
-              <option value="20">20</option>
-            </select>
+            <ShowTimeSlot timeSlot={timeSlot} handleTimeSlot={handleTimeSlot} />
             <button type="submit">Update Time Slot</button>
           </form>
         </>

@@ -20,7 +20,6 @@ export const getAllUsersController = async (req, res) => {
 export const getAllDoctorsController = async (req, res) => {
     try {
         const doctors = await doctorModel.find({}, { password: 0 }).populate("user");
-        console.log(doctors)
         res.status(200).send({
             success: true,
             message: 'users data',
@@ -37,10 +36,7 @@ export const getAllDoctorsController = async (req, res) => {
 export const changeAccountStatusController = async (req, res) => {
     try {
         const { doctorId, status } = req.body;
-        console.log('from change staus')
-        console.log(req.body)
         const doctor = await doctorModel.findByIdAndUpdate(doctorId, { status });
-        console.log(doctor)
         const user = await userModel.findById({ _id: doctor.user });
         const notifications = user.notifications;
         notifications.push({
@@ -56,7 +52,6 @@ export const changeAccountStatusController = async (req, res) => {
             data: doctor
         })
     } catch (error) {
-        console.log(error);
         res.status(500).send({
             message: `error while fetching doctor list : ${error.message}`,
             success: false,
