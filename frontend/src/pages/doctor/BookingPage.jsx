@@ -92,7 +92,7 @@ const BookingPage = () => {
             console.log(data);
 
             const options = {
-                key :"rzp_test_d1W95fgZdAjWf9",
+                key :process.env.REACT_APP_Razorpay_key,
                 amount: data.data.amount,
                 currency: data.currency,
                 description: "Test Transaction",

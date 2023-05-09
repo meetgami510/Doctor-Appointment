@@ -7,8 +7,8 @@ function VideoMeeting() {
     const { roomId } = useParams();
     console.log(roomId);
     const fun = async (element) => {
-        const appId = 870658956;
-        const serverSecret = "e53c3721913aa21586e3fb29dff3e2a6";
+        const appId = process.env.REACT_APP_appID;
+        const serverSecret = process.env.REACT_APP_serverSecret;
         const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appId, serverSecret, roomId, Date.now().toString(), "Drumil");
         const zc = ZegoUIKitPrebuilt.create(kitToken);
         zc.joinRoom({
@@ -16,7 +16,7 @@ function VideoMeeting() {
             sharedLinks: [
                 {
                     name: "Copy Link",
-                    url: `http://localhost:3000/video-meeting/${roomId}`
+                    url: `${process.env.REACT_APP_meetinglink}/${roomId}`
                 }
             ],
             scenario: {

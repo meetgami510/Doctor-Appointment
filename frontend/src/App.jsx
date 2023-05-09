@@ -24,8 +24,9 @@ import UserAppointments from "./pages/UserAppointments";
 import VideoMeeting from "./pages/VideoMeeting";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
 import UserProfile from "./pages/UserProfile";
-function App() {
 
+function App() {
+  console.log(process.env.REACT_APP_BASE)
   return (
     <CookiesProvider>
       <BrowserRouter>
