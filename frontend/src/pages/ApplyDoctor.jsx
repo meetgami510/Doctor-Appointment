@@ -7,6 +7,7 @@ import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import { CookiesContext } from '../context/CookiesProvider';
 import { UploadOutlined } from '@ant-design/icons';
 import axiosInstance from '../utilities/axiosInstance';
+import ShowTimeSlot from '../components/Profile/ShowTimeSlot';
 // import moment from 'moment';
 
 const ApplyDoctor = () => {
@@ -116,35 +117,8 @@ const ApplyDoctor = () => {
                             <Input type="text" placeholder="your contact no" />
                         </Form.Item>
                     </Col>
-                    <select name="morningStart" value={timeSlot.morningStart} onChange={handleTimeSlot}>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                        <option value="13">13</option>
-                    </select>
-                    <select name="morningEnd" value={timeSlot.morningEnd} onChange={handleTimeSlot}>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                        <option value="13">13</option>
-                    </select>
-                    <select name="eveningStart" value={timeSlot.eveningStart} onChange={handleTimeSlot}>
-                        <option value="16">16</option>
-                        <option value="17">17</option>
-                        <option value="18">18</option>
-                        <option value="19">19</option>
-                        <option value="20">20</option>
-                    </select>
-                    <select name="eveningEnd" value={timeSlot.eveningEnd} onChange={handleTimeSlot}>
-                        <option value="16">16</option>
-                        <option value="17">17</option>
-                        <option value="18">18</option>
-                        <option value="19">19</option>
-                        <option value="20">20</option>
-                    </select>
-                    <Col xs={24} md={24} lg={8}>
+                    <ShowTimeSlot timeSlot={timeSlot} handleTimeSlot={handleTimeSlot} />
+                    {/* <Col xs={24} md={24} lg={8}>
                         <Form.Item label="Upload File" name="file">
                             <Upload
                                 accept=".pdf,.doc,.docx"
@@ -155,7 +129,7 @@ const ApplyDoctor = () => {
                                 <Button icon={<UploadOutlined />}>Upload</Button>
                             </Upload>
                         </Form.Item>
-                    </Col>
+                    </Col> */}
                     <Col xs={24} md={24} lg={8}></Col>
                     <Col xs={24} md={24} lg={8}>
                         <button className="btn btn-primary form-btn" type="submit">

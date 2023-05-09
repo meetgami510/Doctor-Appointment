@@ -1,6 +1,6 @@
 import axiosInstance from '../../../utilities/axiosInstance';
 
-const userbooking = async (token,params,user,doctor,timingSlot,textfeelling,meetingMode) => {
+const userbooking = async (token, params, user, doctor, timingSlot, textfeelling, meetingMode) => {
     try {
         const res = await axiosInstance.post(
             "/user/book-appointment",
@@ -19,29 +19,28 @@ const userbooking = async (token,params,user,doctor,timingSlot,textfeelling,meet
                 },
             }
         );
-       
         if (res.data.success) {
             return {
-                type : 'data',
-                message : res.data.message
+                type: 'data',
+                message: res.data.message
             }
         } else {
-           return {
-                type : 'error',
-                message : res.data.message
-           }
+            return {
+                type: 'error',
+                message: res.data.message
+            }
         }
     } catch (error) {
         return {
-            type : 'error',
-            message : "some thing went wrong"
-       }
-    }   
+            type: 'error',
+            message: "server error please try again"
+        }
+    }
 }
 
-const chechbookingAvalability = async (token,params,timingSlot) => {
+const chechbookingAvalability = async (token, params, timingSlot) => {
     try {
-        
+
         const res = await axiosInstance.post(
             "/user/booking-avalibility",
             { doctorId: params.doctorId, timingSlot },
@@ -51,54 +50,52 @@ const chechbookingAvalability = async (token,params,timingSlot) => {
                 },
             }
         );
-       
         if (res.data.success) {
             return {
-                type : 'data',
-                message : res.data.message
+                type: 'data',
+                message: res.data.message
             }
-            
         } else {
             return {
-                type : 'error',
-                message : res.data.message
+                type: 'error',
+                message: res.data.message
             }
         }
     } catch (error) {
         return {
-            type : 'error',
-            message : "some thing went wrong"
+            type: 'error',
+            message: "server error please try again"
         }
     }
 }
 
-const getAllNotifications = async (token) => { 
+const getAllNotifications = async (token) => {
     try {
-         const res = await axiosInstance.get('/user/get-all-notification',
+        const res = await axiosInstance.get('/user/get-all-notification',
             {
                 headers: {
                     Authorization: 'Bearer ' + token
                 }
             }
         );
-        
+
         if (res.data.success) {
             return {
-                type : 'data',
-                message : res.data.message,
+                type: 'data',
+                message: res.data.message,
                 userList: res.data.user
             }
-            
+
         } else {
             return {
-                type : 'data',
-                message : res.data.message
+                type: 'data',
+                message: res.data.message
             }
         }
     } catch (error) {
         return {
-            type : 'data',
-            message : 'some thing went wrong'
+            type: 'data',
+            message: 'some thing went wrong'
         }
     }
 }
@@ -110,28 +107,28 @@ const deletAllNotifications = async (token) => {
                 Authorization: 'Bearer ' + token
             }
         });
-        
+
         if (res.data.success) {
             return {
-                type : 'data',
-                message : res.data.message,
+                type: 'data',
+                message: res.data.message,
                 userList: res.data.user
             }
         } else {
             return {
-                type : 'data',
-                message : res.data.message
+                type: 'data',
+                message: res.data.message
             }
         }
     } catch (error) {
         return {
-            type : 'data',
-            message : 'some thing went wrong'
+            type: 'data',
+            message: 'some thing went wrong'
         }
     }
 }
 
-const getUserAppointments = async (token) => { 
+const getUserAppointments = async (token) => {
     try {
         const res = await axiosInstance.get('/user/appointments',
             {
@@ -141,23 +138,23 @@ const getUserAppointments = async (token) => {
             });
         if (res.data.success) {
             return {
-                type : 'data',
+                type: 'data',
                 message: res.data.message,
-                appointmentsList : res.data.appointments
+                appointmentsList: res.data.appointments
             }
         } else {
             return {
-                type : 'error',
-                message : res.data.message
+                type: 'error',
+                message: res.data.message
             }
         }
     } catch (error) {
         return {
-            type : 'error',
-            message : 'some thing went wrong'
+            type: 'error',
+            message: 'some thing went wrong'
         }
     }
 }
 
 
-export {userbooking , chechbookingAvalability ,getAllNotifications,deletAllNotifications,getUserAppointments } 
+export { userbooking, chechbookingAvalability, getAllNotifications, deletAllNotifications, getUserAppointments } 

@@ -2,7 +2,6 @@ import axiosInstance from '../../../utilities/axiosInstance';
 
 const updatePersonalData = async (token, values) => {
     try {
-
         const res = await axiosInstance.post(
             "/user/update-personal-details",
             {
@@ -57,17 +56,17 @@ const getUserData = async (token) => {
                 message: "Auth Fail"
             }
         }
-    }catch(error) {
+    } catch (error) {
         return {
             type: "error",
             message: "Auth Fail"
-        }      
+        }
     }
 }
 
 const getAlldoctor = async (token) => {
     try {
-       
+
         const res = await axiosInstance.get(
             '/user/getAllDoctor',
             {
@@ -76,27 +75,27 @@ const getAlldoctor = async (token) => {
                 }
             }
         );
-        
+
         if (res.data.success) {
             return {
-                type : 'data',
+                type: 'data',
                 message: res.data.message,
-                doctorList : res.data.doctorList
+                doctorList: res.data.doctorList
             }
-            
+
         } else {
             return {
-                type : 'error',
+                type: 'error',
                 message: res.data.message
             }
-            
+
         }
     } catch (error) {
-       return {
-        type : 'error',
-        message : 'some thing went wrong'
-       }
+        return {
+            type: 'error',
+            message: 'some thing went wrong'
+        }
     }
 }
 
-export { updatePersonalData, getUserData , getAlldoctor }
+export { updatePersonalData, getUserData, getAlldoctor }

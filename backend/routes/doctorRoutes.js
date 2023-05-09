@@ -3,17 +3,16 @@ const router = Router();
 
 import protect from '../middlerwares/authMiddleware.js';
 
-import { getDoctorByIdController, getDoctorInfoController, uploadDocumentpdfController, getDoctorAppointmentsController, updateAppointmentStatusController, sloatbookingController, updateProfessionalController } from '../controllers/doctorController.js';
-import { getAppointmentsController } from '../controllers/commonControllers.js';
+import { getDoctorByIdController, getDoctorInfoController, uploadDocumentpdfController, getDoctorAppointmentsController, updateAppointmentStatusController, sloatbookingController, updateProfessionalDetailsController } from '../controllers/doctorController.js';
 
 router.post('/getDoctorById', protect, getDoctorByIdController);
 
 // docotor Information || GET
 router.get('/getDoctorInfo', protect, getDoctorInfoController);
 
-router.post('/update-professional-details', protect, updateProfessionalController);
+router.post('/update-professional-details', protect, updateProfessionalDetailsController);
 
-router.get('/appointments', protect, getAppointmentsController);
+router.get('/appointments', protect, getDoctorAppointmentsController);
 
 router.post('/update-appointment-status', protect, updateAppointmentStatusController);
 
