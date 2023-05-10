@@ -7,6 +7,7 @@ import moment from 'moment';
 import twilio from "twilio";
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import { sendEmailhandler } from '../utilities/sendEmail.js';
 
 // login call back
 export const loginController = async (req, res) => {
@@ -419,13 +420,14 @@ export const makePaymentController = async (req,res) => {
 
 export const paymentVerificatonController = async (req,res) => { 
     try{
-        const {r_order_id,r_payment_id ,r_signature} = req.body;
+        const {razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body;
+        console.log(req.body);
+        const sign = razorpay_order_id + "|" + razorpay_payment_id;
 
-        const sign = r_order_id + "|" + r_payment_id;
+        const expectedSign = crypto.createHmac("sha256",process.env.KEY_SECRET).update(sign.toString()).digest("hex");
 
-        const expectedSign = crypto.createHmc("sha256",process.env.KEY_SECRET).update(sign.toString()).digest("hex");
-
-        if(r_signature === expectedSign) {
+        if(razorpay_signature === expectedSign) {
+            console.log("hiii");
             return res.status(200).json({
                 message : "payment verified succeffully",
             })
@@ -443,4 +445,18 @@ export const paymentVerificatonController = async (req,res) => {
             message: 'Payment is not Verified'
         })
     }
+}
+
+export const emailSendController = async (req,res) => {
+    console.log(req.body);
+
+    const user = await userModel.findById(req.body.userId);
+    console.log(user.email);
+
+    const temp = await sendEmailhandler(user.email,"For demo","for demo");
+    console.log(temp);
+
+    return res.status(200).send({
+        message:"email send succeffull",
+    })
 }

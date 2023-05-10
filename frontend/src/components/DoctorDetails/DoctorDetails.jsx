@@ -10,7 +10,7 @@ const DoctorAppointment = ({ doctor }) => {
     const [appointmentStatus, setAppointmentStatus] = useState(doctor.status);
     const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
-
+    
     const [editModalShow, setEditModalShow] = React.useState(false);
 
     const handleAccountStats = async (doctorId, status) => {
@@ -28,9 +28,9 @@ const DoctorAppointment = ({ doctor }) => {
     return (
         <>
             <tr key={doctor._id} className="font-size-14">
-                <td >Raj</td>
-                <td >raj@gmail.com</td>
-                <td >13-05-2003</td>
+                <td >{doctor.user.firstName + " " + doctor.user.lastName}</td>
+                <td >{doctor.user.email}</td>
+                <td >{}</td>
                 <td >
                     {appointmentStatus === "pending" ? (
                         <div className="d-flex">

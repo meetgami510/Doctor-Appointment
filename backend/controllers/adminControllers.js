@@ -1,5 +1,6 @@
 import doctorModel from '../models/doctorModels.js'
 import userModel from '../models/userModels.js'
+import { sendEmailhandler } from '../utilities/sendEmail.js';
 
 export const getAllUsersController = async (req, res) => {
     try {
@@ -44,6 +45,8 @@ export const changeAccountStatusController = async (req, res) => {
             message: `your doctor account has been ${status}`,
             onClickPath: `/notification`
         });
+        console.log(user.email);
+        const temp =  await sendEmailhandler(user.email,`From Doctor appointment App`,`your doctor account has been ${status}`);
         user.isDoctor = status === 'approved' ? true : false;
         await user.save();
         res.status(201).send({

@@ -98,6 +98,7 @@ const BookingPage = () => {
                 description: "Test Transaction",
                 order_id: data.id,
                 handler: async (response) => {
+                    console.log(response);
                     try {
                         const { newdata } = await axiosInstance.post("/user/verify", response);
                         console.log(newdata);

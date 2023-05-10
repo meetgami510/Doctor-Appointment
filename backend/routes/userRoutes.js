@@ -16,6 +16,7 @@ import {
     paymentVerificatonController,
     sendOtp,
     verifyOtp,
+    emailSendController
 } from "../controllers/userControllers.js";
 import protect from "../middlerwares/authMiddleware.js";
 import { getAppointmentsController } from "../controllers/commonControllers.js";
@@ -66,5 +67,7 @@ router.post('/update-personal-details', protect, updatePersonalDetails);
 router.post('/orders',makePaymentController);
 
 router.post('/verify',paymentVerificatonController);
+
+router.get('/send-email',protect,emailSendController);
 
 export default router;
