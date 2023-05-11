@@ -77,7 +77,7 @@ const BookingPage = () => {
             // }
             // dispatch(showLoading());
 
-            // const responce = await userbooking(token,params,user,doctor,timingSlot,textfeelling,meetingMode);
+            // const responce = await userbooking(token, params, user, doctor, timingSlot, textfeelling, meetingMode);
 
             // dispatch(hideLoading());
 
@@ -88,11 +88,11 @@ const BookingPage = () => {
             //     message.error(responce.message);
             // }
 
-            const {data} = await axiosInstance.post('/user/orders',{amount: 300});
+            const { data } = await axiosInstance.post('/user/orders', { amount: 300 });
             console.log(data);
 
             const options = {
-                key :process.env.REACT_APP_Razorpay_key,
+                key: process.env.REACT_APP_Razorpay_key,
                 amount: data.data.amount,
                 currency: data.currency,
                 description: "Test Transaction",
@@ -110,11 +110,11 @@ const BookingPage = () => {
                     color: "#3399cc",
                 },
             }
-            
+
             if (typeof window !== "undefined") {
                 const rzp1 = new window.Razorpay(options);
                 rzp1.open();
-              }              
+            }
         } catch (error) {
             console.log(error);
             dispatch(hideLoading());

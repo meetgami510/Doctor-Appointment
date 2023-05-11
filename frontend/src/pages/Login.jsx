@@ -1,13 +1,14 @@
 import { useContext, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
-import axios from "axios";
 import { CookiesContext } from "../context/CookiesProvider";
-import Layout from "../components/Layout/Layout";
 import '../styles/Login.css'
 import Spinner from "../components/Spinner";
 import axiosInstance from "../utilities/axiosInstance";
+import CryptoJS from 'crypto-js';
+const secretKey = process.env.REACT_APP_SECRET_KEY;
+
 
 const Login = () => {
   const { setCookies } = useContext(CookiesContext);
@@ -27,7 +28,9 @@ const Login = () => {
     event.preventDefault();
     try {
       dispatch(showLoading());
-      const res = await axiosInstance.post('/user/login', { email, password });
+      const objStr = JSON.stringify({ email, password });
+      const encryptedObj = CryptoJS.AES.encrypt(objStr, secretKey).toString();
+      const res = await axiosInstance.post('/user/login', { encryptedObj });
       dispatch(hideLoading());
       console.log(res.data);
       if (res.data.success) {

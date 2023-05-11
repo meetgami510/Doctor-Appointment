@@ -1,17 +1,21 @@
 import axiosInstance from '../../../utilities/axiosInstance';
+import encryptData from '../../../utilities/encryptData';
 
 const userbooking = async (token, params, user, doctor, timingSlot, textfeelling, meetingMode) => {
     try {
+        const encryptedObj = encryptData({
+            doctorId: params.doctorId,
+            userName: user.name,
+            doctorUserId: doctor.user._id,
+            userId: user._id,
+            timingSlot,
+            textfeelling,
+            meetingMode,
+        });
         const res = await axiosInstance.post(
             "/user/book-appointment",
             {
-                doctorId: params.doctorId,
-                userName: user.name,
-                doctorUserId: doctor.user._id,
-                userId: user._id,
-                timingSlot,
-                textfeelling,
-                meetingMode,
+                encryptedObj
             },
             {
                 headers: {
