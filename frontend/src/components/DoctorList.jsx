@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import '../styles/DoctorList.css'
+
 const DoctorList = ({ doctor }) => {
     console.log(doctor)
     const navigate = useNavigate();

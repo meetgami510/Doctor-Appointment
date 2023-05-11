@@ -27,6 +27,7 @@
     "nodemailer": "^6.9.1",
     "nodemon": "^2.0.22",
     "razorpay": "^2.8.6",
+    "shortid": "^2.2.16",
     "twilio": "^4.11.0",
     "uuid": "^9.0.0"
   },

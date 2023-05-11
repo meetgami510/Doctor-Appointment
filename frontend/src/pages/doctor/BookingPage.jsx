@@ -1,16 +1,19 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout/Layout";
 import { hideLoading, showLoading } from "../../redux/features/alertSlice";
-import "../../styles/Bookingpage.css"
+import "../../styles/Bookingpage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { CookiesContext } from "../../context/CookiesProvider";
 import { message } from "antd";
 import moment from "moment";
 import { getdoctorthroughid } from "../../components/Action/doctors/getDoctorDetails";
-import { chechbookingAvalability, userbooking } from "../../components/Action/users/bookingappointment";
-import axiosInstance from '../../utilities/axiosInstance';
-
+import {
+    chechbookingAvalability,
+    userbooking,
+} from "../../components/Action/users/bookingappointment";
+import axiosInstance from "../../utilities/axiosInstance";
+import axios from "axios";
 
 const BookingPage = () => {
     const { removeCookies, cookies } = useContext(CookiesContext);
@@ -49,7 +52,7 @@ const BookingPage = () => {
             dispatch(showLoading());
             const responce = await getdoctorthroughid(token, params);
             dispatch(hideLoading());
-            if (responce.type === 'data') {
+            if (responce.type === "data") {
                 message.success(responce.message);
                 setDoctor(responce.doctorList);
                 morningSlots.current = generateTimeSlots(
@@ -68,6 +71,26 @@ const BookingPage = () => {
         //eslint-disable-next-line
     }, [cookies]);
 
+    const handlePaymentSuccess = async (paymentDetails) => {
+        console.log(paymentDetails);
+        const respon = await axios.post("/user/verify");
+        console.log(respon);
+        // try {
+
+        //   const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = paymentDetails;
+
+        //   // Verify the payment on the server
+        //   const verificationResponse = await axios.post('/user/verify', {
+        //     razorpay_payment_id,
+        //     razorpay_order_id,
+        //     razorpay_signature
+        //   });
+
+        //   console.log(verificationResponse.data);
+        // } catch (error) {
+        //   console.log(error);
+        // }
+    };
     const handleBooking = async () => {
         console.log(user);
         const { token } = cookies;
@@ -88,33 +111,64 @@ const BookingPage = () => {
             //     message.error(responce.message);
             // }
 
-            const {data} = await axiosInstance.post('/user/orders',{amount: 300});
-            console.log(data);
+            const { orderId, amount, currency } = await axiosInstance.post("/user/orders", { amount: 300, currency: 'INR', payment_capture: 1 });
+
 
             const options = {
-                key :process.env.REACT_APP_Razorpay_key,
-                amount: data.data.amount,
-                currency: data.currency,
-                description: "Test Transaction",
-                order_id: data.id,
+                key: process.env.REACT_APP_Razorpay_key,
+                amount: 1000,
+                currency,
+                name: 'Demo',
+                description: 'Test Payment',
+                image: 'https://avatars.githubusercontent.com/u/25058652?v=4',
+                order_id: orderId,
                 handler: async (response) => {
                     console.log(response);
                     try {
-                        const { newdata } = await axiosInstance.post("/user/verify", response);
-                        console.log(newdata);
+                        const verificationResponse = await axiosInstance.post('/user/verify', {
+                            razorpay_payment_id: response.razorpay_payment_id
+                        });
+                        console.log(verificationResponse)
                     } catch (error) {
-                        console.log(error);
+                        console.log(error)
                     }
+                    // handle successful payment response
+                },
+                prefill: {
+                    name: 'John Doe',
+                    email: 'john.doe@example.com',
+                    contact: '+919876543210'
+                },
+                notes: {
+                    address: 'Razorpay Corporate Office'
                 },
                 theme: {
-                    color: "#3399cc",
-                },
-            }
-            
+                    color: '#F37254'
+                }
+            };
+            // key :process.env.REACT_APP_Razorpay_key,
+            // amount: data.data.amount,
+            // currency: data.currency,
+            // description: "Test Transaction",
+            // order_id: data.id,
+            // handler: async (response) => {
+            //     console.log(response);
+            //     try {
+            //         console.log(response);
+            //         await handlePaymentSuccess(response);
+            //     } catch (error) {
+            //         console.log(error);
+            //     }
+            // },
+            // theme: {
+            //     color: "#3399cc",
+            // },
+            //   };
+
             if (typeof window !== "undefined") {
                 const rzp1 = new window.Razorpay(options);
                 rzp1.open();
-              }              
+            }
         } catch (error) {
             console.log(error);
             dispatch(hideLoading());
@@ -129,9 +183,9 @@ const BookingPage = () => {
         }
         const { token } = cookies;
         dispatch(showLoading());
-        const responce = await chechbookingAvalability(token, params, timingSlot)
+        const responce = await chechbookingAvalability(token, params, timingSlot);
         dispatch(hideLoading());
-        if (responce.type === 'data') {
+        if (responce.type === "data") {
             setAppointmentInfo((prevState) => ({
                 ...prevState,
                 isAvailable: true,
@@ -220,7 +274,10 @@ const BookingPage = () => {
                                             onChange={handleChange}
                                         />
                                     </div>
-                                    <button className="btn btn-dark mt-2 final-btn" onClick={handleBooking}>
+                                    <button
+                                        className="btn btn-dark mt-2 final-btn"
+                                        onClick={handleBooking}
+                                    >
                                         Book Now
                                     </button>
                                 </>
@@ -234,7 +291,6 @@ const BookingPage = () => {
 };
 
 export default BookingPage;
-
 
 function generateTimeSlots(start, end) {
     let timeSlots = [];

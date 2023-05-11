@@ -388,27 +388,52 @@ export const updatePersonalDetails = async (req, res) => {
     }
 }
 
-export const makePaymentController = async (req,res) => {
-    try{
+import shortid from 'shortid'
+
+export const makePaymentController = async (req, res) => {
+    // try {
+    //     const instance = new Razorpay({
+    //         key_id: process.env.KEY_ID,
+    //         key_secret: process.env.KEY_SECRET,
+    //     });
+
+    //     const option = {
+    //         amount: req.body.amount * 100,
+    //         currency: "INR",
+    //         receipt: crypto.randomBytes(10).toString("hex")
+    //     }
+    //     instance.orders.create(option, (error, order) => {
+    //         if (error) {
+    //             console.log(error);
+    //             return res.status(500).json({ message: "Somthing Went Wrong" });
+
+    //         }
+    //         return res.status(200).json({ data: order });
+    //     })
+    // } catch (error) {
+    //     console.log(error);
+    //     res.status(500).send({
+    //         success: false,
+    //         error,
+    //         message: 'Payment is Fauild'
+    //     })
+    // }
+
+    try {
         const instance = new Razorpay({
-            key_id : process.env.KEY_ID,
-            key_secret : process.env.KEY_SECRET,
+            key_id: process.env.KEY_ID,
+            key_secret: process.env.KEY_SECRET,
         });
-
+        console.log(req.body);
+        const { amount, currency, payment_capture } = req.body;
         const option = {
-            amount : req.body.amount*100,
+            amount: 1000,
             currency: "INR",
-            receipt:crypto.randomBytes(10).toString("hex")
+            payment_capture
         }
-        instance.orders.create(option,(error,order) => {
-            if(error) {
-                console.log(error);
-                return res.status(500).json({message: "Somthing Went Wrong"});
-
-            }
-            res.status(200).json({data : order});
-        })
-    }catch(error){
+        const order = await instance.orders.create(option);
+        return res.status(200).json({ orderId: order.id, amount, currency });
+    } catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
@@ -418,45 +443,87 @@ export const makePaymentController = async (req,res) => {
     }
 }
 
-export const paymentVerificatonController = async (req,res) => { 
-    try{
-        const {razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body;
+export const paymentVerificatonController = async (req, res) => {
+    try {
+        console.log(req.body)
+        // return res.status(200).json({ message: "helo" })
+        console.log("here")
+        // const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+        const { razorpay_payment_id } = req.body;
         console.log(req.body);
-        const sign = razorpay_order_id + "|" + razorpay_payment_id;
 
-        const expectedSign = crypto.createHmac("sha256",process.env.KEY_SECRET).update(sign.toString()).digest("hex");
+        const razorpay = new Razorpay({
+            key_id: process.env.KEY_ID,
+            key_secret: process.env.KEY_SECRET,
+        });
 
-        if(razorpay_signature === expectedSign) {
+        const payment = await razorpay.payments.fetch(razorpay_payment_id);
+        console.log(payment);
+        // const sign = razorpay_order_id + "|" + razorpay_payment_id;
+
+        // const expectedSign = crypto.createHmac("sha256", process.env.KEY_SECRET).update(sign.toString()).digest("hex");
+        // console.log(expectedSign)
+        if (payment.status === 'captured') {
             console.log("hiii");
             return res.status(200).json({
-                message : "payment verified succeffully",
+                message: "payment verified succeffully",
             })
-        }else{
+        } else {
+            console.log("falst1")
             return res.status(200).json({
-                message : "Invalid signature sent",
+                message: "Invalid signature sent",
             })
         }
 
-    }catch(error){
+    } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             error,
             message: 'Payment is not Verified'
         })
     }
+
+    // try {
+    //     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    //     console.log("we are here")
+    //     console.log(req.body);
+
+    //     const sign = razorpay_order_id + "|" + razorpay_payment_id;
+
+    //     const expectedSign = crypto.createHmac("sha256", process.env.KEY_SECRET).update(sign.toString()).digest("hex");
+
+    //     if (razorpay_signature === expectedSign) {
+    //         console.log("hiii");
+    //         return res.status(200).json({
+    //             message: "payment verified succeffully",
+    //         })
+    //     } else {
+    //         return res.status(200).json({
+    //             message: "Invalid signature sent",
+    //         })
+    //     }
+
+    // } catch (error) {
+    //     console.log(error);
+    //     res.status(500).send({
+    //         success: false,
+    //         error,
+    //         message: 'Payment is not Verified'
+    //     })
+    // }
 }
 
-export const emailSendController = async (req,res) => {
+export const emailSendController = async (req, res) => {
     console.log(req.body);
 
     const user = await userModel.findById(req.body.userId);
     console.log(user.email);
 
-    const temp = await sendEmailhandler(user.email,"For demo","for demo");
+    const temp = await sendEmailhandler(user.email, "For demo", "for demo");
     console.log(temp);
 
     return res.status(200).send({
-        message:"email send succeffull",
+        message: "email send succeffull",
     })
 }
