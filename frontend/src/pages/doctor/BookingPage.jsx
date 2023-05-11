@@ -100,7 +100,7 @@ const BookingPage = () => {
             // }
             // dispatch(showLoading());
 
-            // const responce = await userbooking(token,params,user,doctor,timingSlot,textfeelling,meetingMode);
+            // const responce = await userbooking(token, params, user, doctor, timingSlot, textfeelling, meetingMode);
 
             // dispatch(hideLoading());
 

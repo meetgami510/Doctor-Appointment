@@ -16,7 +16,6 @@ const UserAppointments = ({ axiosInstance }) => {
             const { token } = cookies;
             try {
                 const responce = await getUserAppointments(token);
-
                 if (responce.type === 'data') {
                     message.success(responce.message);
                     console.log(responce.appointmentsList);

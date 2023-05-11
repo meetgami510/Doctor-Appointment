@@ -1,11 +1,14 @@
 import axiosInstance from '../../../utilities/axiosInstance';
+import encryptData from '../../../utilities/encryptData';
+
 
 const updatePersonalData = async (token, values) => {
     try {
+        const encryptedObj = encryptData(values);
         const res = await axiosInstance.post(
             "/user/update-personal-details",
             {
-                ...values,
+                encryptedObj,
             },
             {
                 headers: {

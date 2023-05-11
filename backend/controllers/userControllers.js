@@ -8,11 +8,17 @@ import twilio from "twilio";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { sendEmailhandler } from '../utilities/sendEmail.js';
+import CryptoJS from 'crypto-js';
+import decryptData from '../utilities/decryptData.js';
 
 // login call back
 export const loginController = async (req, res) => {
-    const { email, password } = req.body;
+    const { encryptedObj } = req.body;
+    console.log(process.env.CRYPTO_SECRET_KEY)
+
     try {
+        const { email, password } = decryptData(encryptedObj);
+        console.log({ email, password })
         const user = await userModel.findOne({ email });
         if (user) {
             console.log(password);
@@ -95,7 +101,9 @@ export const verifyOtp = async (req, res) => {
 export const registerController = async (req, res) => {
     console.log(req.body);
     try {
-        const { user } = req.body;
+        const { encryptedObj } = req.body;
+        const bytes = CryptoJS.AES.decrypt(encryptedObj, secretKey);
+        const { user } = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         const checkUser = await userModel.findOne({ $or: [{ email: user.email }, { phone: user.phone }] });
         console.log(checkUser);
         if (checkUser) {
@@ -262,8 +270,10 @@ export const getAllDoctorController = async (req, res) => {
 }
 
 export const bookAppointmentController = async (req, res) => {
+    const { encryptedObj } = req.body;
     try {
-        const { doctorId, userId, timingSlot, doctorUserId, userName, textfeelling, meetingMode } = req.body;
+        const decryptedObj = decryptData(encryptedObj);
+        const { doctorId, userId, timingSlot, doctorUserId, userName, textfeelling, meetingMode } = decryptedObj;
         const date = moment().add(1, 'day').toDate().toLocaleDateString();
         console.log(date)
         if ("" === textfeelling) {
@@ -365,11 +375,13 @@ export const userAppointmentController = async (req, res) => {
 }
 
 export const updatePersonalDetails = async (req, res) => {
+    const { encryptedObj } = req.body;
     try {
         console.log(req.body);
+        const decryptedObj = decryptData(encryptedObj);
         const user = await userModel.findByIdAndUpdate(
             req.body.userId,
-            req.body,
+            decryptedObj,
             { new: true }
         );
         console.log(user)
@@ -388,38 +400,8 @@ export const updatePersonalDetails = async (req, res) => {
     }
 }
 
-import shortid from 'shortid'
-
-export const makePaymentController = async (req, res) => {
-    // try {
-    //     const instance = new Razorpay({
-    //         key_id: process.env.KEY_ID,
-    //         key_secret: process.env.KEY_SECRET,
-    //     });
-
-    //     const option = {
-    //         amount: req.body.amount * 100,
-    //         currency: "INR",
-    //         receipt: crypto.randomBytes(10).toString("hex")
-    //     }
-    //     instance.orders.create(option, (error, order) => {
-    //         if (error) {
-    //             console.log(error);
-    //             return res.status(500).json({ message: "Somthing Went Wrong" });
-
-    //         }
-    //         return res.status(200).json({ data: order });
-    //     })
-    // } catch (error) {
-    //     console.log(error);
-    //     res.status(500).send({
-    //         success: false,
-    //         error,
-    //         message: 'Payment is Fauild'
-    //     })
-    // }
-
-    try {
+export const makePaymentController = async (req,res) => {
+    try{
         const instance = new Razorpay({
             key_id: process.env.KEY_ID,
             key_secret: process.env.KEY_SECRET,
@@ -427,13 +409,19 @@ export const makePaymentController = async (req, res) => {
         console.log(req.body);
         const { amount, currency, payment_capture } = req.body;
         const option = {
-            amount: 1000,
+            amount : req.body.amount*100,
             currency: "INR",
-            payment_capture
+            receipt:crypto.randomBytes(10).toString("hex")
         }
-        const order = await instance.orders.create(option);
-        return res.status(200).json({ orderId: order.id, amount, currency });
-    } catch (error) {
+        instance.orders.create(option,(error,order) => {
+            if(error) {
+                console.log(error);
+                return res.status(500).json({message: "Somthing Went Wrong"});
+
+            }
+            res.status(200).json({data : order});
+        })
+    }catch(error){
         console.log(error);
         res.status(500).send({
             success: false,
@@ -443,13 +431,9 @@ export const makePaymentController = async (req, res) => {
     }
 }
 
-export const paymentVerificatonController = async (req, res) => {
-    try {
-        console.log(req.body)
-        // return res.status(200).json({ message: "helo" })
-        console.log("here")
-        // const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-        const { razorpay_payment_id } = req.body;
+export const paymentVerificatonController = async (req,res) => { 
+    try{
+        const {razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body;
         console.log(req.body);
 
         const razorpay = new Razorpay({
@@ -457,19 +441,14 @@ export const paymentVerificatonController = async (req, res) => {
             key_secret: process.env.KEY_SECRET,
         });
 
-        const payment = await razorpay.payments.fetch(razorpay_payment_id);
-        console.log(payment);
-        // const sign = razorpay_order_id + "|" + razorpay_payment_id;
+        const expectedSign = crypto.createHmac("sha256",process.env.KEY_SECRET).update(sign.toString()).digest("hex");
 
-        // const expectedSign = crypto.createHmac("sha256", process.env.KEY_SECRET).update(sign.toString()).digest("hex");
-        // console.log(expectedSign)
-        if (payment.status === 'captured') {
+        if(razorpay_signature === expectedSign) {
             console.log("hiii");
             return res.status(200).json({
                 message: "payment verified succeffully",
             })
-        } else {
-            console.log("falst1")
+        }else{
             return res.status(200).json({
                 message: "Invalid signature sent",
             })

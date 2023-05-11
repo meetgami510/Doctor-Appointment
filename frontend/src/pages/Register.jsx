@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../redux/features/alertSlice';
 import axiosInstance from '../utilities/axiosInstance';
-
+import CryptoJS from 'crypto-js';
+const secretKey = process.env.REACT_APP_SECRET_KEY;
+console.log(process.env.REACT_APP_SECRET_KEY)
 
 const Register = () => {
   const navigate = useNavigate();
@@ -24,7 +26,7 @@ const Register = () => {
     if (event) event.preventDefault();
     try {
       dispatch(showLoading());
-      const { data: resp } = await axiosInstance.post('/user/send-otp',{contact:userData.phone});
+      const { data: resp } = await axiosInstance.post('/user/send-otp', { contact: userData.phone });
       dispatch(hideLoading());
       console.log(resp)
       if (resp.success) {
@@ -65,7 +67,9 @@ const Register = () => {
       const { data: resp } = await axiosInstance.post('/user//verify-otp', { contact: userData.phone, otp });
       console.log(resp);
       if (resp.success) {
-        const res = await axiosInstance.post('/user/register', { user: userData });
+        const objStr = JSON.stringify({ user: userData });
+        const encryptedObj = CryptoJS.AES.encrypt(objStr, secretKey).toString();
+        const res = await axiosInstance.post('/user/register', { encryptedObj });
         dispatch(hideLoading());
         if (res.data.success) {
           alert('registerd successfully!');
