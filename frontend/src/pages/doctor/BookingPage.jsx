@@ -1,19 +1,16 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout/Layout";
 import { hideLoading, showLoading } from "../../redux/features/alertSlice";
-import "../../styles/Bookingpage.css";
+import "../../styles/Bookingpage.css"
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { CookiesContext } from "../../context/CookiesProvider";
 import { message } from "antd";
 import moment from "moment";
 import { getdoctorthroughid } from "../../components/Action/doctors/getDoctorDetails";
-import {
-    chechbookingAvalability,
-    userbooking,
-} from "../../components/Action/users/bookingappointment";
-import axiosInstance from "../../utilities/axiosInstance";
-import axios from "axios";
+import { chechbookingAvalability, userbooking } from "../../components/Action/users/bookingappointment";
+import axiosInstance from '../../utilities/axiosInstance';
+
 
 const BookingPage = () => {
     const { removeCookies, cookies } = useContext(CookiesContext);
@@ -52,7 +49,7 @@ const BookingPage = () => {
             dispatch(showLoading());
             const responce = await getdoctorthroughid(token, params);
             dispatch(hideLoading());
-            if (responce.type === "data") {
+            if (responce.type === 'data') {
                 message.success(responce.message);
                 setDoctor(responce.doctorList);
                 morningSlots.current = generateTimeSlots(
@@ -71,64 +68,43 @@ const BookingPage = () => {
         //eslint-disable-next-line
     }, [cookies]);
 
-    const handlePaymentSuccess = async (paymentDetails) => {
-        console.log(paymentDetails);
-        const respon = await axios.post("/user/verify");
-        console.log(respon);
-        // try {
-
-        //   const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = paymentDetails;
-
-        //   // Verify the payment on the server
-        //   const verificationResponse = await axios.post('/user/verify', {
-        //     razorpay_payment_id,
-        //     razorpay_order_id,
-        //     razorpay_signature
-        //   });
-
-        //   console.log(verificationResponse.data);
-        // } catch (error) {
-        //   console.log(error);
-        // }
-    };
     const handleBooking = async () => {
         console.log(user);
         const { token } = cookies;
         try {
-            // if (!timingSlot) {
-            //     return alert("date and time is required");
-            // }
-            // dispatch(showLoading());
+            if (!timingSlot) {
+                return alert("date and time is required");
+            }
 
-            // const responce = await userbooking(token, params, user, doctor, timingSlot, textfeelling, meetingMode);
-
-            // dispatch(hideLoading());
-
-            // if (responce.type === 'data') {
-            //     message.success(responce.message);
-            //     navigate("/");
-            // } else {
-            //     message.error(responce.message);
-            // }
-
-            const { orderId, amount, currency } = await axiosInstance.post("/user/orders", { amount: 300, currency: 'INR', payment_capture: 1 });
-
-
+            const { data: { data: order } } = await axiosInstance.post("/user/orders", { amount: doctor.feesPerCunsaltation * 100, currency: 'INR', payment_capture: 1 });
+            console.log(order)
+            console.log(process.env.REACT_APP_Razorpay_key)
             const options = {
                 key: process.env.REACT_APP_Razorpay_key,
-                amount: 1000,
-                currency,
+                amount: order.amount,
+                currency: "INR",
                 name: 'Demo',
                 description: 'Test Payment',
                 image: 'https://avatars.githubusercontent.com/u/25058652?v=4',
-                order_id: orderId,
+                order_id: order.id,
                 handler: async (response) => {
                     console.log(response);
                     try {
                         const verificationResponse = await axiosInstance.post('/user/verify', {
                             razorpay_payment_id: response.razorpay_payment_id
                         });
-                        console.log(verificationResponse)
+                        console.log(verificationResponse);
+                        if (verificationResponse.data.success) {
+                            dispatch(showLoading());
+                            const response = await userbooking(token, params, user, doctor, timingSlot, textfeelling, meetingMode);
+                            dispatch(hideLoading());
+                            if (response.type === 'data') {
+                                message.success(response.message);
+                                navigate("/");
+                            } else {
+                                message.error(response.message);
+                            }
+                        }
                     } catch (error) {
                         console.log(error)
                     }
@@ -146,29 +122,9 @@ const BookingPage = () => {
                     color: '#F37254'
                 }
             };
-            // key :process.env.REACT_APP_Razorpay_key,
-            // amount: data.data.amount,
-            // currency: data.currency,
-            // description: "Test Transaction",
-            // order_id: data.id,
-            // handler: async (response) => {
-            //     console.log(response);
-            //     try {
-            //         console.log(response);
-            //         await handlePaymentSuccess(response);
-            //     } catch (error) {
-            //         console.log(error);
-            //     }
-            // },
-            // theme: {
-            //     color: "#3399cc",
-            // },
-            //   };
 
-            if (typeof window !== "undefined") {
-                const rzp1 = new window.Razorpay(options);
-                rzp1.open();
-            }
+            const rzp1 = new window.Razorpay(options);
+            rzp1.open();
         } catch (error) {
             console.log(error);
             dispatch(hideLoading());
@@ -183,9 +139,9 @@ const BookingPage = () => {
         }
         const { token } = cookies;
         dispatch(showLoading());
-        const responce = await chechbookingAvalability(token, params, timingSlot);
+        const responce = await chechbookingAvalability(token, params, timingSlot)
         dispatch(hideLoading());
-        if (responce.type === "data") {
+        if (responce.type === 'data') {
             setAppointmentInfo((prevState) => ({
                 ...prevState,
                 isAvailable: true,
@@ -215,7 +171,7 @@ const BookingPage = () => {
                             </div>
                             <div>
                                 <h4 className="firstname">Speciallization:</h4>
-                                <h5 className="doctor-name"> {doctor.feesPerCunsaltation}</h5>
+                                <h5 className="doctor-name"> {doctor.speciallization}</h5>
                             </div>
                         </div>
                         <h5 className="booking-subtitle">
@@ -274,10 +230,7 @@ const BookingPage = () => {
                                             onChange={handleChange}
                                         />
                                     </div>
-                                    <button
-                                        className="btn btn-dark mt-2 final-btn"
-                                        onClick={handleBooking}
-                                    >
+                                    <button className="btn btn-dark mt-2 final-btn" onClick={handleBooking}>
                                         Book Now
                                     </button>
                                 </>
@@ -291,6 +244,7 @@ const BookingPage = () => {
 };
 
 export default BookingPage;
+
 
 function generateTimeSlots(start, end) {
     let timeSlots = [];

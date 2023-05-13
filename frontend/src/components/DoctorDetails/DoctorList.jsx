@@ -13,7 +13,7 @@ const DoctorList = ({ doctorList }) => {
           <tr className="font-size-14">
             <th scope="col">Name</th>
             <th scope="col">Email</th>
-            <th scope="col">Date</th>
+            <th scope="col">Applied Date</th>
             <th scope="col">Actions</th>
             <th scope="col">show Details</th>
           </tr>

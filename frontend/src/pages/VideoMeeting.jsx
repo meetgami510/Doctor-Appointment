@@ -7,8 +7,10 @@ function VideoMeeting() {
     const { roomId } = useParams();
     console.log(roomId);
     const fun = async (element) => {
-        const appId = process.env.REACT_APP_appID;
+        const appId = Number(process.env.REACT_APP_appID);
         const serverSecret = process.env.REACT_APP_serverSecret;
+        console.log(appId)
+        console.log(serverSecret)
         const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appId, serverSecret, roomId, Date.now().toString(), "Drumil");
         const zc = ZegoUIKitPrebuilt.create(kitToken);
         zc.joinRoom({

@@ -39,7 +39,7 @@ function Appointment({ appointment, isDoctor }) {
         <>
             <tr key={appointment._id} className="font-size-14">
                 <td scope="row">{isDoctor ? (appointment.user.firstName + " " + appointment.user.lastName) : (appointment.doctor.user.firstName + " " + appointment.doctor.user.lastName)}</td>
-                <td scope="row">{appointment.date.substring(0, 10)}</td>
+                <td scope="row">{appointment.date}</td>
                 <td scope="row">{appointment.time}</td>
                 <td scope="row">{appointment.meetingMode}</td>
                 <td scope="row">
