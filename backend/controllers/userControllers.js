@@ -377,6 +377,7 @@ export const userAppointmentController = async (req, res) => {
 export const updatePersonalDetails = async (req, res) => {
     const { encryptedObj } = req.body;
     try {
+        
         console.log(req.body);
         const decryptedObj = decryptData(encryptedObj);
         const user = await userModel.findByIdAndUpdate(
@@ -406,6 +407,7 @@ export const makePaymentController = async (req, res) => {
             key_id: process.env.KEY_ID,
             key_secret: process.env.KEY_SECRET,
         });
+        
         console.log(req.body);
         const { amount, currency, payment_capture } = req.body;
         const option = {

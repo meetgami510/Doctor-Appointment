@@ -5,6 +5,7 @@ import { Table, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
 import { getAllguestuserData } from '../../components/Action/admin/getAllusersdata';
+import UserList from '../../components/UserDetails/UserList';
 
 const Users = () => {
     const { removeCookies, cookies } = useContext(CookiesContext);
@@ -28,39 +29,11 @@ const Users = () => {
         //eslint-disable-next-line
     }, []);
 
-    // antD table col
-    const columns = [
-        {
-            title: "Name",
-            dataIndex: "name",
-        },
-        {
-            title: "Email",
-            dataIndex: "email",
-        },
-        {
-            title: "Doctor",
-            dataIndex: "isDoctor",
-            render: (text, record) => <span>{record.isDoctor ? "Yes" : "No"}</span>,
-        },
-        // if admin press the block button then that particular user will be blocked
-        {
-            title: "Actions",
-            dataIndex: "actions",
-            render: (text, record) => (
-                <div className="d-flex">
-                    <button className="btn btn-danger">Block</button>
-                </div>
-            ),
-        },
-    ];
 
 
     return (
-        <Layout removeCookies={removeCookies}>
-            <h1 className="text-center m-2">Users List</h1>
-            <Table columns={columns} dataSource={userList} />
-        </Layout>
+            <UserList  userList={userList} />
+        
     )
 }
 
