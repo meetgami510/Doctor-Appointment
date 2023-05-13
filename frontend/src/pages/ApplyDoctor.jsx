@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../components/Layout/Layout";
 import { Form, Input, Button, Row, Col, Checkbox, Upload, message } from "antd";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,9 +14,15 @@ const ApplyDoctor = () => {
     const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
     const [file, setFile] = useState(null);
-    const [emailverify, setEmailverify] = useState();
+    // const [emailverify, setEmailverify] = useState();
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.user);
+
+    useEffect(() => {
+        console.log(user)
+        if (true === user?.isDoctor || true === user?.isAdmin)
+            navigate('/');
+    }, [user])
 
     const handleFileChange = (info) => {
         const { status, originFileObj } = info.file;
@@ -41,7 +47,7 @@ const ApplyDoctor = () => {
         ) {
             try {
                 dispatch(showLoading());
-                const res = await axiosInstance.post(
+                const response = await axiosInstance.post(
                     "/user/apply-doctor",
                     {
                         ...values,
@@ -56,14 +62,17 @@ const ApplyDoctor = () => {
                     }
                 );
                 dispatch(hideLoading());
-                if (!res.data.success) {
-                    message.error(res.data.message);
+                if (!response.data.success) {
+                    message.error(response.data.message);
                 } else {
-                    message.success(res.data.message);
+                    message.success(response.data.message);
                     navigate("/");
                 }
-                console.log(res.data);
+                console.log(response.data);
             } catch (error) {
+                if (error.message.includes("authenitication is failed")) {
+                    navigate('/')
+                }
                 console.log(error);
                 dispatch(hideLoading());
                 message.error("some thing went wrong");
@@ -90,57 +99,57 @@ const ApplyDoctor = () => {
     //     console.log("hiii")
     // };
     // if (emailverify) {
-        return (
-            <Layout>
-                {/* {emailverify && (
+    return (
+        <Layout>
+            {/* {emailverify && (
                     <> */}
-                        <h1 className="text-center">Apply Doctor</h1>
-                        <Form layout="vertical" onFinish={handleFinish} className="m-3">
-                            <h4 className="">Personal Details : </h4>
-                            <Row>
-                                <Col xs={24} md={24} lg={8}>
-                                    <Form.Item label="Website" name="website">
-                                        <Input type="text" placeholder="your website" />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                            <h4>Professional Details :</h4>
-                            <Row gutter={20}>
-                                <Col xs={24} md={24} lg={8}>
-                                    <Form.Item
-                                        label="Specialization"
-                                        name="specialization"
-                                        required
-                                        rules={[{ required: true }]}
-                                    >
-                                        <Input type="text" placeholder="your specialization" />
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={24} md={24} lg={8}>
-                                    <Form.Item
-                                        label="Experience"
-                                        name="experience"
-                                        required
-                                        rules={[{ required: true }]}
-                                    >
-                                        <Input type="text" placeholder="your experience" />
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={24} md={24} lg={8}>
-                                    <Form.Item
-                                        label="Fees Per Cunsaltation"
-                                        name="feesPerCunsaltation"
-                                        required
-                                        rules={[{ required: true }]}
-                                    >
-                                        <Input type="text" placeholder="your contact no" />
-                                    </Form.Item>
-                                </Col>
-                                <ShowTimeSlot
-                                    timeSlot={timeSlot}
-                                    handleTimeSlot={handleTimeSlot}
-                                />
-                                {/* <Col xs={24} md={24} lg={8}>
+            <h1 className="text-center">Apply Doctor</h1>
+            <Form layout="vertical" onFinish={handleFinish} className="m-3">
+                <h4 className="">Personal Details : </h4>
+                <Row>
+                    <Col xs={24} md={24} lg={8}>
+                        <Form.Item label="Website" name="website">
+                            <Input type="text" placeholder="your website" />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <h4>Professional Details :</h4>
+                <Row gutter={20}>
+                    <Col xs={24} md={24} lg={8}>
+                        <Form.Item
+                            label="Specialization"
+                            name="specialization"
+                            required
+                            rules={[{ required: true }]}
+                        >
+                            <Input type="text" placeholder="your specialization" />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} md={24} lg={8}>
+                        <Form.Item
+                            label="Experience"
+                            name="experience"
+                            required
+                            rules={[{ required: true }]}
+                        >
+                            <Input type="text" placeholder="your experience" />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} md={24} lg={8}>
+                        <Form.Item
+                            label="Fees Per Cunsaltation"
+                            name="feesPerCunsaltation"
+                            required
+                            rules={[{ required: true }]}
+                        >
+                            <Input type="text" placeholder="your contact no" />
+                        </Form.Item>
+                    </Col>
+                    <ShowTimeSlot
+                        timeSlot={timeSlot}
+                        handleTimeSlot={handleTimeSlot}
+                    />
+                    {/* <Col xs={24} md={24} lg={8}>
                             <Form.Item label="Upload File" name="file">
                                 <Upload
                                     accept=".pdf,.doc,.docx"
@@ -152,18 +161,18 @@ const ApplyDoctor = () => {
                                 </Upload>
                             </Form.Item>
                         </Col> */}
-                                <Col xs={24} md={24} lg={8}></Col>
-                                <Col xs={24} md={24} lg={8}>
-                                    <button className="btn btn-primary form-btn" type="submit">
-                                        Submit
-                                    </button>
-                                </Col>
-                            </Row>
-                        </Form>
-                    {/* </>
+                    <Col xs={24} md={24} lg={8}></Col>
+                    <Col xs={24} md={24} lg={8}>
+                        <button className="btn btn-primary form-btn" type="submit">
+                            Submit
+                        </button>
+                    </Col>
+                </Row>
+            </Form>
+            {/* </>
                 )} */}
-            </Layout>
-        );
+        </Layout>
+    );
     // }
     // else {
     //     return (

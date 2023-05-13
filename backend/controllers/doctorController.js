@@ -3,26 +3,6 @@ import doctorModel from "../models/doctorModels.js";
 import userModel from "../models/userModels.js";
 import { v4 as uuidv4 } from 'uuid';
 
-export const getDoctorByIdController = async (req, res) => {
-    try {
-        console.log(req.body.doctorId);
-        const doctor = await doctorModel.findById({ _id: req.body.doctorId }).populate("user");
-        console.log(doctor);
-        res.status(200).send({
-            success: true,
-            message: 'single doctor data fetch successfully',
-            doctor
-        })
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            success: false,
-            error,
-            message: 'doctor profile update issue'
-        })
-    }
-}
-
 export const getDoctorInfoController = async (req, res) => {
     try {
         const doctor = await doctorModel.findOne({ user: req.body.userId }).populate("user");
@@ -105,7 +85,8 @@ export const updateAppointmentStatusController = async (req, res) => {
     try {
         console.log("update");
         const { appointmentId, status } = req.body;
-        const meetingLink = `http://localhost:3000/video-meeting/${uuidv4()}`; // generates a unique ID
+        console.log(appointmentId)
+        const meetingLink = `http://localhost:3000/video-meeting/${appointmentId}`; // generates a unique ID
         const appointment = await appointmentModel.findByIdAndUpdate(appointmentId, { status, meetingLink });
         console.log(appointment)
         const user = await userModel.findOne({ _id: appointment.user });

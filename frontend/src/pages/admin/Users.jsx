@@ -5,23 +5,27 @@ import { Table, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
 import { getAllguestuserData } from '../../components/Action/admin/getAllusersdata';
+import { useNavigate } from 'react-router-dom';
 
 const Users = () => {
     const { removeCookies, cookies } = useContext(CookiesContext);
     const [userList, setUserList] = useState([]);
     const dispatch = useDispatch();
-
+    const navigate = useNavigate();
     useEffect(() => {
         const { token } = cookies;
         const fetchData = async () => {
             dispatch(showLoading());
-            const responce = await getAllguestuserData(token);
+            const response = await getAllguestuserData(token);
             dispatch(hideLoading());
-            if (responce.type === 'data') {
-                message.success(responce.message);
-                setUserList(responce.guestList);
+            if (response.type === 'data') {
+                message.success(response.message);
+                setUserList(response.guestList);
             } else {
-                message.error(responce.type);
+                if (response.message.includes("authenitication is failed")) {
+                    navigate('/')
+                }
+                message.error(response.type);
             }
         }
         fetchData();
@@ -54,7 +58,6 @@ const Users = () => {
             ),
         },
     ];
-
 
     return (
         <Layout removeCookies={removeCookies}>

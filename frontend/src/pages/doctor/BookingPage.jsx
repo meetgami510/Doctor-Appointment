@@ -47,21 +47,25 @@ const BookingPage = () => {
         const { token } = cookies;
         const getDoctorData = async () => {
             dispatch(showLoading());
-            const responce = await getdoctorthroughid(token, params);
+            const response = await getdoctorthroughid(token, params);
+            console.log(response)
             dispatch(hideLoading());
-            if (responce.type === 'data') {
-                message.success(responce.message);
-                setDoctor(responce.doctorList);
+            if (response.type === 'data') {
+                message.success(response.message);
+                setDoctor(response.doctorList);
                 morningSlots.current = generateTimeSlots(
-                    responce.morningStart,
-                    responce.morningEnd
+                    response.morningStart,
+                    response.morningEnd
                 );
                 eveningSlots.current = generateTimeSlots(
-                    responce.eveningStart,
-                    responce.eveningEnd
+                    response.eveningStart,
+                    response.eveningEnd
                 );
             } else {
-                message.error(responce.message);
+                if (response.message.includes("authenitication is failed")) {
+                    navigate('/')
+                }
+                message.error(response.message);
             }
         };
         getDoctorData();
@@ -76,7 +80,12 @@ const BookingPage = () => {
                 return alert("date and time is required");
             }
 
-            const { data: { data: order } } = await axiosInstance.post("/user/orders", { amount: doctor.feesPerCunsaltation * 100, currency: 'INR', payment_capture: 1 });
+            const { data: { data: order } } = await axiosInstance.post("/user/orders", { amount: doctor.feesPerCunsaltation * 100, currency: 'INR', payment_capture: 1 },
+                {
+                    headers: {
+                        authorization: "Bearer " + token,
+                    },
+                });
             console.log(order)
             console.log(process.env.REACT_APP_Razorpay_key)
             const options = {
@@ -92,7 +101,13 @@ const BookingPage = () => {
                     try {
                         const verificationResponse = await axiosInstance.post('/user/verify', {
                             razorpay_payment_id: response.razorpay_payment_id
-                        });
+                        },
+                            {
+                                headers: {
+                                    authorization: "Bearer " + token,
+                                },
+                            }
+                        );
                         console.log(verificationResponse);
                         if (verificationResponse.data.success) {
                             dispatch(showLoading());
@@ -139,16 +154,16 @@ const BookingPage = () => {
         }
         const { token } = cookies;
         dispatch(showLoading());
-        const responce = await chechbookingAvalability(token, params, timingSlot)
+        const response = await chechbookingAvalability(token, params, timingSlot)
         dispatch(hideLoading());
-        if (responce.type === 'data') {
+        if (response.type === 'data') {
             setAppointmentInfo((prevState) => ({
                 ...prevState,
                 isAvailable: true,
             }));
-            message.success(responce.message);
+            message.success(response.message);
         } else {
-            message.error(responce.message);
+            message.error(response.message);
         }
     };
 

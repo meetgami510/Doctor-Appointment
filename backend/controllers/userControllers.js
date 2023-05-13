@@ -29,7 +29,7 @@ export const loginController = async (req, res) => {
                     success: false
                 });
             } else {
-                var userType = "patient";
+                var userType = "user";
                 if (user.isDoctor) userType = "doctor";
                 else if (user.isAdmin) userType = "admin";
                 const token = jwt.sign({ id: user._id, userType }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -196,6 +196,48 @@ export const deleteAllNotificationController = async (req, res) => {
             success: false,
             error,
             message: 'error while fetching notifications'
+        })
+    }
+}
+
+export const getDoctorByIdController = async (req, res) => {
+    try {
+        console.log(req.body.doctorId);
+        const doctor = await doctorModel.findById({ _id: req.body.doctorId }).populate("user");
+        console.log(doctor);
+        res.status(200).send({
+            success: true,
+            message: 'single doctor data fetch successfully',
+            doctor
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'doctor profile update issue'
+        })
+    }
+}
+
+export const verifyVideoMeetingIdController = async (req, res) => {
+    try {
+        const response = await appointmentModel.findById(req.body.roomId).populate('doctor');
+        if (response && response.user === req.body.userId || response.doctor.user === req.body.userId) {
+            return res.status(200).json({
+                success: true
+            })
+        } else {
+            return res.status(200).json({
+                success: false
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'error while applying for doctor'
         })
     }
 }

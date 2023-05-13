@@ -6,27 +6,25 @@ import { useDispatch } from 'react-redux';
 import { CookiesContext } from '../context/CookiesProvider';
 import Appointments from '../components/Appointments/Appointments';
 import { getUserAppointments } from '../components/Action/users/bookingappointment';
+import { useNavigate } from 'react-router-dom';
 
 const UserAppointments = ({ axiosInstance }) => {
     const [appointments, setAppointments] = useState([]);
-    const { removeCookies, cookies } = useContext(CookiesContext);
-    const dispatch = useDispatch();
+    const { cookies } = useContext(CookiesContext);
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             const { token } = cookies;
-            try {
-                const responce = await getUserAppointments(token);
-                if (responce.type === 'data') {
-                    message.success(responce.message);
-                    console.log(responce.appointmentsList);
-                    setAppointments(responce.appointmentsList)
-                } else {
-                    message.error(responce.message);
+            const response = await getUserAppointments(token);
+            if (response.type === 'data') {
+                message.success(response.message);
+                console.log(response.appointmentsList);
+                setAppointments(response.appointmentsList)
+            } else {
+                if (response.message.includes("authenitication is failed")) {
+                    navigate('/')
                 }
-            } catch (error) {
-                console.log(error);
-                dispatch(hideLoading());
-                message.error('some thing went wrong');
+                message.error(response.message);
             }
         }
         fetchData();

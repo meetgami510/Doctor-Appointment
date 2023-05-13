@@ -5,22 +5,27 @@ import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
 import AllDoctors from '../../components/DoctorDetails/DoctorList';
 import { getAlldoctorsData } from '../../components/Action/admin/getAllusersdata';
+import { useNavigate } from 'react-router-dom';
 
 const Doctors = ({ axiosInstance }) => {
     const { cookies } = useContext(CookiesContext);
     const [doctorList, setDoctorList] = useState([]);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     useEffect(() => {
         const { token } = cookies;
         const fetchData = async () => {
             dispatch(showLoading());
-            const responce = await getAlldoctorsData(token);
+            const response = await getAlldoctorsData(token);
             dispatch(hideLoading());
-            if (responce.type === 'data') {
-                message.success(responce.message);
-                setDoctorList(responce.doctorList);
+            if (response.type === 'data') {
+                message.success(response.message);
+                setDoctorList(response.doctorList);
             } else {
-                message.error(responce.message);
+                if (response.message.includes("authenitication is failed")) {
+                    navigate('/')
+                }
+                message.error(response.message);
             }
         }
         fetchData();

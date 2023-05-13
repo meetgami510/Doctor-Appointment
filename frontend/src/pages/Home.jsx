@@ -8,30 +8,34 @@ import { CookiesContext } from "../context/CookiesProvider";
 import { getAlldoctor } from "../components/Action/users/getGuestUsers";
 import Fuse from "fuse.js";
 import "../styles/Home.css";
+import { useNavigate } from "react-router-dom";
 
 const Home = ({ axiosInstance }) => {
   const { cookies } = useContext(CookiesContext);
   const [doctors, setDoctors] = useState(null);
   const dispatch = useDispatch();
   const fuse = useRef(null);
-
+  const navigate = useNavigate();
   // get user data
   useEffect(() => {
     const { token } = cookies;
     const getDoctorData = async () => {
       try {
         dispatch(showLoading());
-        const responce = await getAlldoctor(token);
+        const response = await getAlldoctor(token);
         dispatch(hideLoading());
-        if (responce.type === "data") {
-          message.success(responce.message);
-          console.log(responce.doctorList);
-          setDoctors(responce.doctorList);
-          fuse.current = new Fuse(responce.doctorList, {
+        if (response.type === "data") {
+          message.success(response.message);
+          console.log(response.doctorList);
+          setDoctors(response.doctorList);
+          fuse.current = new Fuse(response.doctorList, {
             keys: ["specialization"],
           });
         } else {
-          message.error(responce.message);
+          if (response.message.includes("authenitication is failed")) {
+            navigate('/')
+          }
+          message.error(response.message);
         }
       } catch (error) {
         console.log(error);

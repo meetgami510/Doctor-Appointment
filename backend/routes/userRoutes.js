@@ -16,18 +16,13 @@ import {
     paymentVerificatonController,
     sendOtp,
     verifyOtp,
-    emailSendController
+    emailSendController,
+    getDoctorByIdController,
+    verifyVideoMeetingIdController
 } from "../controllers/userControllers.js";
-import protect from "../middlerwares/authMiddleware.js";
 import { getAppointmentsController } from "../controllers/commonControllers.js";
 
 // ROUTES
-
-// LOGIN || post
-router.post("/login", loginController);
-
-// REGISTER || post
-router.post("/register", registerController);
 
 // SENT OTP
 router.post("/send-otp", sendOtp);
@@ -36,38 +31,39 @@ router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
 
 // Auth || get
-router.get("/getUserData", protect, getUserDataController);
+router.get("/getUserData", getUserDataController);
 
 // notification Docotr || get
-router.get("/get-all-notification", protect, getAllNotificationController);
+router.get("/get-all-notification", getAllNotificationController);
 
 // delete all notifications || delete
-router.delete("/delete-all-notification", protect, deleteAllNotificationController);
+router.delete("/delete-all-notification", deleteAllNotificationController);
 
 // apply doctor || post
-router.post("/apply-doctor", protect, applyDoctorController);
+router.post("/apply-doctor", applyDoctorController);
+
+router.post('/getDoctorById', getDoctorByIdController);
 
 // get all doctor
-router.get("/getAllDoctor", protect, getAllDoctorController);
+router.get("/getAllDoctor", getAllDoctorController);
 
 //check availibality
-router.post('/booking-avalibility', protect, bookingAvailabilityController);
+router.post('/booking-avalibility', bookingAvailabilityController);
 
 // book appointment
-router.post("/book-appointment", protect, bookAppointmentController);
-
-// booking avliability
-router.post('/booking-avalibility', protect, bookingAvailabilityController);
+router.post("/book-appointment", bookAppointmentController);
 
 // show appointments
-router.get('/appointments', protect, getAppointmentsController);
+router.get('/appointments', getAppointmentsController);
 
-router.post('/update-personal-details', protect, updatePersonalDetails);
+router.post('/update-personal-details', updatePersonalDetails);
 
-router.post('/orders',makePaymentController);
+router.post('/orders', makePaymentController);
 
-router.post('/verify',paymentVerificatonController);
+router.post('/verify', paymentVerificatonController);
 
-router.get('/send-email',protect,emailSendController);
+router.post('/verify-video-meeting-id', verifyVideoMeetingIdController)
+
+router.get('/send-email', emailSendController);
 
 export default router;

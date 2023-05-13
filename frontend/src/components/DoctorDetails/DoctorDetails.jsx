@@ -7,22 +7,23 @@ import ViewDoctor from "./ViewDoctor";
 import { doctorStatus } from "../Action/admin/usersStatus";
 
 const DoctorAppointment = ({ doctor }) => {
-    const [appointmentStatus, setAppointmentStatus] = useState(doctor.status);
+    const [accountStatus, setAccountmentStatus] = useState(doctor.status);
     const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();
-
+    console.log(accountStatus)
     const [editModalShow, setEditModalShow] = React.useState(false);
 
     const handleAccountStats = async (doctorId, status) => {
         const { token } = cookies;
         dispatch(showLoading());
-        const responce = await doctorStatus(token, doctorId, status);
+        const response = await doctorStatus(token, doctorId, status);
         dispatch(hideLoading());
-        if (responce.type === 'data') {
-            message.success(responce.message);
-            setAppointmentStatus(status);
+        if (response.type === 'data') {
+            message.success(response.message);
+            console.log(status)
+            setAccountmentStatus(status);
         } else {
-            message.error(responce.message);
+            message.error(response.message);
         }
     }
     return (
@@ -32,7 +33,7 @@ const DoctorAppointment = ({ doctor }) => {
                 <td >{doctor.user.email}</td>
                 <td >{doctor.createdAt.substr(0, 10)}</td>
                 <td >
-                    {appointmentStatus === "pending" ? (
+                    {accountStatus === "pending" ? (
                         <div className="d-flex">
                             <button
                                 className="btn btn-success"
@@ -47,11 +48,11 @@ const DoctorAppointment = ({ doctor }) => {
                                 Reject
                             </button>
                         </div>
-                    ) : appointmentStatus}
+                    ) : accountStatus}
                 </td>
                 <td style={{ cursor: "pointer", padding: "10px" }} onClick={() => { setEditModalShow(true); }} > <i style={{ fontSize: "13px", color: "#0077b6" }} className="fas fa-edit"></i> </td>
 
-                <ViewDoctor show={editModalShow} onHide={() => setEditModalShow(false)} appointmentStatus={appointmentStatus} doctor={doctor} />
+                <ViewDoctor show={editModalShow} onHide={() => setEditModalShow(false)} doctor={doctor} />
             </tr>
         </>
     )

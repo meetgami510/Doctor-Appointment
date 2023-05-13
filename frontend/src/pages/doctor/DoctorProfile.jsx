@@ -9,11 +9,13 @@ import DoctorProfessionalDetails from "../../components/Profile/DoctorProfession
 import { getDoctorDetails } from "../../components/Action/doctors/getDoctorDetails";
 import { updateDoctorTimeSlot } from "../../components/Action/doctors/updateDoctorDetails";
 import ShowTimeSlot from "../../components/Profile/ShowTimeSlot";
+import { useNavigate } from "react-router-dom";
 
 const DoctorProfile = () => {
   const { removeCookies, cookies } = useContext(CookiesContext);
   const dispatch = useDispatch();
   const [doctor, setDoctor] = useState(null);
+  const navigate = useNavigate();
   const [timeSlot, setTimeSlot] = useState();
 
   const updateTimeSlot = async (event) => {
@@ -45,6 +47,9 @@ const DoctorProfile = () => {
         setDoctor(response.doctor);
         setTimeSlot(response.timeSlot);
       } else {
+        if (response.message.includes("authenitication is failed")) {
+          navigate('/')
+        }
         message.error(response.message);
       }
     };

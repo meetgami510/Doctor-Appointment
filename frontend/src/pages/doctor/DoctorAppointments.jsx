@@ -7,22 +7,25 @@ import { CookiesContext } from "../../context/CookiesProvider";
 import Appointment from '../../components/Appointments/Appointment';
 import Appointments from '../../components/Appointments/Appointments';
 import { getdoctorAppointment } from '../../components/Action/doctors/appointment';
+import { useNavigate } from 'react-router-dom';
 
 const DoctorAppointments = ({ axiosInstance }) => {
-    const { removeCookies, cookies } = useContext(CookiesContext);
+    const { cookies } = useContext(CookiesContext);
     const [appointments, setAppointments] = useState([]);
-
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             const { token } = cookies;
-            const responce = await getdoctorAppointment(token);
-            if (responce.type === 'data') {
-                message.success(responce.message);
-                console.log(responce.appointmentList);
-                setAppointments(responce.appointmentList);
+            const response = await getdoctorAppointment(token);
+            if (response.type === 'data') {
+                message.success(response.message);
+                console.log(response.appointmentList);
+                setAppointments(response.appointmentList);
             } else {
-                message.error(responce.message);
+                if (response.message.includes("authenitication is failed")) {
+                    navigate('/')
+                }
+                message.error(response.message);
             }
         }
         fetchData();
