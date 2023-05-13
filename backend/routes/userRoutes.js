@@ -66,4 +66,6 @@ router.post('/verify-video-meeting-id', verifyVideoMeetingIdController)
 
 router.get('/send-email', emailSendController);
 
+
+
 export default router;

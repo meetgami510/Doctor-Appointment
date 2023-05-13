@@ -61,3 +61,38 @@ export const changeAccountStatusController = async (req, res) => {
         });
     }
 }
+
+
+export const blockUsersControllers = async (req, res) => {
+    try{
+        const userdeleteId = req.body.userdeleteId;
+        console.log(userdeleteId);
+    
+        const isForeignKey = await doctorModel.exists({ foreignKey: ObjectId(userdeleteId) });
+    
+        let result;
+        if (isForeignKey) {
+          const result1 = await doctorModel.deleteMany({ foreignKey: ObjectId(userdeleteId) });
+          result = await userModel.deleteOne({ _id: ObjectId(userdeleteId) });
+        } else {
+          result = await userModel.deleteOne({ _id: ObjectId(userdeleteId) });
+        }
+    
+        if (result.deletedCount === 1) {
+          return res.status(201).send({
+            success: true,
+            message: `Delete Succeffully`,
+           });
+        }else{
+            return res.status(201).send({
+                success: false,
+                message: `MongoDB server Error`,
+               });
+        }
+    }catch(error){
+        res.status(500).send({
+            message: `error while fetching doctor list : ${error.message}`,
+            success: false,
+        });
+    }
+}

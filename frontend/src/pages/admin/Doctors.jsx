@@ -33,7 +33,7 @@ const Doctors = ({ axiosInstance }) => {
     }, []);
 
     return (
-        <AllDoctors axiosInstance={axiosInstance} doctorList={doctorList} />
+        <AllDoctors  doctorList={doctorList} />
     )
 }
 
