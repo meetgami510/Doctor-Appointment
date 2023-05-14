@@ -19,7 +19,7 @@ const DoctorAppointments = ({ axiosInstance }) => {
             const response = await getdoctorAppointment(token);
             if (response.type === 'data') {
                 message.success(response.message);
-                console.log(response.appointmentList);
+                
                 setAppointments(response.appointmentList);
             } else {
                 if (response.message.includes("authenitication is failed")) {

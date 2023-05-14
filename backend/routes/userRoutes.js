@@ -14,8 +14,6 @@ import {
     updatePersonalDetails,
     makePaymentController,
     paymentVerificatonController,
-    sendOtp,
-    verifyOtp,
     emailSendController,
     getDoctorByIdController,
     verifyVideoMeetingIdController
@@ -24,11 +22,7 @@ import { getAppointmentsController } from "../controllers/commonControllers.js";
 
 // ROUTES
 
-// SENT OTP
-router.post("/send-otp", sendOtp);
 
-// VERIFY OTP
-router.post("/verify-otp", verifyOtp);
 
 // Auth || get
 router.get("/getUserData", getUserDataController);

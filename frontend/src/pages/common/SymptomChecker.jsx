@@ -213,7 +213,7 @@ function SymptomChecker() {
         disable_groups: true,
       },
     };
-    console.log(body);
+    
     const resp = await api.diagnosis(body);
     setConditions(resp.conditions);
     console.log(resp);

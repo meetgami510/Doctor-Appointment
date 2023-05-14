@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../../utilities/axiosInstance';
 import { message } from 'antd';
 import { CookiesContext } from '../../context/CookiesProvider';
+import { vidoeMeetingLink } from '../../Action/users/paymentVerification';
 
 
 function VideoMeeting() {
@@ -14,13 +15,10 @@ function VideoMeeting() {
         const { token } = cookies;
         const fun1 = async () => {
             try {
-                const response = await axiosInstance.post('/user/verify-video-meeting-id', { roomId },
-                    {
-                        headers: {
-                            authorization: "Bearer " + token,
-                        },
-                    });
-                if (false === response.data.success) {
+
+                const response = await vidoeMeetingLink(token,roomId);
+                
+                if (response.type === 'error') {
                     navigate('/')
                 }
             } catch (error) {
@@ -34,12 +32,12 @@ function VideoMeeting() {
         }
         fun1();
     }, [roomId])
-    console.log(roomId);
+
+   
     const fun = async (element) => {
         const appId = Number(process.env.REACT_APP_appID);
         const serverSecret = process.env.REACT_APP_serverSecret;
-        console.log(appId)
-        console.log(serverSecret)
+       
         const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appId, serverSecret, roomId, Date.now().toString(), "Drumil");
         const zc = ZegoUIKitPrebuilt.create(kitToken);
         zc.joinRoom({

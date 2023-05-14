@@ -10,6 +10,7 @@ import moment from "moment";
 import { getdoctorthroughid } from "../../Action/doctors/getDoctorDetails";
 import { chechbookingAvalability, userbooking } from "../../Action/users/bookingappointment";
 import axiosInstance from '../../utilities/axiosInstance';
+import { userPaymentRequest, userPaymentVerify } from "../../Action/users/paymentVerification";
 
 
 const BookingPage = () => {
@@ -18,7 +19,7 @@ const BookingPage = () => {
     const { user } = useSelector((state) => state.user);
     const navigate = useNavigate();
     console.log(moment().add(1, "day").format("YYYY-MM-DD"));
-    console.log(user);
+    
     const dispatch = useDispatch();
     const params = useParams();
 
@@ -37,8 +38,7 @@ const BookingPage = () => {
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        console.log(event.target);
-        console.log(event.target.value);
+        
         setAppointmentInfo((prevState) => ({ ...prevState, [name]: value }));
     };
 
@@ -47,8 +47,9 @@ const BookingPage = () => {
         const { token } = cookies;
         const getDoctorData = async () => {
             dispatch(showLoading());
+
             const response = await getdoctorthroughid(token, params);
-            console.log(response)
+            
             dispatch(hideLoading());
             if (response.type === 'data') {
                 message.success(response.message);
@@ -73,43 +74,35 @@ const BookingPage = () => {
     }, [cookies]);
 
     const handleBooking = async () => {
-        console.log(user);
+        
         const { token } = cookies;
         try {
             if (!timingSlot) {
                 return alert("date and time is required");
             }
-
-            const { data: { data: order } } = await axiosInstance.post("/user/orders", { amount: doctor.feesPerCunsaltation * 100, currency: 'INR', payment_capture: 1 },
-                {
-                    headers: {
-                        authorization: "Bearer " + token,
-                    },
-                });
-            console.log(order)
-            console.log(process.env.REACT_APP_Razorpay_key)
+            const response = await userPaymentRequest(token,doctor.feesPerCunsaltation);
+            // const { data: { data: order } } = await axiosInstance.post("/user/orders", { amount: doctor.feesPerCunsaltation * 100, currency: 'INR', payment_capture: 1 },
+            //     {
+            //         headers: {
+            //             authorization: "Bearer " + token,
+            //         },
+            //     });
+            
+            
             const options = {
                 key: process.env.REACT_APP_Razorpay_key,
-                amount: order.amount,
+                amount: response.amount,
                 currency: "INR",
                 name: 'Demo',
                 description: 'Test Payment',
                 image: 'https://avatars.githubusercontent.com/u/25058652?v=4',
-                order_id: order.id,
+                order_id: response.id,
                 handler: async (response) => {
-                    console.log(response);
+                    
                     try {
-                        const verificationResponse = await axiosInstance.post('/user/verify', {
-                            razorpay_payment_id: response.razorpay_payment_id
-                        },
-                            {
-                                headers: {
-                                    authorization: "Bearer " + token,
-                                },
-                            }
-                        );
-                        console.log(verificationResponse);
-                        if (verificationResponse.data.success) {
+                        const verificationResponse = await userPaymentVerify(token,response.razorpay_payment_id);
+                        
+                        if (verificationResponse.type === 'data') {
                             dispatch(showLoading());
                             const response = await userbooking(token, params, user, doctor, timingSlot, textfeelling, meetingMode);
                             dispatch(hideLoading());
@@ -119,9 +112,14 @@ const BookingPage = () => {
                             } else {
                                 message.error(response.message);
                             }
+                        }else{
+                            dispatch(hideLoading());
+                            message.error(verificationResponse.message);
                         }
                     } catch (error) {
-                        console.log(error)
+                        
+                        dispatch(hideLoading());
+                        message.error("some thing went wrong");
                     }
                     // handle successful payment response
                 },
@@ -141,7 +139,6 @@ const BookingPage = () => {
             const rzp1 = new window.Razorpay(options);
             rzp1.open();
         } catch (error) {
-            console.log(error);
             dispatch(hideLoading());
             message.error("some thing went wrong");
         }

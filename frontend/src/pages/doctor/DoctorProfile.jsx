@@ -21,7 +21,7 @@ const DoctorProfile = () => {
   const updateTimeSlot = async (event) => {
     event.preventDefault();
     const { token } = cookies;
-    console.log(timeSlot)
+    
     if (timeSlot.morningEnd - timeSlot.morningStart > 0 && timeSlot.eveningEnd - timeSlot.eveningStart > 0) {
       dispatch(showLoading());
       const response = await updateDoctorTimeSlot(token, timeSlot);

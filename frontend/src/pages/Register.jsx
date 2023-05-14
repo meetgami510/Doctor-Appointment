@@ -4,8 +4,9 @@ import { useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../redux/features/alertSlice';
 import axiosInstance from '../utilities/axiosInstance';
 import CryptoJS from 'crypto-js';
+import { registerUsers, sendOtpTouser, verifyOtpofUser } from '../Action/users/loginandregister';
 const secretKey = process.env.REACT_APP_SECRET_KEY;
-console.log(process.env.REACT_APP_SECRET_KEY)
+
 
 const Register = () => {
   const navigate = useNavigate();
@@ -26,14 +27,16 @@ const Register = () => {
     if (event) event.preventDefault();
     try {
       dispatch(showLoading());
-      const { data: resp } = await axiosInstance.post('/user/send-otp', { contact: userData.phone });
+
+      const response = await sendOtpTouser(userData.phone);
+
+      //const { data: resp } = await axiosInstance.post('/user/send-otp', { contact: userData.phone });
       dispatch(hideLoading());
-      console.log(resp)
-      if (resp.success) {
-        alert('otp sent successfully');
+     
+      if (response.type === 'data') {
+        alert(response.message);
       } else {
-        console.log(resp)
-        alert("server error please try again");
+        alert(response.message);
       }
     } catch (error) {
       dispatch(hideLoading());
@@ -64,22 +67,22 @@ const Register = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const { data: resp } = await axiosInstance.post('/user//verify-otp', { contact: userData.phone, otp });
-      console.log(resp);
-      if (resp.success) {
-        const objStr = JSON.stringify({ user: userData });
-        const encryptedObj = CryptoJS.AES.encrypt(objStr, secretKey).toString();
-        const res = await axiosInstance.post('/user/register', { encryptedObj });
+      const response = await verifyOtpofUser(userData.phone,otp);
+
+      if(response.type === 'data') {
+        const registerresponse = await registerUsers(userData);
         dispatch(hideLoading());
-        if (res.data.success) {
-          alert('registerd successfully!');
+
+        if(registerresponse.type === 'data') {
+          alert(registerresponse.message);
           navigate('/login')
-        } else {
-          alert(res.data.message);
+        }else{
+          alert(registerresponse.message);
         }
-      } else {
-        alert("otp is not match");
+      }else{
+        alert(response.message)
       }
+      
     } catch (error) {
       dispatch(hideLoading());
       console.log(error)

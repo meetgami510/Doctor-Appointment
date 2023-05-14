@@ -10,24 +10,28 @@ import Fuse from "fuse.js";
 import "../styles/Home.css";
 import { useNavigate } from "react-router-dom";
 
-const Home = ({ axiosInstance }) => {
+const Home = () => {
   const { cookies } = useContext(CookiesContext);
   const [doctors, setDoctors] = useState(null);
   const dispatch = useDispatch();
   const fuse = useRef(null);
   const navigate = useNavigate();
+
   // get user data
   useEffect(() => {
     const { token } = cookies;
     const getDoctorData = async () => {
       try {
         dispatch(showLoading());
+
         const response = await getAlldoctor(token);
+        
         dispatch(hideLoading());
         if (response.type === "data") {
+
           message.success(response.message);
-          console.log(response.doctorList);
           setDoctors(response.doctorList);
+          
           fuse.current = new Fuse(response.doctorList, {
             keys: ["specialization"],
           });
@@ -38,7 +42,7 @@ const Home = ({ axiosInstance }) => {
           message.error(response.message);
         }
       } catch (error) {
-        console.log(error);
+        
         dispatch(hideLoading());
         message.error("some thing went wrong");
       }
@@ -53,7 +57,7 @@ const Home = ({ axiosInstance }) => {
       if ("" !== query) {
         const result = fuse.current.search(query);
         const doctorList = [];
-        console.log(result);
+        
         result.forEach((result) => {
           doctorList.push(result.item);
         });

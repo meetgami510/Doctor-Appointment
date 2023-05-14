@@ -14,10 +14,8 @@ const Notification = ({ axiosInstance }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.user);
-    console.log(user)
-    // const { notifications, seennotifications } = user;
-    // console.log(notifications)
-    // console.log(seennotifications)
+    
+    
     const handleMarkAllRead = async () => {
         console.log('ere')
         try {
@@ -30,23 +28,25 @@ const Notification = ({ axiosInstance }) => {
 
             if (responce.type === 'data') {
                 message.success(responce.message);
-                console.log(responce.userList)
+                
                 dispatch(setUser(responce.userList))
             } else {
                 message.error(responce.message);
             }
         } catch (error) {
-            console.log(error);
+            
             dispatch(hideLoading());
             message.error('some thing went wrong');
         }
     }
     const handleDeleteAllRead = async () => {
-        console.log('ere')
+        
         try {
             const { token } = cookies;
             dispatch(showLoading());
+
             const responce = await deletAllNotifications(token);
+
             dispatch(hideLoading());
             if (responce.type === 'data') {
                 message.success(responce.message);
@@ -56,7 +56,7 @@ const Notification = ({ axiosInstance }) => {
                 message.error(responce.message);
             }
         } catch (error) {
-            console.log(error);
+           
             dispatch(hideLoading());
             message.error('some thing went wrong');
         }

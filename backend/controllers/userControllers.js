@@ -102,7 +102,7 @@ export const registerController = async (req, res) => {
     console.log(req.body);
     try {
         const { encryptedObj } = req.body;
-        const bytes = CryptoJS.AES.decrypt(encryptedObj, secretKey);
+        const bytes = CryptoJS.AES.decrypt(encryptedObj, process.env.CRYPTO_SECRET_KEY);
         const { user } = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         const checkUser = await userModel.findOne({ $or: [{ email: user.email }, { phone: user.phone }] });
         console.log(checkUser);

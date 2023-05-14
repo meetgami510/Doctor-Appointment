@@ -32,7 +32,7 @@ const updatePersonalData = async (token, values) => {
 
     } catch (error) {
         return {
-            type: 'data',
+            type: 'error',
             message: "some thing went wrong"
         }
     }
@@ -101,4 +101,34 @@ const getAlldoctor = async (token) => {
     }
 }
 
-export { updatePersonalData, getUserData, getAlldoctor }
+const applyuserforDoctor = async (token,values,timeSlot,userid,file)=> {
+    const response = await axiosInstance.post(
+        "/user/apply-doctor",
+        {
+            ...values,
+            timeSlot,
+            user: userid,
+            file,
+        },
+        {
+            headers: {
+                authorization: "Bearer " + token,
+            },
+        }
+    );
+    
+    if (!response.data.success) {
+        return {
+            type: 'error',
+            message: response.data.message
+        }
+    } else {
+        return {
+            type: 'data',
+            message: response.data.message
+        }
+
+    }
+}
+
+export { updatePersonalData, getUserData, getAlldoctor ,applyuserforDoctor}

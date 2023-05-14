@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { showLoading, hideLoading } from "../../redux/features/alertSlice";
 import { CookiesContext } from "../../context/CookiesProvider";
 import { UploadOutlined } from "@ant-design/icons";
-import axiosInstance from "../../utilities/axiosInstance";
+
 import ShowTimeSlot from "../../components/Profile/ShowTimeSlot";
+import { applyuserforDoctor } from "../../Action/users/getGuestUsers";
 // import moment from 'moment';
 
 const ApplyDoctor = () => {
@@ -19,7 +20,7 @@ const ApplyDoctor = () => {
     const { user } = useSelector((state) => state.user);
 
     useEffect(() => {
-        console.log(user)
+       
         if (true === user?.isDoctor || true === user?.isAdmin)
             navigate('/');
     }, [user])
@@ -40,40 +41,30 @@ const ApplyDoctor = () => {
 
     const handleFinish = async (values) => {
         const { token } = cookies;
-        // console.log(values);
+        
         if (
             timeSlot.morningEnd - timeSlot.morningStart > 0 &&
             timeSlot.eveningEnd - timeSlot.eveningStart > 0
         ) {
             try {
                 dispatch(showLoading());
-                const response = await axiosInstance.post(
-                    "/user/apply-doctor",
-                    {
-                        ...values,
-                        timeSlot,
-                        user: user._id,
-                        file,
-                    },
-                    {
-                        headers: {
-                            authorization: "Bearer " + token,
-                        },
-                    }
-                );
+
+                const response = await applyuserforDoctor(token,values,timeSlot,user._id,file);
+
                 dispatch(hideLoading());
-                if (!response.data.success) {
-                    message.error(response.data.message);
-                } else {
-                    message.success(response.data.message);
+                if (response.type === 'data') {
+                    message.success(response.message);
                     navigate("/");
+                    
+                } else {
+                    message.error(response.message);
                 }
-                console.log(response.data);
+               
             } catch (error) {
                 if (error.message.includes("authenitication is failed")) {
                     navigate('/')
                 }
-                console.log(error);
+                
                 dispatch(hideLoading());
                 message.error("some thing went wrong");
             }
@@ -149,18 +140,6 @@ const ApplyDoctor = () => {
                         timeSlot={timeSlot}
                         handleTimeSlot={handleTimeSlot}
                     />
-                    {/* <Col xs={24} md={24} lg={8}>
-                            <Form.Item label="Upload File" name="file">
-                                <Upload
-                                    accept=".pdf,.doc,.docx"
-                                    maxCount={1}
-                                    onChange={handleFileChange}
-                                    fileList={file ? [file] : []}
-                                >
-                                    <Button icon={<UploadOutlined />}>Upload</Button>
-                                </Upload>
-                            </Form.Item>
-                        </Col> */}
                     <Col xs={24} md={24} lg={8}></Col>
                     <Col xs={24} md={24} lg={8}>
                         <button className="btn btn-primary form-btn" type="submit">

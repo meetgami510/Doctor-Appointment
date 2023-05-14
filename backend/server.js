@@ -7,7 +7,7 @@ import cors from 'cors';
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from './routes/adminRoutes.js';
 import doctorRoutes from './routes/doctorRoutes.js';
-import { loginController, registerController } from "./controllers/userControllers.js";
+import { loginController, registerController, sendOtp, verifyOtp } from "./controllers/userControllers.js";
 import protect from "./middlerwares/authMiddleware.js";
 
 dotenv.config();
@@ -36,6 +36,12 @@ app.post("/api/user/login", loginController);
 
 // REGISTER || post
 app.post("/api/user/register", registerController);
+
+// SENT OTP
+app.post("/api/user/send-otp", sendOtp);
+
+// VERIFY OTP
+app.post("/api/user/verify-otp", verifyOtp);
 
 app.use('/', protect)
 

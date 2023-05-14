@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
 import { CookiesContext } from "../context/CookiesProvider";
+import { message } from "antd";
 import '../styles/Login.css'
 import Spinner from "../components/Spinner";
-import axiosInstance from "../utilities/axiosInstance";
+
 import CryptoJS from 'crypto-js';
+import { loginUsers } from "../Action/users/loginandregister";
 const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 
@@ -28,18 +30,31 @@ const Login = () => {
     event.preventDefault();
     try {
       dispatch(showLoading());
-      const objStr = JSON.stringify({ email, password });
-      const encryptedObj = CryptoJS.AES.encrypt(objStr, secretKey).toString();
-      const res = await axiosInstance.post('/user/login', { encryptedObj });
-      dispatch(hideLoading());
-      console.log(res.data);
-      if (res.data.success) {
-        setCookies('token', res.data.token);
-        alert('Login successfully!');
+
+      const response = await loginUsers(email,password);
+
+      if(response.type === 'data') {
+        dispatch(hideLoading());
+        setCookies('token', response.token);
+        message.success(response.message);
         navigate('/')
-      } else {
-        alert(res.data.message);
+      }else{
+        dispatch(hideLoading());
+        navigate('/')
+        alert(response.message);
       }
+      // const objStr = JSON.stringify({ email, password });
+      // const encryptedObj = CryptoJS.AES.encrypt(objStr, secretKey).toString();
+      // const res = await axiosInstance.post('/user/login', { encryptedObj });
+      // dispatch(hideLoading());
+      // console.log(res.data);
+      // if (res.data.success) {
+      //   setCookies('token', res.data.token);
+      //   alert('Login successfully!');
+      //   navigate('/')
+      // } else {
+      //   alert(res.data.message);
+      // }
     } catch (error) {
       dispatch(hideLoading());
       console.log(error);

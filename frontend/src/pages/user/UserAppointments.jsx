@@ -18,7 +18,7 @@ const UserAppointments = ({ axiosInstance }) => {
             const response = await getUserAppointments(token);
             if (response.type === 'data') {
                 message.success(response.message);
-                console.log(response.appointmentsList);
+               
                 setAppointments(response.appointmentsList)
             } else {
                 if (response.message.includes("authenitication is failed")) {
