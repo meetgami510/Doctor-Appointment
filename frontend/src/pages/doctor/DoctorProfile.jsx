@@ -6,8 +6,8 @@ import { message } from "antd";
 import { CookiesContext } from "../../context/CookiesProvider";
 import PersonalDetails from "../../components/Profile/PersonalDetails";
 import DoctorProfessionalDetails from "../../components/Profile/DoctorProfessionalDetails";
-import { getDoctorDetails } from "../../components/Action/doctors/getDoctorDetails";
-import { updateDoctorTimeSlot } from "../../components/Action/doctors/updateDoctorDetails";
+import { getDoctorDetails } from "../../Action/doctors/getDoctorDetails";
+import { updateDoctorTimeSlot } from "../../Action/doctors/updateDoctorDetails";
 import ShowTimeSlot from "../../components/Profile/ShowTimeSlot";
 import { useNavigate } from "react-router-dom";
 

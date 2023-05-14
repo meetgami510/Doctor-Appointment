@@ -7,8 +7,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CookiesContext } from "../../context/CookiesProvider";
 import { message } from "antd";
 import moment from "moment";
-import { getdoctorthroughid } from "../../components/Action/doctors/getDoctorDetails";
-import { chechbookingAvalability, userbooking } from "../../components/Action/users/bookingappointment";
+import { getdoctorthroughid } from "../../Action/doctors/getDoctorDetails";
+import { chechbookingAvalability, userbooking } from "../../Action/users/bookingappointment";
 import axiosInstance from '../../utilities/axiosInstance';
 
 

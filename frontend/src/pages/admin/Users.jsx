@@ -4,7 +4,7 @@ import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { Table, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
-import { getAllguestuserData } from '../../components/Action/admin/getAllusersdata';
+import { getAllguestuserData } from '../../Action/admin/getAllusersdata';
 import UserList from '../../components/UserDetails/UserList';
 import { useNavigate } from 'react-router-dom';
 

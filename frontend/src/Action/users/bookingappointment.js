@@ -1,5 +1,5 @@
-import axiosInstance from '../../../utilities/axiosInstance';
-import encryptData from '../../../utilities/encryptData';
+import axiosInstance from '../../utilities/axiosInstance';
+import encryptData from '../../utilities/encryptData';
 
 const userbooking = async (token, params, user, doctor, timingSlot, textfeelling, meetingMode) => {
     try {

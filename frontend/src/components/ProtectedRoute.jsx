@@ -6,7 +6,7 @@ import { hideLoading, showLoading } from '../redux/features/alertSlice';
 import { setUser } from '../redux/features/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { CookiesContext } from '../context/CookiesProvider';
-import { getUserData } from './Action/users/getGuestUsers';
+import { getUserData } from '../Action/users/getGuestUsers';
 
 const ProtectedRoute = ({ children, axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);

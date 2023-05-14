@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { message } from "antd";
 import { hideLoading, showLoading } from "../../redux/features/alertSlice";
 import ViewDoctor from "./ViewDoctor";
-import { doctorStatus } from "../Action/admin/usersStatus";
+import { doctorStatus } from "../../Action/admin/usersStatus";
 
 const DoctorAppointment = ({ doctor }) => {
     const [accountStatus, setAccountmentStatus] = useState(doctor.status);

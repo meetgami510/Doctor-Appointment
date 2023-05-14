@@ -4,7 +4,7 @@ import { message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
 import AllDoctors from '../../components/DoctorDetails/DoctorList';
-import { getAlldoctorsData } from '../../components/Action/admin/getAllusersdata';
+import { getAlldoctorsData } from '../../Action/admin/getAllusersdata';
 import { useNavigate } from 'react-router-dom';
 
 const Doctors = ({ axiosInstance }) => {

@@ -1,4 +1,4 @@
-import axiosInstance from '../../../utilities/axiosInstance';
+import axiosInstance from '../../utilities/axiosInstance';
 
 const doctorStatus = async (token, doctorId, status) => {
     try {

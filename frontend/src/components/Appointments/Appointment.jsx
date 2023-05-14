@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { hideLoading } from "../../redux/features/alertSlice";
 import '../../styles/Appointment.css'
 import ShowDetails from "./ShowDetails";
-import { updateDoctorappointmentstatus } from "../Action/doctors/appointment";
+import { updateDoctorappointmentstatus } from "../../Action/doctors/appointment";
 function Appointment({ appointment, isDoctor }) {
     const { cookies } = useContext(CookiesContext);
     const dispatch = useDispatch();

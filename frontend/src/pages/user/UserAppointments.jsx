@@ -1,26 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react';
+import Layout from '../../components/Layout/Layout';
 import { hideLoading } from '../../redux/features/alertSlice';
 import { message } from 'antd';
 import { useDispatch } from 'react-redux';
-import Layout from '../../components/Layout/Layout';
-import { CookiesContext } from "../../context/CookiesProvider";
-import Appointment from '../../components/Appointments/Appointment';
+import { CookiesContext } from '../../context/CookiesProvider';
 import Appointments from '../../components/Appointments/Appointments';
-import { getdoctorAppointment } from '../../Action/doctors/appointment';
+import { getUserAppointments } from '../../Action/users/bookingappointment';
 import { useNavigate } from 'react-router-dom';
 
-const DoctorAppointments = ({ axiosInstance }) => {
-    const { cookies } = useContext(CookiesContext);
+const UserAppointments = ({ axiosInstance }) => {
     const [appointments, setAppointments] = useState([]);
+    const { cookies } = useContext(CookiesContext);
     const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             const { token } = cookies;
-            const response = await getdoctorAppointment(token);
+            const response = await getUserAppointments(token);
             if (response.type === 'data') {
                 message.success(response.message);
-                console.log(response.appointmentList);
-                setAppointments(response.appointmentList);
+                console.log(response.appointmentsList);
+                setAppointments(response.appointmentsList)
             } else {
                 if (response.message.includes("authenitication is failed")) {
                     navigate('/')
@@ -33,8 +32,10 @@ const DoctorAppointments = ({ axiosInstance }) => {
     }, []);
 
     return (
-        <Appointments axiosInstance={axiosInstance} appointments={appointments} isDoctor={true} />
+
+        <Appointments axiosInstance={axiosInstance} appointments={appointments} isDoctor={false} />
+
     )
 }
 
-export default DoctorAppointments
+export default UserAppointments

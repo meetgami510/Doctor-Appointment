@@ -1,5 +1,5 @@
-import axiosInstance from '../../../utilities/axiosInstance';
-import encryptData from '../../../utilities/encryptData';
+import axiosInstance from '../../utilities/axiosInstance';
+import encryptData from '../../utilities/encryptData';
 
 
 const updatePersonalData = async (token, values) => {

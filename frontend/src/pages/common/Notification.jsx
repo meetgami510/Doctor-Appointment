@@ -1,13 +1,13 @@
 import React, { useContext, useEffect } from 'react'
-import { hideLoading, showLoading } from '../redux/features/alertSlice';
+import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Tabs, message } from 'antd';
 import axios from 'axios';
-import Layout from '../components/Layout/Layout';
+import Layout from '../../components/Layout/Layout';
 import { useNavigate } from 'react-router-dom';
-import { setUser } from '../redux/features/userSlice';
-import { CookiesContext } from '../context/CookiesProvider';
-import { deletAllNotifications, getAllNotifications } from '../components/Action/users/bookingappointment';
+import { setUser } from '../../redux/features/userSlice';
+import { CookiesContext } from '../../context/CookiesProvider';
+import { deletAllNotifications, getAllNotifications } from '../../Action/users/bookingappointment';
 
 const Notification = ({ axiosInstance }) => {
     const { removeCookies, cookies } = useContext(CookiesContext);

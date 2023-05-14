@@ -4,7 +4,7 @@ import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { CookiesContext } from '../../context/CookiesProvider';
 import { setUser } from '../../redux/features/userSlice';
-import { updatePersonalData } from '../Action/users/getGuestUsers';
+import { updatePersonalData } from '../../Action/users/getGuestUsers';
 
 function PersonalDetails() {
     const { cookies } = useContext(CookiesContext);

@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import Layout from "../components/Layout/Layout";
+import Layout from "../../components/Layout/Layout";
 import { Form, Input, Button, Row, Col, Checkbox, Upload, message } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { showLoading, hideLoading } from "../redux/features/alertSlice";
-import { CookiesContext } from "../context/CookiesProvider";
+import { showLoading, hideLoading } from "../../redux/features/alertSlice";
+import { CookiesContext } from "../../context/CookiesProvider";
 import { UploadOutlined } from "@ant-design/icons";
-import axiosInstance from "../utilities/axiosInstance";
-import ShowTimeSlot from "../components/Profile/ShowTimeSlot";
+import axiosInstance from "../../utilities/axiosInstance";
+import ShowTimeSlot from "../../components/Profile/ShowTimeSlot";
 // import moment from 'moment';
 
 const ApplyDoctor = () => {

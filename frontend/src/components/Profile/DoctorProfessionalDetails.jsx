@@ -3,7 +3,7 @@ import { Col, Form, Input, Row, message } from "antd";
 import { hideLoading, showLoading } from '../../redux/features/alertSlice';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from '../../context/CookiesProvider';
-import { updateProfessional } from '../Action/doctors/updateDoctorDetails';
+import { updateProfessional } from '../../Action/doctors/updateDoctorDetails';
 
 function DoctorProfessionalDetails({ doctor, setDoctor }) {
     const dispatch = useDispatch();

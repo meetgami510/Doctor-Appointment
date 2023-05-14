@@ -5,7 +5,7 @@ import { Row, message } from "antd";
 import { useDispatch } from "react-redux";
 import DoctorList from "../components/DoctorList";
 import { CookiesContext } from "../context/CookiesProvider";
-import { getAlldoctor } from "../components/Action/users/getGuestUsers";
+import { getAlldoctor } from "../Action/users/getGuestUsers";
 import Fuse from "fuse.js";
 import "../styles/Home.css";
 import { useNavigate } from "react-router-dom";
