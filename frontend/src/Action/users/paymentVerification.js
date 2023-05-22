@@ -1,22 +1,22 @@
 import axiosInstance from '../../utilities/axiosInstance';
 import encryptData from '../../utilities/encryptData';
 
-export const userPaymentRequest = async (token,doctorFee) => {
+export const userPaymentRequest = async (token, doctorFee) => {
 
-    try{
+    try {
         const { data: { data: order } } = await axiosInstance.post("/user/orders", { amount: doctorFee * 100, currency: 'INR', payment_capture: 1 },
-        {
-            headers: {
-                authorization: "Bearer " + token,
-            },
-        });
+            {
+                headers: {
+                    authorization: "Bearer " + token,
+                },
+            });
 
         return {
-            type : 'data',
-            amount : order.amount,
-            id : order.id
+            type: 'data',
+            amount: order.amount,
+            id: order.id
         }
-    }catch(error) {
+    } catch (error) {
         return {
             type: 'data',
             message: "server error on Payment"
@@ -26,9 +26,9 @@ export const userPaymentRequest = async (token,doctorFee) => {
 }
 
 
-export const userPaymentVerify = async (token,paymentId) => {
+export const userPaymentVerify = async (token, paymentId) => {
 
-    try{
+    try {
         const verificationResponse = await axiosInstance.post('/user/verify', {
             razorpay_payment_id: paymentId
         },
@@ -41,17 +41,17 @@ export const userPaymentVerify = async (token,paymentId) => {
 
         if (verificationResponse.data.success) {
             return {
-                type : "data",
-                message:"verifiy Succefully"
+                type: "data",
+                message: "verifiy Succefully"
             }
-        }else{
+        } else {
             return {
                 type: 'error',
                 message: "verify is not succeffuly"
             }
         }
 
-    }catch(error) {
+    } catch (error) {
         return {
             type: 'error',
             message: "server error on Payment"
@@ -60,24 +60,28 @@ export const userPaymentVerify = async (token,paymentId) => {
 
 }
 
-export const vidoeMeetingLink = async (token,roomId) => {
-    try{
+export const vidoeMeetingLink = async (token, roomId) => {
+    try {
         const response = await axiosInstance.post('/user/verify-video-meeting-id', { roomId },
-        {
-            headers: {
-                authorization: "Bearer " + token,
-            },
-        });
-
-
-        if(false === response.data.success) {
+            {
+                headers: {
+                    authorization: "Bearer " + token,
+                },
+            });
+        console.log(response);
+        if (false === response.data.success) {
             return {
                 type: 'error',
                 message: "verify is not succeffuly"
             }
+        } else {
+            return {
+                type: "data",
+                message: "meeting is verified",
+            }
         }
-        
-    }catch(error) {
+
+    } catch (error) {
         return {
             type: 'error',
             message: "server error on Payment"

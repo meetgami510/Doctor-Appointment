@@ -13,11 +13,12 @@ import decryptData from '../utilities/decryptData.js';
 
 // login call back
 export const loginController = async (req, res) => {
-    const { encryptedObj } = req.body;
-    console.log(process.env.CRYPTO_SECRET_KEY)
-
+    // const { encryptedObj } = req.body;
+    const { email, password } = req.body;
+    // console.log(process.env.CRYPTO_SECRET_KEY)
+    console.log(req.body);
     try {
-        const { email, password } = decryptData(encryptedObj);
+        // const { email, password } = decryptData(encryptedObj);
         console.log({ email, password })
         const user = await userModel.findOne({ email });
         if (user) {
@@ -222,8 +223,9 @@ export const getDoctorByIdController = async (req, res) => {
 
 export const verifyVideoMeetingIdController = async (req, res) => {
     try {
+        console.log("from verify video meeting")
         const response = await appointmentModel.findById(req.body.roomId).populate('doctor');
-        if (response && response.user === req.body.userId || response.doctor.user === req.body.userId) {
+        if (response && response.user == req.body.userId || response.doctor.user == req.body.userId) {
             return res.status(200).json({
                 success: true
             })
@@ -419,7 +421,7 @@ export const userAppointmentController = async (req, res) => {
 export const updatePersonalDetails = async (req, res) => {
     const { encryptedObj } = req.body;
     try {
-        
+
         console.log(req.body);
         const decryptedObj = decryptData(encryptedObj);
         const user = await userModel.findByIdAndUpdate(
@@ -449,7 +451,7 @@ export const makePaymentController = async (req, res) => {
             key_id: process.env.KEY_ID,
             key_secret: process.env.KEY_SECRET,
         });
-        
+
         console.log(req.body);
         const { amount, currency, payment_capture } = req.body;
         const option = {

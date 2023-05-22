@@ -1,7 +1,6 @@
 import appointmentModel from "../models/appointmentModels.js";
 import doctorModel from "../models/doctorModels.js";
 import userModel from "../models/userModels.js";
-import { v4 as uuidv4 } from 'uuid';
 
 export const getDoctorInfoController = async (req, res) => {
     try {

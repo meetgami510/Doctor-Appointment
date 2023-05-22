@@ -19,7 +19,7 @@ const BookingPage = () => {
     const { user } = useSelector((state) => state.user);
     const navigate = useNavigate();
     console.log(moment().add(1, "day").format("YYYY-MM-DD"));
-    
+
     const dispatch = useDispatch();
     const params = useParams();
 
@@ -38,7 +38,7 @@ const BookingPage = () => {
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        
+
         setAppointmentInfo((prevState) => ({ ...prevState, [name]: value }));
     };
 
@@ -47,9 +47,7 @@ const BookingPage = () => {
         const { token } = cookies;
         const getDoctorData = async () => {
             dispatch(showLoading());
-
             const response = await getdoctorthroughid(token, params);
-            
             dispatch(hideLoading());
             if (response.type === 'data') {
                 message.success(response.message);
@@ -74,21 +72,13 @@ const BookingPage = () => {
     }, [cookies]);
 
     const handleBooking = async () => {
-        
+
         const { token } = cookies;
         try {
             if (!timingSlot) {
                 return alert("date and time is required");
             }
-            const response = await userPaymentRequest(token,doctor.feesPerCunsaltation);
-            // const { data: { data: order } } = await axiosInstance.post("/user/orders", { amount: doctor.feesPerCunsaltation * 100, currency: 'INR', payment_capture: 1 },
-            //     {
-            //         headers: {
-            //             authorization: "Bearer " + token,
-            //         },
-            //     });
-            
-            
+            const response = await userPaymentRequest(token, doctor.feesPerCunsaltation);
             const options = {
                 key: process.env.REACT_APP_Razorpay_key,
                 amount: response.amount,
@@ -98,10 +88,9 @@ const BookingPage = () => {
                 image: 'https://avatars.githubusercontent.com/u/25058652?v=4',
                 order_id: response.id,
                 handler: async (response) => {
-                    
+
                     try {
-                        const verificationResponse = await userPaymentVerify(token,response.razorpay_payment_id);
-                        
+                        const verificationResponse = await userPaymentVerify(token, response.razorpay_payment_id);
                         if (verificationResponse.type === 'data') {
                             dispatch(showLoading());
                             const response = await userbooking(token, params, user, doctor, timingSlot, textfeelling, meetingMode);
@@ -112,12 +101,12 @@ const BookingPage = () => {
                             } else {
                                 message.error(response.message);
                             }
-                        }else{
+                        } else {
                             dispatch(hideLoading());
                             message.error(verificationResponse.message);
                         }
                     } catch (error) {
-                        
+
                         dispatch(hideLoading());
                         message.error("some thing went wrong");
                     }

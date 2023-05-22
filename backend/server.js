@@ -25,10 +25,9 @@ app.use(cors({
 connectDB();
 
 // routes
-app.post('/', (req, res) => {
-    console.log(req.body);
-    console.log("hello");
-    res.send(req.body);
+app.get('/', (req, res) => {
+
+    res.send("hello");
 });
 
 // LOGIN || post
