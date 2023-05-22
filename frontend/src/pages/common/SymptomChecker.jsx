@@ -4,100 +4,100 @@ import _ from "lodash";
 import { useState } from "react";
 import "../../styles/SymptomChecker.css";
 
-// const createPatient = () => {
-//   const symptoms = {};
-//   let sex = "male";
-//   const age = { value: 30 };
+const createPatient = () => {
+  const symptoms = {};
+  let sex = "male";
+  const age = { value: 30 };
 
-//   const setSex = (newSex) => {
-//     sex = newSex;
-//   };
+  const setSex = (newSex) => {
+    sex = newSex;
+  };
 
-//   const setAge = (newAge) => {
-//     age.value = newAge;
-//   };
+  const setAge = (newAge) => {
+    age.value = newAge;
+  };
 
-//   const addSymptomsGroup = (group) => {
-//     Object.assign(symptoms, group);
-//   };
+  const addSymptomsGroup = (group) => {
+    Object.assign(symptoms, group);
+  };
 
-//   const removeSymptom = (id) => {
-//     delete symptoms[id];
-//   };
+  const removeSymptom = (id) => {
+    delete symptoms[id];
+  };
 
-//   const toDiagnosis = () => {
-//     const res = {
-//       sex,
-//       age,
-//       evidence: [],
-//     };
+  const toDiagnosis = () => {
+    const res = {
+      sex,
+      age,
+      evidence: [],
+    };
 
-//     res.evidence = _.map(symptoms, (symptom, symptomId) => {
-//       const getChoiceId = (choice) => {
-//         if (choice === true) {
-//           return "present";
-//         }
-//         if (choice === false) {
-//           return "absent";
-//         }
-//         return "unknown";
-//       };
+    res.evidence = _.map(symptoms, (symptom, symptomId) => {
+      const getChoiceId = (choice) => {
+        if (choice === true) {
+          return "present";
+        }
+        if (choice === false) {
+          return "absent";
+        }
+        return "unknown";
+      };
 
-//       const diagnosisSymptom = {
-//         id: symptomId,
-//         choice_id: getChoiceId(symptom.reported),
-//       };
+      const diagnosisSymptom = {
+        id: symptomId,
+        choice_id: getChoiceId(symptom.reported),
+      };
 
-//       if (symptom.source === "initial") {
-//         Object.assign(diagnosisSymptom, {
-//           source: "initial",
-//         });
-//       }
+      if (symptom.source === "initial") {
+        Object.assign(diagnosisSymptom, {
+          source: "initial",
+        });
+      }
 
-//       if (symptom.source === "suggest") {
-//         Object.assign(diagnosisSymptom, {
-//           source: "suggest",
-//         });
-//       }
+      if (symptom.source === "suggest") {
+        Object.assign(diagnosisSymptom, {
+          source: "suggest",
+        });
+      }
 
-//       return diagnosisSymptom;
-//     });
-//     return res;
-//   };
+      return diagnosisSymptom;
+    });
+    return res;
+  };
 
-//   const toSuggest = () => {
-//     return toDiagnosis();
-//   };
+  const toSuggest = () => {
+    return toDiagnosis();
+  };
 
-//   const toParse = (text) => {
-//     return {
-//       text,
-//       sex,
-//       age,
-//     };
-//   };
+  const toParse = (text) => {
+    return {
+      text,
+      sex,
+      age,
+    };
+  };
 
-//   const reset = () => {
-//     Object.keys(symptoms).forEach((symptomId) => {
-//       delete symptoms[symptomId];
-//     });
-//   };
+  const reset = () => {
+    Object.keys(symptoms).forEach((symptomId) => {
+      delete symptoms[symptomId];
+    });
+  };
 
-//   return {
-//     setSex,
-//     setAge,
-//     addSymptomsGroup,
-//     removeSymptom,
-//     toDiagnosis,
-//     toSuggest,
-//     toParse,
-//     reset,
-//   };
-// };
+  return {
+    setSex,
+    setAge,
+    addSymptomsGroup,
+    removeSymptom,
+    toDiagnosis,
+    toSuggest,
+    toParse,
+    reset,
+  };
+};
 
 var interviewId = null;
-var appId = process.env.REACT_APP_Infermedica_AppId;
-var appKey = process.env.REACT_APP_Infermedica_ApiKey;
+var appId = "c6aba95c";
+var appKey = "6cf752edb2e8c9e14a42bd3f53a33a09";
 
 const InfermedicaApi = (
   apiModel = "infermedica-en",
@@ -177,21 +177,26 @@ const InfermedicaApi = (
 
 function SymptomChecker() {
   const api = InfermedicaApi(); // doubt
+  const patient = createPatient();
 
-
+  api.generateInterviewId();
+  const temp = async () => {
+    // const text = "jello";
+    // const age = 30;
+    // const sex = "male";
+    // const data = await api.parse({ text, sex, age: parseInt("30") });
+    // console.log(data)
+  };
+  temp();
   const [obj, setObj] = useState({
     text: "i feel smoach pain but no couoghing today",
     sex: "male",
     age: { value: 30 },
   });
-
-  api.generateInterviewId();
-
   const handleChange = async (event) => {
     const { name, value } = event.target;
     setObj((prevState) => ({ ...prevState, [name]: value }));
   };
-
   const { age, sex, text } = obj;
   const [conditions, setConditions] = useState([]);
   const [question, setQuestion] = useState("");
@@ -208,7 +213,7 @@ function SymptomChecker() {
         disable_groups: true,
       },
     };
-
+    
     const resp = await api.diagnosis(body);
     setConditions(resp.conditions);
     console.log(resp);
@@ -243,9 +248,14 @@ function SymptomChecker() {
     setEvidence((prevState) => [...prevState, { id: symptom, choice_id: ans }]);
     processAns(temp);
   };
-
   return (
     <Layout>
+      {/* <form className="flex justify-center items-center gap-2" onSubmit={handleSubmit}>
+  <input className="border border-gray-300 rounded-md py-2 px-4" type="number" name="age" value={age} placeholder="give your age" onChange={handleChange} />
+  <input className="border border-gray-300 rounded-md py-2 px-4" type="text" name="sex" value={sex} placeholder="give your gender" onChange={handleChange} />
+  <input className="border border-gray-300 rounded-md py-2 px-4" type="text" name="text" value={text} placeholder="what are you feeling" onChange={handleChange} />
+  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Submit</button>
+</form> */}
       <form className="form-container" onSubmit={handleSubmit}>
         Age :
         <input

@@ -13,12 +13,11 @@ import decryptData from '../utilities/decryptData.js';
 
 // login call back
 export const loginController = async (req, res) => {
-    // const { encryptedObj } = req.body;
-    const { email, password } = req.body;
-    // console.log(process.env.CRYPTO_SECRET_KEY)
-    console.log(req.body);
+     const { encryptedObj } = req.body;
+     console.log(process.env.CRYPTO_SECRET_KEY)
+  
     try {
-        // const { email, password } = decryptData(encryptedObj);
+         const { email, password } = decryptData(encryptedObj);
         console.log({ email, password })
         const user = await userModel.findOne({ email });
         if (user) {
