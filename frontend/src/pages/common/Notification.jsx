@@ -80,7 +80,7 @@ const Notification = ({ axiosInstance }) => {
                     </div>
                     {
                         user?.notifications.map((notificationMgs, ind) => (
-                            <div key={ind} className="card" style={{ cursor: "pointer" }}>
+                            <div key={ind}  style={{ cursor: "pointer" }}>
                                 <div
                                     className="card-text"
                                     onClick={() => navigate(notificationMgs.data.onClickPath)}

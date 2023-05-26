@@ -1,27 +1,26 @@
-import { useContext, useState } from "react"
+import { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
 import { CookiesContext } from "../context/CookiesProvider";
 import { message } from "antd";
-import '../styles/Login.css'
+import "../styles/Login.css";
 import Spinner from "../components/Spinner";
 
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 import { loginUsers } from "../Action/users/loginandregister";
 const secretKey = process.env.REACT_APP_SECRET_KEY;
-
 
 const Login = () => {
   const { setCookies } = useContext(CookiesContext);
 
-  const { loading } = useSelector(state => state.alerts);
-  const [userData, setUserData] = useState({ email: '', password: '' });
+  const { loading } = useSelector((state) => state.alerts);
+  const [userData, setUserData] = useState({ email: "", password: "" });
 
   const handleInputData = (event) => {
     const { name, value } = event.target;
-    setUserData(prevState => ({ ...prevState, [name]: value }));
-  }
+    setUserData((prevState) => ({ ...prevState, [name]: value }));
+  };
 
   const { email, password } = userData;
   const navigate = useNavigate();
@@ -31,16 +30,16 @@ const Login = () => {
     try {
       dispatch(showLoading());
 
-      const response = await loginUsers(email,password);
+      const response = await loginUsers(email, password);
 
-      if(response.type === 'data') {
+      if (response.type === "data") {
         dispatch(hideLoading());
-        setCookies('token', response.token);
+        setCookies("token", response.token);
         message.success(response.message);
-        navigate('/')
-      }else{
+        navigate("/");
+      } else {
         dispatch(hideLoading());
-        navigate('/')
+        navigate("/");
         alert(response.message);
       }
       // const objStr = JSON.stringify({ email, password });
@@ -58,89 +57,189 @@ const Login = () => {
     } catch (error) {
       dispatch(hideLoading());
       console.log(error);
-      alert('some thing went wrong');
+      alert("some thing went wrong");
     }
-  }
+  };
   return (
     <>
-      {
-        loading ?
-          <Spinner /> :
-          <div className="login-root">
-            <div
-              className="box-root flex-flex flex-direction--column"
-              style={{ minHeight: "100vh", flexGrow: 1 }}
-            >
-              <div
-                className="box-root padding-top--24 flex-flex flex-direction--column"
-                style={{ flexGrow: 1, zIndex: 9 }}
-              >
-                <div className="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
-                  <h2>
-                    <a>Login to your account</a>
-                  </h2>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <>
+          <nav class="bg-gray-800 shadow">
+            <div class="container mx-auto px-6 py-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <a
+                    class="text-lg font-semibold text-gray-100 hover:text-gray-400"
+                    href="/"
+                  >
+                    Doctor App
+                  </a>
                 </div>
-                <div className="formbg-outer">
-                  <div className="formbg">
-                    <div className="formbg-inner padding-horizontal--48">
-                      {/* <span className="padding-bottom--15">Sign in to your account</span>  */}
-                      <form id="stripe-login" onSubmit={handleSubmit}>
-                        <div className="form-group padding-bottom--24">
-                          <label htmlFor="email">Email</label>
-                          <input
-                            type="email"
-                            name="email"
-                            className="form-control"
-                            value={email}
-                            onChange={handleInputData}
-                            required
-                          />
-                        </div>
-
-                        <div className="form-group padding-bottom--24">
-                          <label htmlFor="password">Password</label>
-
-                          <input
-                            type="password"
-                            name="password"
-                            className="form-control"
-                            value={password}
-                            onChange={handleInputData}
-                            required
-                          />
-                          <div className="reset-pass">
-                            <a href="#">Forgot your password?</a>
-                          </div>
-                        </div>
-
-                        <div>
-                          <input
-                            type="submit"
-                            name="submit"
-                            value="LOGIN"
-                            className="btn btn-primary"
-                            style={{
-                              width: "100%",
-                              "backgroundColor": "rgb(84, 105, 212)",
-                            }}
-                          />
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                  <div className="footer-link padding-top--24">
-                    <span>
-                      Don't have an account? <a href="/register">Sign up</a>
-                    </span>
-                  </div>
+                <div class="flex items-center">
+                  <a
+                    class="text-gray-100 hover:text-gray-400 px-3 py-2 rounded-md text-sm font-medium"
+                    href="#"
+                  >
+                    Home
+                  </a>
+                  <a
+                    class="text-gray-100 hover:text-gray-400 px-3 py-2 rounded-md text-sm font-medium"
+                    href="#"
+                  >
+                    About
+                  </a>
+                  <a
+                    class="text-gray-100 hover:text-gray-400 px-3 py-2 rounded-md text-sm font-medium"
+                    href="#"
+                  >
+                    Contact
+                  </a>
                 </div>
               </div>
             </div>
-          </div>
-      }
-    </>
+          </nav>
 
-  )
-}
+          <div
+            class="container mx-auto flex justify-end items-center h-screen "
+            style={{ backgroundColor: "black" }}
+          >
+            <div class="w-full max-w-md bg-white shadow-md rounded-lg p-8">
+              <h2 class="text-3xl font-semibold mb-6 text-center">
+                Login to your Docker App Account
+              </h2>
+              <form id="stripe-login" onSubmit={handleSubmit}>
+                <div class="mb-6">
+                  <label
+                    class="block text-gray-700 font-medium mb-2"
+                    for="email"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    class="form-input w-full px-4 py-2 rounded-lg outline ring-2 ring-indigo-400"
+                    value={email}
+                    onChange={handleInputData}
+                    required
+                  />
+                </div>
+                <div class="mb-6">
+                  <label
+                    class="block text-gray-700 font-medium mb-2"
+                    for="password"
+                  >
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    class="form-input w-full px-4 py-2 rounded-lg outline ring-2 ring-indigo-400"
+                    value={password}
+                    onChange={handleInputData}
+                    required
+                  />
+                  <div class="text-right mt-2">
+                    <a class="text-blue-500 hover:underline" href="#">
+                      Forgot your password?
+                    </a>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <input
+                    type="submit"
+                    name="submit"
+                    value="LOGIN"
+                    class="btn btn-primary px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  />
+                  <div class="ml-4">
+                    <span class="text-gray-600">Don't have an account?</span>
+                    <a class="text-blue-500 hover:underline" href="/register">
+                      Sign up
+                    </a>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+};
 
 export default Login;
+
+//  <div className="login-root">
+//             <div
+//               className="box-root flex-flex flex-direction--column"
+//               style={{ minHeight: "100vh", flexGrow: 1 }}
+//             >
+//               <div
+//                 className="box-root padding-top--24 flex-flex flex-direction--column"
+//                 style={{ flexGrow: 1, zIndex: 9 }}
+//               >
+//                 <div className="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
+//                   <h2>
+//                     <a>Login to your account</a>
+//                   </h2>
+//                 </div>
+//                 <div className="formbg-outer">
+//                   <div className="formbg">
+//                     <div className="formbg-inner padding-horizontal--48">
+//                        <span className="padding-bottom--15">Sign in to your account</span>
+//                       <form id="stripe-login" onSubmit={handleSubmit}>
+//                         <div className="form-group padding-bottom--24">
+//                           <label htmlFor="email">Email</label>
+//                           <input
+//                             type="email"
+//                             name="email"
+//                             className="form-control"
+//                             value={email}
+//                             onChange={handleInputData}
+//                             required
+//                           />
+//                         </div>
+
+//                         <div className="form-group padding-bottom--24">
+//                           <label htmlFor="password">Password</label>
+
+//                           <input
+//                             type="password"
+//                             name="password"
+//                             className="form-control"
+//                             value={password}
+//                             onChange={handleInputData}
+//                             required
+//                           />
+//                           <div className="reset-pass">
+//                             <a href="#">Forgot your password?</a>
+//                           </div>
+//                         </div>
+
+//                         <div>
+//                           <input
+//                             type="submit"
+//                             name="submit"
+//                             value="LOGIN"
+//                             className="btn btn-primary"
+//                             style={{
+//                               width: "100%",
+//                               "backgroundColor": "rgb(84, 105, 212)",
+//                             }}
+//                           />
+//                         </div>
+//                       </form>
+//                     </div>
+//                   </div>
+//                   <div className="footer-link padding-top--24">
+//                     <span>
+//                       Don't have an account? <a href="/register">Sign up</a>
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>

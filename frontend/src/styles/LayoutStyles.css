@@ -1,16 +1,18 @@
 .main {
     padding: 10px;
     height: 100vh;
+   background-color: black;
   }
   .layout {
     display: flex;
+    
   }
   
   .sidebar {
     min-height: 100%;
     width: 300px;
     border-radius: 5px;
-    background-color: rgb(52, 50, 50);
+    background-color:#2d3748;
     box-shadow: 0 0 2px rgb(91, 125, 245);
     margin-right: 20px;
     color: white;
@@ -25,13 +27,14 @@
     height: 10vh;
     margin-bottom: 20px;
     box-shadow: 0 0 2px rgb(42, 83, 234);
-    background-color: white;
+    /* background-color: white; */
+    background-color: #2d3748;
   }
   .body {
     height: 85vh;
     margin-bottom: 20px;
     box-shadow: 0 0 2px rgb(91, 125, 245);
-    background-color: white;
+    background-color: #2d3748;
   }
   .logo h6 {
     font-size: 1.5rem;
