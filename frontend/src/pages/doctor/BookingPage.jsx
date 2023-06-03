@@ -11,6 +11,7 @@ import { getdoctorthroughid } from "../../Action/doctors/getDoctorDetails";
 import { chechbookingAvalability, userbooking } from "../../Action/users/bookingappointment";
 import axiosInstance from '../../utilities/axiosInstance';
 import { userPaymentRequest, userPaymentVerify } from "../../Action/users/paymentVerification";
+import { checkAppointment } from "../../Action/doctors/appointment";
 
 
 const BookingPage = () => {
@@ -78,55 +79,59 @@ const BookingPage = () => {
             if (!timingSlot) {
                 return alert("date and time is required");
             }
-            const response = await userPaymentRequest(token, doctor.feesPerCunsaltation);
-            const options = {
-                key: process.env.REACT_APP_Razorpay_key,
-                amount: response.amount,
-                currency: "INR",
-                name: 'Demo',
-                description: 'Test Payment',
-                image: 'https://avatars.githubusercontent.com/u/25058652?v=4',
-                order_id: response.id,
-                handler: async (response) => {
+            const resp = await checkAppointment(token, appointmentInfo._id);
+            console.log(resp)
+            if (resp.type === 'data') {
+                const response = await userPaymentRequest(token, doctor.feesPerCunsaltation);
+                const options = {
+                    key: process.env.REACT_APP_Razorpay_key,
+                    amount: response.amount,
+                    currency: "INR",
+                    name: 'Demo',
+                    description: 'Test Payment',
+                    image: 'https://avatars.githubusercontent.com/u/25058652?v=4',
+                    order_id: response.id,
+                    handler: async (response) => {
 
-                    try {
-                        const verificationResponse = await userPaymentVerify(token, response.razorpay_payment_id);
-                        if (verificationResponse.type === 'data') {
-                            dispatch(showLoading());
-                            const response = await userbooking(token, params, user, doctor, timingSlot, textfeelling, meetingMode);
-                            dispatch(hideLoading());
-                            if (response.type === 'data') {
-                                message.success(response.message);
-                                navigate("/");
+                        try {
+                            const verificationResponse = await userPaymentVerify(token, response.razorpay_payment_id);
+                            if (verificationResponse.type === 'data') {
+                                dispatch(showLoading());
+                                const response = await userbooking(token, params, user, doctor, timingSlot, textfeelling, meetingMode);
+                                dispatch(hideLoading());
+                                if (response.type === 'data') {
+                                    message.success(response.message);
+                                    navigate("/");
+                                } else {
+                                    message.error(response.message);
+                                }
                             } else {
-                                message.error(response.message);
+                                dispatch(hideLoading());
+                                message.error(verificationResponse.message);
                             }
-                        } else {
+                        } catch (error) {
+
                             dispatch(hideLoading());
-                            message.error(verificationResponse.message);
+                            message.error("some thing went wrong");
                         }
-                    } catch (error) {
-
-                        dispatch(hideLoading());
-                        message.error("some thing went wrong");
+                        // handle successful payment response
+                    },
+                    prefill: {
+                        name: 'John Doe',
+                        email: 'john.doe@example.com',
+                        contact: '+919876543210'
+                    },
+                    notes: {
+                        address: 'Razorpay Corporate Office'
+                    },
+                    theme: {
+                        color: '#F37254'
                     }
-                    // handle successful payment response
-                },
-                prefill: {
-                    name: 'John Doe',
-                    email: 'john.doe@example.com',
-                    contact: '+919876543210'
-                },
-                notes: {
-                    address: 'Razorpay Corporate Office'
-                },
-                theme: {
-                    color: '#F37254'
-                }
-            };
+                };
 
-            const rzp1 = new window.Razorpay(options);
-            rzp1.open();
+                const rzp1 = new window.Razorpay(options);
+                rzp1.open();
+            }
         } catch (error) {
             dispatch(hideLoading());
             message.error("some thing went wrong");
@@ -140,12 +145,14 @@ const BookingPage = () => {
         }
         const { token } = cookies;
         dispatch(showLoading());
-        const response = await chechbookingAvalability(token, params, timingSlot)
+        const response = await chechbookingAvalability(token, params, user, doctor, timingSlot, textfeelling, meetingMode)
         dispatch(hideLoading());
         if (response.type === 'data') {
             setAppointmentInfo((prevState) => ({
                 ...prevState,
                 isAvailable: true,
+                _id: response._id,
+                timerId: response.timerId
             }));
             message.success(response.message);
         } else {
@@ -211,26 +218,27 @@ const BookingPage = () => {
                                     <option value="online">Virtual Meeting</option>
                                     <option value="offline">Physical Meeting</option>
                                 </select>
+                                <div>
+                                    <h5 htmlFor="text-feeling" className="feeling-label">
+                                        Enter Your Feeling:
+                                    </h5>
+                                    <textarea
+                                        id="text-feeling"
+                                        name="textfeelling"
+                                        className="feeling-textarea"
+                                        onChange={handleChange}
+                                    />
+                                </div>
                                 <button
                                     className="btn btn-primary mt-2 mode-butn"
                                     onClick={checkAvailability}
                                 >
                                     Check Availability
                                 </button>
+
                             </div>
                             {isAvailable && (
                                 <>
-                                    <div>
-                                        <h5 htmlFor="text-feeling" className="feeling-label">
-                                            Enter Your Feeling:
-                                        </h5>
-                                        <textarea
-                                            id="text-feeling"
-                                            name="textfeelling"
-                                            className="feeling-textarea"
-                                            onChange={handleChange}
-                                        />
-                                    </div>
                                     <button className="btn btn-dark mt-2 final-btn" onClick={handleBooking}>
                                         Book Now
                                     </button>

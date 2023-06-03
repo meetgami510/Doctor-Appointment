@@ -13,11 +13,11 @@ import decryptData from '../utilities/decryptData.js';
 
 // login call back
 export const loginController = async (req, res) => {
-     const { encryptedObj } = req.body;
-     console.log(process.env.CRYPTO_SECRET_KEY)
-  
+    const { encryptedObj } = req.body;
+    console.log(process.env.CRYPTO_SECRET_KEY)
+
     try {
-         const { email, password } = decryptData(encryptedObj);
+        const { email, password } = decryptData(encryptedObj);
         console.log({ email, password })
         const user = await userModel.findOne({ email });
         if (user) {
@@ -352,7 +352,8 @@ export const bookAppointmentController = async (req, res) => {
 
 export const bookingAvailabilityController = async (req, res) => {
     try {
-        const { doctorId, timingSlot } = req.body;
+        const { doctorId, timingSlot, userId, textfeelling, meetingMode } = req.body;
+        console.log(req.body);
         if ("" === timingSlot) {
             return res.status(200).send({
                 message: 'please give time slot value',
@@ -374,7 +375,22 @@ export const bookingAvailabilityController = async (req, res) => {
                 success: false
             });
         } else {
+            const newAppointment = new appointmentModel({
+                doctor: doctorId, user: userId, time: timingSlot, feel: textfeelling, meetingMode, date
+            });
+            const temp = await newAppointment.save();
+            console.log(temp);
+
+
+            const timeoutHandler = async () => {
+                await appointmentModel.findByIdAndDelete(temp._id);
+            };
+
+            setTimeout(timeoutHandler, 50000);
+            
             return res.status(200).send({
+                // timerId: id,
+                _id: temp._id,
                 message: 'appointment on this time is available',
                 success: true,
             });
@@ -385,6 +401,33 @@ export const bookingAvailabilityController = async (req, res) => {
             success: false,
             error,
             message: 'error while checking availability appointment'
+        })
+    }
+}
+
+export const checkAppointmentController = async (req, res) => {
+    try {
+        const appointmentInfoid = req.body.appointmentInfoid;
+        console.log(appointmentInfoid);
+        const temp = await appointmentModel.findById(appointmentInfoid);
+        console.log(temp);
+        if(temp) {
+            return res.status(200).send({
+                success: true,
+                message: 'avalable '
+            })
+        }
+       return res.status(500).send({
+            success: false,
+            error,
+            message: 'server error, Please try again'
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'server error, Please try again'
         })
     }
 }
