@@ -79,26 +79,42 @@ export const updateProfessionalDetailsController = async (req, res) => {
         })
     }
 }
-
+import mongoose from "mongoose";
 export const updateAppointmentStatusController = async (req, res) => {
+
+    console.log("update");
+    const { appointmentId, status } = req.body;
+    console.log(appointmentId)
+    const meetingLink = `http://localhost:3000/video-meeting/${appointmentId}`; // generates a unique ID
+    const session = await mongoose.startSession();
+    const transactionOptions = {
+        readPreference: 'primary',
+        readConcern: { level: 'snapshot' },
+        writeConcern: { w: 'majority' }
+    };
     try {
-        console.log("update");
-        const { appointmentId, status } = req.body;
-        console.log(appointmentId)
-        const meetingLink = `http://localhost:3000/video-meeting/${appointmentId}`; // generates a unique ID
-        const appointment = await appointmentModel.findByIdAndUpdate(appointmentId, { status, meetingLink });
-        console.log(appointment)
-        const user = await userModel.findOne({ _id: appointment.user });
-        user.notifications.push({
-            type: "status-update",
-            message: `your appointment has been updated ${status}`,
-            onClickPath: "/doctor-appointments"
-        });
-        await user.save();
-        res.status(200).send({
-            success: true,
-            message: "appointment status updated"
-        })
+        const transactionResult = await session.withTransaction(async () => {
+            const appointment = await appointmentModel.findByIdAndUpdate(appointmentId, { status, meetingLink }, { session });
+            console.log(appointment)
+            const user = await userModel.findOne({ _id: appointment.user });
+            console.log(user)
+            user.notifications.push({
+                type: "status-update",
+                message: `your appointment has been updated ${status}`,
+                onClickPath: "/doctor-appointments"
+            });
+            await user.save({ session });
+            res.status(200).send({
+                success: true,
+                message: "appointment status updated"
+            })
+        }, transactionOptions);
+        if (transactionResult) {
+            console.log("The reservation was successfully created.");
+        } else {
+            // await session.abortTransaction();
+            console.log("The transaction was intentionally aborted.");
+        }
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -106,6 +122,8 @@ export const updateAppointmentStatusController = async (req, res) => {
             error,
             message: 'appintment status update issue'
         })
+    } finally {
+        await session.endSession();
     }
 }
 

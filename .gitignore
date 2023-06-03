@@ -1,2 +1,9 @@
 /node_modules
 .env
+/node_modules
+.env
+dockerfile
+doctor-app-frontend.pem
+doctor-app-frontend4.pem
+key.pem
+.dockerignore
