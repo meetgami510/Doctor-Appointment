@@ -342,6 +342,7 @@ export const getAllDoctorController = async (req, res) => {
 
 export const bookAppointmentController = async (req, res) => {
     const { encryptedObj } = req.body;
+    const session = await mongoose.startSession();
     try {
         const decryptedObj = decryptData(encryptedObj);
         const { doctorId, userId, timingSlot, doctorUserId, userName, textfeelling, meetingMode } = decryptedObj;
@@ -353,29 +354,43 @@ export const bookAppointmentController = async (req, res) => {
                 message: 'Please enter feeling'
             })
         }
-        const newAppointment = new appointmentModel({
-            doctor: doctorId, user: userId, time: timingSlot, feel: textfeelling, meetingMode, date
-        });
-        const temp = await newAppointment.save();
-        const doctorData = await userModel.findOne({ _id: doctorUserId });
-        doctorData.notifications.push({
-            type: 'New-Appointment-request',
-            message: `A new appointment request from ${userName}`,
-            onClickPath: '/user/appointments'
-        });
-        await doctorData.save();
-        res.status(200).send({
-            success: true,
-            message: `Appointment booked succesfully`
-        });
+        const transactionOptions = {
+            readPreference: 'primary',
+            readConcern: { level: 'snapshot' },
+            writeConcern: { w: 'majority' }
+        };
+        const transactionResult = await session.withTransaction(async () => {
+            const newAppointment = new appointmentModel({
+                doctor: doctorId, user: userId, time: timingSlot, feel: textfeelling, meetingMode, date
+            });
+            const temp = await newAppointment.save({ session });
+            const doctorData = await userModel.findOne({ _id: doctorUserId }).session(session);
+            doctorData.notifications.push({
+                type: 'New-Appointment-request',
+                message: `A new appointment request from ${userName}`,
+                onClickPath: '/user/appointments'
+            });
+            await doctorData.save({ session });
+            return res.status(200).send({
+                success: true,
+                message: `Appointment booked succesfully`
+            });
+        }, transactionOptions);
+        if (transactionResult) {
+            console.log("The reservation was successfully created.");
+        } else {
+            // await session.abortTransaction();
+            console.log("The transaction was intentionally aborted.");
+        }
     } catch (error) {
-        console.log(error);
         res.status(500).send({
+            message: `error while fetching doctor list : ${error.message}`,
             success: false,
-            error,
-            message: 'error while booking appointment'
-        })
+        });
+    } finally {
+        await session.endSession();
     }
+
 }
 
 export const bookingAvailabilityController = async (req, res) => {
@@ -391,6 +406,7 @@ export const bookingAvailabilityController = async (req, res) => {
         const date = moment().add(1, 'day').toDate().toLocaleDateString();
         console.log(date);
         console.log(timingSlot);
+
         const appointment = await appointmentModel.findOne({
             doctor: doctorId,
             time: timingSlot,
@@ -408,14 +424,10 @@ export const bookingAvailabilityController = async (req, res) => {
             });
             const temp = await newAppointment.save();
             console.log(temp);
-
-
             const timeoutHandler = async () => {
                 await appointmentModel.findByIdAndDelete(temp._id);
             };
-
             setTimeout(timeoutHandler, 50000);
-            
             return res.status(200).send({
                 // timerId: id,
                 _id: temp._id,
@@ -439,13 +451,13 @@ export const checkAppointmentController = async (req, res) => {
         console.log(appointmentInfoid);
         const temp = await appointmentModel.findById(appointmentInfoid);
         console.log(temp);
-        if(temp) {
+        if (temp) {
             return res.status(200).send({
                 success: true,
                 message: 'avalable '
             })
         }
-       return res.status(500).send({
+        return res.status(500).send({
             success: false,
             error,
             message: 'server error, Please try again'
