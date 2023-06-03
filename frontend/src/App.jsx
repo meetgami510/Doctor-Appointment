@@ -1,11 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
-import axios from 'axios';
 import CookiesProvider from "./context/CookiesProvider";
-import Spinner from "./components/Spinner";
 import Login from "./pages/Login";
-import { Provider } from 'react-redux';
-import store from "./redux/store"
 import SymptomChecker from "./pages/common/SymptomChecker";
 import ApplyDoctor from "./pages/user/ApplyDoctor";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -17,8 +12,6 @@ import Notification from "./pages/common/Notification";
 import Users from "./pages/admin/Users"
 import Doctors from "./pages/admin/Doctors"
 import BookingPage from "./pages/doctor/BookingPage"
-import Profile from "./pages/doctor/DoctorProfile";
-import Appointments from "./pages/user/UserAppointments";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments"
 import UserAppointments from "./pages/user/UserAppointments";
 import VideoMeeting from "./pages/common/VideoMeeting";
@@ -26,7 +19,6 @@ import DoctorProfile from "./pages/doctor/DoctorProfile";
 import UserProfile from "./pages/user/UserProfile";
 
 function App() {
-  console.log(process.env.REACT_APP_BASE)
   return (
     <CookiesProvider>
       <BrowserRouter>

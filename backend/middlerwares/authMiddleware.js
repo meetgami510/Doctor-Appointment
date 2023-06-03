@@ -2,12 +2,12 @@ import jwt from 'jsonwebtoken';
 import userModel from '../models/userModels.js';
 
 const protect = async (req, res, next) => {
-    console.log(req.header);
+    // console.log(req.header);
 
 
-    console.log("from authMiddleware");
+    // console.log("from authMiddleware");
     try {
-        console.log(req.url)
+        // console.log(req.url)
         const token = req.headers.authorization.split(' ')[1];
         const userType = req.url.split('/')[2];
         const controllerLink = req.url.split('/')[3];
@@ -18,9 +18,9 @@ const protect = async (req, res, next) => {
                     success: false
                 });
             } else {
-                console.log(decode)
-                console.log(userType)
-                console.log(controllerLink)
+                // console.log(decode)
+                // console.log(userType)
+                // console.log(controllerLink)
                 if (decode.userType === userType || "getAllDoctor" === controllerLink || "getUserData" === controllerLink || ("doctor" === decode.userType && (controllerLink === "update-personal-details" || controllerLink === "verify-video-meeting-id"))) {
                     try {
                         const userdata = await userModel.findById(decode.id);
@@ -44,7 +44,7 @@ const protect = async (req, res, next) => {
             }
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(401).send({
             message: 'authenication is failed',
             success: false

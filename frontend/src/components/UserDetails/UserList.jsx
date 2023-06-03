@@ -2,11 +2,9 @@ import React, { useContext } from "react";
 import Layout from "../Layout/Layout";
 import { CookiesContext } from "../../context/CookiesProvider";
 import AllUserDetails from "./AllUserDetails";
-// import AllUserDetails from "./AllUserDetails";
 
 const UserList = ({ userList }) => {
   const { removeCookies } = useContext(CookiesContext);
-  console.log(userList);
   return (
     <Layout removeCookies={removeCookies}>
       <h1 className="text-center m-2">Users List</h1>

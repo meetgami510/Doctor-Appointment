@@ -12,7 +12,7 @@ const checkUserType = async (req, res, next) => {
                 });
             } else {
                 try {
-                    console.log(req.url)
+                    // console.log(req.url)
                     // const userdata = await userModel.findById(decode.id);
                     // if (userdata) {
                     //     req.body.userId = decode.id;
@@ -28,7 +28,7 @@ const checkUserType = async (req, res, next) => {
             }
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(401).send({
             message: 'authenication is failed',
             success: false

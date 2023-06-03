@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 import { useNavigate, useParams } from 'react-router-dom';
-import axiosInstance from '../../utilities/axiosInstance';
 import { message } from 'antd';
 import { CookiesContext } from '../../context/CookiesProvider';
 import { vidoeMeetingLink } from '../../Action/users/paymentVerification';
@@ -18,12 +17,12 @@ function VideoMeeting() {
         const fun1 = async () => {
             try {
                 const response = await vidoeMeetingLink(token, roomId);
-                console.log(response);
+                // console.log(response);
                 if (response.type === 'error') {
                     navigate('/')
                 }
             } catch (error) {
-                console.log("filad")
+                // console.log("filad")
                 alert(error.message)
                 if (error.message.includes("authenitication is failed")) {
                     navigate('/')
@@ -32,8 +31,8 @@ function VideoMeeting() {
             }
         }
         fun1();
-    }, [roomId])
-
+        //eslint-disable-next-line
+    }, [roomId]);
 
     const fun = async (element) => {
         const appId = Number(process.env.REACT_APP_appID);

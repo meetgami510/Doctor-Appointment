@@ -1,5 +1,4 @@
 import axiosInstance from '../../utilities/axiosInstance';
-import encryptData from '../../utilities/encryptData';
 
 export const userPaymentRequest = async (token, doctorFee) => {
 
@@ -68,7 +67,7 @@ export const vidoeMeetingLink = async (token, roomId) => {
                     authorization: "Bearer " + token,
                 },
             });
-        console.log(response);
+        // console.log(response);
         if (false === response.data.success) {
             return {
                 type: 'error',

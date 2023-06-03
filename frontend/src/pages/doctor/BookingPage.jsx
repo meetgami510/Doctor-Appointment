@@ -6,19 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { CookiesContext } from "../../context/CookiesProvider";
 import { message } from "antd";
-import moment from "moment";
 import { getdoctorthroughid } from "../../Action/doctors/getDoctorDetails";
 import { chechbookingAvalability, userbooking } from "../../Action/users/bookingappointment";
-import axiosInstance from '../../utilities/axiosInstance';
 import { userPaymentRequest, userPaymentVerify } from "../../Action/users/paymentVerification";
-
 
 const BookingPage = () => {
     const { removeCookies, cookies } = useContext(CookiesContext);
     const [doctor, setDoctor] = useState(null);
     const { user } = useSelector((state) => state.user);
     const navigate = useNavigate();
-    console.log(moment().add(1, "day").format("YYYY-MM-DD"));
 
     const dispatch = useDispatch();
     const params = useParams();
@@ -72,7 +68,6 @@ const BookingPage = () => {
     }, [cookies]);
 
     const handleBooking = async () => {
-
         const { token } = cookies;
         try {
             if (!timingSlot) {

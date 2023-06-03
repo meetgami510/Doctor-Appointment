@@ -3,9 +3,9 @@ import nodemailer from 'nodemailer';
 
 export const sendEmailhandler = async (email, subject, text) => {
 	try {
-		console.log("Hey");
-		console.log(email);
-		console.log(text);
+		// console.log(("Hey");
+		// console.log((email);
+		// console.log((text);
 		const transporter = nodemailer.createTransport({
 			host: "smtp.gmail.com",
 			service: 'gmail',
@@ -23,10 +23,10 @@ export const sendEmailhandler = async (email, subject, text) => {
 			subject: subject,
 			text: text,
 		});
-		console.log("email sent successfully");
+		// console.log(("email sent successfully");
 	} catch (error) {
-		console.log("email not sent!");
-		console.log(error);
+		// console.log(("email not sent!");
+		// console.log((error);
 		return error;
 	}
 };

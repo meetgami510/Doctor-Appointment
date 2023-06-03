@@ -12,9 +12,9 @@ function DoctorProfessionalDetails({ doctor, setDoctor }) {
         const { token } = cookies;
         try {
             dispatch(showLoading());
-            console.log(values);
+            // console.log(values);
             const responce = await updateProfessional(token, values);
-            console.log(responce)
+            // console.log(responce)
             dispatch(hideLoading());
             if (responce.type === 'data') {
                 message.success(responce.message);
@@ -23,7 +23,7 @@ function DoctorProfessionalDetails({ doctor, setDoctor }) {
                 message.error(responce.message);
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             dispatch(hideLoading());
             message.error("some thing went wrong");
         }
@@ -31,6 +31,7 @@ function DoctorProfessionalDetails({ doctor, setDoctor }) {
     const [form] = Form.useForm();
     useEffect(() => {
         form.setFieldsValue(doctor);
+        //eslint-disable-next-line
     }, [doctor]);
     return (
         <Form layout="vertical"

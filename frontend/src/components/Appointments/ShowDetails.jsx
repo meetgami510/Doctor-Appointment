@@ -7,10 +7,8 @@ import "../../styles/Showdetails.css"
 const ShowDetails = ({ show, appointment, isDoctor, onHide, appointmentStatus }) => {
 
   var person = {};
-  console.log(isDoctor)
   if (isDoctor) person = appointment.user;
   else person = appointment.doctor.user;
-  console.log(appointment)
   return (
     <Modal
       dialogClassName="modal-width"

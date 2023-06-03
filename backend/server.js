@@ -18,7 +18,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: 'http://13.233.126.225/'
 }));
 
 // mongodb connection
@@ -26,7 +26,6 @@ connectDB();
 
 // routes
 app.get('/', (req, res) => {
-
     res.send("hello");
 });
 
@@ -54,9 +53,9 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/doctor', doctorRoutes);
 
 // PORT NUMBER
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 80
 
 // listen port
 app.listen(PORT, () => {
-    console.log('server is litening', PORT, process.env.NODE_MODE);
+    // console.log('server is litening', PORT, process.env.NODE_MODE);
 });

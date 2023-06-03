@@ -27,7 +27,7 @@ function PersonalDetails() {
             }
 
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             dispatch(hideLoading());
             message.error("some thing went wrong");
         }

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Layout from '../../components/Layout/Layout';
 import { hideLoading, showLoading } from '../../redux/features/alertSlice';
-import { Table, message } from 'antd';
+import { message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { CookiesContext } from "../../context/CookiesProvider";
 import { getAllguestuserData } from '../../Action/admin/getAllusersdata';
@@ -9,7 +8,7 @@ import UserList from '../../components/UserDetails/UserList';
 import { useNavigate } from 'react-router-dom';
 
 const Users = () => {
-    const { removeCookies, cookies } = useContext(CookiesContext);
+    const { cookies } = useContext(CookiesContext);
     const [userList, setUserList] = useState([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();

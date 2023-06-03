@@ -5,14 +5,14 @@ import userModel from "../models/userModels.js";
 export const getDoctorInfoController = async (req, res) => {
     try {
         const doctor = await doctorModel.findOne({ user: req.body.userId }).populate("user");
-        console.log(doctor);
+        // console.log(doctor);
         res.status(200).send({
             success: true,
             message: 'doctor data fetch successfully',
             doctor
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -23,9 +23,9 @@ export const getDoctorInfoController = async (req, res) => {
 
 export const getDoctorAppointmentsController = async (req, res) => {
     try {
-        console.log(req.body.userId)
+        // console.log(req.body.userId)
         const doctor = await doctorModel.findOne({ user: req.body.userId });
-        console.log(doctor);
+        // console.log(doctor);
         if (doctor) {
             // const appointments = await appointmentModel.find({ doctor: doctor._id });
             const appointments = await appointmentModel
@@ -34,7 +34,7 @@ export const getDoctorAppointmentsController = async (req, res) => {
 
             // console.log(appointment)
 
-            console.log(appointments);
+            // console.log(appointments);
             return res.status(200).send({
                 success: true,
                 message: 'appointments data fetched successfully',
@@ -48,7 +48,7 @@ export const getDoctorAppointmentsController = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -59,7 +59,7 @@ export const getDoctorAppointmentsController = async (req, res) => {
 
 export const updateProfessionalDetailsController = async (req, res) => {
     try {
-        console.log(req.body)
+        // console.log(req.body)
         const doctor = await doctorModel.findOneAndUpdate(
             { user: req.body.userId },
             req.body,
@@ -71,7 +71,7 @@ export const updateProfessionalDetailsController = async (req, res) => {
             doctor
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -82,12 +82,12 @@ export const updateProfessionalDetailsController = async (req, res) => {
 
 export const updateAppointmentStatusController = async (req, res) => {
     try {
-        console.log("update");
+        // console.log("update");
         const { appointmentId, status } = req.body;
-        console.log(appointmentId)
+        // console.log(appointmentId)
         const meetingLink = `http://localhost:3000/video-meeting/${appointmentId}`; // generates a unique ID
         const appointment = await appointmentModel.findByIdAndUpdate(appointmentId, { status, meetingLink });
-        console.log(appointment)
+        // console.log(appointment)
         const user = await userModel.findOne({ _id: appointment.user });
         user.notifications.push({
             type: "status-update",
@@ -100,7 +100,7 @@ export const updateAppointmentStatusController = async (req, res) => {
             message: "appointment status updated"
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -111,18 +111,18 @@ export const updateAppointmentStatusController = async (req, res) => {
 
 export const sloatbookingController = async (req, res) => {
     try {
-        console.log(req.body.userId);
+        // console.log(req.body.userId);
         const doctor = await doctorModel.findOneAndUpdate(
             { user: req.body.userId },
             { timeSlot: req.body.timeSlot }
         );
-        console.log(doctor);
+        // console.log(doctor);
         return res.status(200).send({
             success: true,
             message: "sloat is booked succefully"
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -142,7 +142,7 @@ export const uploadDocumentpdfController = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,

@@ -1,6 +1,5 @@
 import React from "react";
 import Layout from "../../components/Layout/Layout";
-import _ from "lodash";
 import { useState } from "react";
 import "../../styles/SymptomChecker.css";
 
@@ -185,7 +184,8 @@ function SymptomChecker() {
     age: { value: 30 },
   });
 
-  api.generateInterviewId();
+  if (null === interviewId)
+    api.generateInterviewId();
 
   const handleChange = async (event) => {
     const { name, value } = event.target;
@@ -211,7 +211,7 @@ function SymptomChecker() {
 
     const resp = await api.diagnosis(body);
     setConditions(resp.conditions);
-    console.log(resp);
+    // console.log(resp);
     if (resp.question) {
       setSymptom(resp.question.items[0].id);
       setQuestion(resp.question.text);
@@ -220,9 +220,9 @@ function SymptomChecker() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const tempObj = { text, sex, age: { value: parseInt(age) } };
-    console.log(tempObj);
+    // console.log(tempObj);
     const data = await api.parse(tempObj);
-    console.log(data);
+    // console.log(data);
     const { mentions } = data;
     let evidence = mentions.map((m) => {
       let evd = {
@@ -233,7 +233,7 @@ function SymptomChecker() {
       return evd;
     });
     setEvidence(evidence);
-    console.log(data);
+    // console.log(data);
     processAns(evidence);
   };
 

@@ -32,7 +32,6 @@ export const getDoctorDetails = async (token) => {
 
 export const getdoctorthroughid = async (token, params) => {
   try {
-    console.log(params.doctorId);
     const res = await axiosInstance.post(
       "/user/getDoctorById",
       { doctorId: params.doctorId },

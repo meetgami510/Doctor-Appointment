@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
         : user?.isDoctor
             ? doctorMenu
             : userMenu;
-    console.log(user)
+    // console.log(user)
     return (
         <>
             <div className="main">

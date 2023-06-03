@@ -11,13 +11,13 @@ function Appointment({ appointment, isDoctor }) {
     const dispatch = useDispatch();
 
     const [editModalShow, setEditModalShow] = React.useState(false);
-    const [currentItem, setCurrentItem] = React.useState(false);
+    const [setCurrentItem] = React.useState(false);
     const [appointmentStatus, setAppointmentStatus] = useState(
         appointment.status
     );
-    console.log(appointment.doctor.user);
+    // console.log(appointment.doctor.user);
 
-    console.log(isDoctor)
+    // console.log(isDoctor)
     const handleStatus = async (record, status) => {
         const { token } = cookies;
         try {
@@ -29,7 +29,7 @@ function Appointment({ appointment, isDoctor }) {
                 message.error(responce.message);
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             dispatch(hideLoading());
             message.error("some thing went wrong");
         }
@@ -38,11 +38,11 @@ function Appointment({ appointment, isDoctor }) {
     return (
         <>
             <tr key={appointment._id} className="font-size-14">
-                <td scope="row">{isDoctor ? (appointment.user.firstName + " " + appointment.user.lastName) : (appointment.doctor.user.firstName + " " + appointment.doctor.user.lastName)}</td>
-                <td scope="row">{appointment.date}</td>
-                <td scope="row">{appointment.time}</td>
-                <td scope="row">{appointment.meetingMode}</td>
-                <td scope="row">
+                <td>{isDoctor ? (appointment.user.firstName + " " + appointment.user.lastName) : (appointment.doctor.user.firstName + " " + appointment.doctor.user.lastName)}</td>
+                <td>{appointment.date}</td>
+                <td>{appointment.time}</td>
+                <td>{appointment.meetingMode}</td>
+                <td>
                     {isDoctor && appointmentStatus === "pending" ? (
                         <div className="d-flex">
                             <button
@@ -60,7 +60,7 @@ function Appointment({ appointment, isDoctor }) {
                         </div>
                     ) : appointmentStatus}
                 </td>
-                <td scope="col" style={{ cursor: "pointer", padding: "10px" }} onClick={() => { setEditModalShow(true); setCurrentItem(appointment); }} > <i style={{ fontSize: "13px", color: "#0077b6" }} className="fas fa-edit"></i> </td>
+                <td style={{ cursor: "pointer", padding: "10px" }} onClick={() => { setEditModalShow(true); setCurrentItem(appointment); }} > <i style={{ fontSize: "13px", color: "#0077b6" }} className="fas fa-edit"></i> </td>
                 <ShowDetails show={editModalShow} onHide={() => setEditModalShow(false)} appointmentStatus={appointmentStatus} appointment={appointment} isDoctor={isDoctor} />
             </tr>
         </>

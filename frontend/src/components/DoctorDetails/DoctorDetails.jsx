@@ -20,7 +20,7 @@ const DoctorAppointment = ({ doctor }) => {
         dispatch(hideLoading());
         if (response.type === 'data') {
             message.success(response.message);
-            console.log(status)
+            // console.log(status)
             setAccountmentStatus(status);
         } else {
             message.error(response.message);

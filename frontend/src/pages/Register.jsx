@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../redux/features/alertSlice';
-import axiosInstance from '../utilities/axiosInstance';
-import CryptoJS from 'crypto-js';
 import { registerUsers, sendOtpTouser, verifyOtpofUser } from '../Action/users/loginandregister';
-const secretKey = process.env.REACT_APP_SECRET_KEY;
-
 
 const Register = () => {
   const navigate = useNavigate();
@@ -32,7 +28,7 @@ const Register = () => {
 
       //const { data: resp } = await axiosInstance.post('/user/send-otp', { contact: userData.phone });
       dispatch(hideLoading());
-     
+
       if (response.type === 'data') {
         alert(response.message);
       } else {
@@ -40,7 +36,7 @@ const Register = () => {
       }
     } catch (error) {
       dispatch(hideLoading());
-      console.log(error)
+      // console.log(error)
       alert("server error please try again");
     }
   }
@@ -59,7 +55,7 @@ const Register = () => {
       sentOtp();
     } catch (error) {
       dispatch(hideLoading());
-      console.log(error)
+      // console.log(error)
       alert("server error please try again");
     }
   }
@@ -67,25 +63,25 @@ const Register = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await verifyOtpofUser(userData.phone,otp);
+      const response = await verifyOtpofUser(userData.phone, otp);
 
-      if(response.type === 'data') {
+      if (response.type === 'data') {
         const registerresponse = await registerUsers(userData);
         dispatch(hideLoading());
 
-        if(registerresponse.type === 'data') {
+        if (registerresponse.type === 'data') {
           alert(registerresponse.message);
           navigate('/login')
-        }else{
+        } else {
           alert(registerresponse.message);
         }
-      }else{
+      } else {
         alert(response.message)
       }
-      
+
     } catch (error) {
       dispatch(hideLoading());
-      console.log(error)
+      // console.log(error)
       alert("server error please try again");
     }
   }

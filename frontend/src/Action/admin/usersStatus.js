@@ -23,7 +23,6 @@ const doctorStatus = async (token, doctorId, status) => {
             }
         }
     } catch (error) {
-        console.log(error);
         return {
             type: "error",
             message: "server Error please try again"

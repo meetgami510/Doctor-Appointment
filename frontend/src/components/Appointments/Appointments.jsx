@@ -4,8 +4,7 @@ import Appointment from './Appointment'
 import { CookiesContext } from '../../context/CookiesProvider';
 
 function Appointments({ appointments, isDoctor }) {
-    const { removeCookies, cookies } = useContext(CookiesContext);
-    console.log(appointments)
+    const { removeCookies } = useContext(CookiesContext);
     return (
         <Layout removeCookies={removeCookies}>
             <h1>Appointment Lists</h1>

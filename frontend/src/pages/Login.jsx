@@ -6,10 +6,7 @@ import { CookiesContext } from "../context/CookiesProvider";
 import { message } from "antd";
 import '../styles/Login.css'
 import Spinner from "../components/Spinner";
-
-import CryptoJS from 'crypto-js';
 import { loginUsers } from "../Action/users/loginandregister";
-const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 
 const Login = () => {
@@ -31,33 +28,21 @@ const Login = () => {
     try {
       dispatch(showLoading());
 
-      const response = await loginUsers(email,password);
+      const response = await loginUsers(email, password);
 
-      if(response.type === 'data') {
+      if (response.type === 'data') {
         dispatch(hideLoading());
         setCookies('token', response.token);
         message.success(response.message);
         navigate('/')
-      }else{
+      } else {
         dispatch(hideLoading());
         navigate('/')
         alert(response.message);
       }
-      // const objStr = JSON.stringify({ email, password });
-      // const encryptedObj = CryptoJS.AES.encrypt(objStr, secretKey).toString();
-      // const res = await axiosInstance.post('/user/login', { encryptedObj });
-      // dispatch(hideLoading());
-      // console.log(res.data);
-      // if (res.data.success) {
-      //   setCookies('token', res.data.token);
-      //   alert('Login successfully!');
-      //   navigate('/')
-      // } else {
-      //   alert(res.data.message);
-      // }
     } catch (error) {
       dispatch(hideLoading());
-      console.log(error);
+      // console.log(error);
       alert('some thing went wrong');
     }
   }
@@ -77,7 +62,7 @@ const Login = () => {
               >
                 <div className="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
                   <h2>
-                    <a>Login to your account</a>
+                    <p>Login to your account</p>
                   </h2>
                 </div>
                 <div className="formbg-outer">
@@ -109,7 +94,7 @@ const Login = () => {
                             required
                           />
                           <div className="reset-pass">
-                            <a href="#">Forgot your password?</a>
+                            <p>Forgot your password?</p>
                           </div>
                         </div>
 

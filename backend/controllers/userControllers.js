@@ -13,16 +13,16 @@ import decryptData from '../utilities/decryptData.js';
 
 // login call back
 export const loginController = async (req, res) => {
-    // const { encryptedObj } = req.body;
-    const { email, password } = req.body;
+    const { encryptedObj } = req.body;
+    // const { email, password } = req.body;
     // console.log(process.env.CRYPTO_SECRET_KEY)
-    console.log(req.body);
+    // console.log(req.body);
     try {
-        // const { email, password } = decryptData(encryptedObj);
-        console.log({ email, password })
+        const { email, password } = decryptData(encryptedObj);
+        // console.log({ email, password })
         const user = await userModel.findOne({ email });
         if (user) {
-            console.log(password);
+            // console.log(password);
             const isMatch = await bcrypt.compare(password, user.password);
             if (false === isMatch) {
                 return res.status(200).send({
@@ -61,7 +61,7 @@ export const sendOtp = async (req, res) => {
         const verifySid = process.env.VERIFY_SID;
         const client = twilio(accountSid, authToken);
         const contact = req.body.contact;
-        //console.log(req.body);
+        //console.log((req.body);
         const rsp = await client.verify.v2.services(verifySid)
             .verifications.create({ to: `+91${contact}`, channel: "sms" });
         return res.status(200).send({
@@ -69,8 +69,8 @@ export const sendOtp = async (req, res) => {
             success: true,
         })
     } catch (error) {
-        console.log("send OTP")
-        console.log(error)
+        // console.log("send OTP")
+        // console.log(error)
         res.status(500).send({
             message: `Register Controller : ${error.message}`,
             success: false,
@@ -100,13 +100,13 @@ export const verifyOtp = async (req, res) => {
 
 // register call back
 export const registerController = async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     try {
         const { encryptedObj } = req.body;
         const bytes = CryptoJS.AES.decrypt(encryptedObj, process.env.CRYPTO_SECRET_KEY);
         const { user } = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         const checkUser = await userModel.findOne({ $or: [{ email: user.email }, { phone: user.phone }] });
-        console.log(checkUser);
+        // console.log(checkUser);
         if (checkUser) {
             return res.status(200).send({
                 message: 'User Already Exists',
@@ -117,13 +117,13 @@ export const registerController = async (req, res) => {
         user.password = await bcrypt.hash(user.password, 10);
         const newUser = new userModel(user);
         const resp = await newUser.save();
-        console.log(resp);
+        // console.log(resp);
         res.status(201).send({
             message: 'register successfully',
             success: true
         })
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(500).send({
             message: `Register Controller : ${error.message}`,
             success: false,
@@ -147,7 +147,7 @@ export const getUserDataController = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             message: 'some thing went wrong',
             success: false
@@ -171,7 +171,7 @@ export const getAllNotificationController = async (req, res) => {
             user: updatedUser
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -192,7 +192,7 @@ export const deleteAllNotificationController = async (req, res) => {
             user: updatedUser
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -203,16 +203,16 @@ export const deleteAllNotificationController = async (req, res) => {
 
 export const getDoctorByIdController = async (req, res) => {
     try {
-        console.log(req.body.doctorId);
+        // console.log(req.body.doctorId);
         const doctor = await doctorModel.findById({ _id: req.body.doctorId }).populate("user");
-        console.log(doctor);
+        // console.log(doctor);
         res.status(200).send({
             success: true,
             message: 'single doctor data fetch successfully',
             doctor
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -223,7 +223,7 @@ export const getDoctorByIdController = async (req, res) => {
 
 export const verifyVideoMeetingIdController = async (req, res) => {
     try {
-        console.log("from verify video meeting")
+        // console.log("from verify video meeting")
         const response = await appointmentModel.findById(req.body.roomId).populate('doctor');
         if (response && response.user == req.body.userId || response.doctor.user == req.body.userId) {
             return res.status(200).json({
@@ -235,7 +235,7 @@ export const verifyVideoMeetingIdController = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -246,9 +246,9 @@ export const verifyVideoMeetingIdController = async (req, res) => {
 
 export const applyDoctorController = async (req, res) => {
     try {
-        console.log(req.body);
+        // console.log(req.body);
         const doctorInfo = req.body;
-        console.log(req.body);
+        // console.log(req.body);
         const checkDoctor = await doctorModel.findOne({ user: req.body.userId });
         if (checkDoctor) {
             var message = '';
@@ -264,9 +264,9 @@ export const applyDoctorController = async (req, res) => {
             const user = await userModel.findById(req.body.userId);
             const newDoctor = new doctorModel(doctorInfo);
             const obj = await newDoctor.save();
-            console.log(obj)
+            // console.log(obj)
             const adminUser = await userModel.findOne({ isAdmin: true });
-            console.log(adminUser)
+            // console.log(adminUser)
             const notifications = adminUser.notifications;
             notifications.push({
                 type: 'apply-doctor-request',
@@ -284,7 +284,7 @@ export const applyDoctorController = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -297,14 +297,14 @@ export const applyDoctorController = async (req, res) => {
 export const getAllDoctorController = async (req, res) => {
     try {
         const doctorList = await doctorModel.find({ status: 'approved' }).populate('user');
-        console.log(doctorList);
+        // console.log(doctorList);
         res.status(200).send({
             success: true,
             message: 'doctor list fetched successfully',
             doctorList
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -319,7 +319,7 @@ export const bookAppointmentController = async (req, res) => {
         const decryptedObj = decryptData(encryptedObj);
         const { doctorId, userId, timingSlot, doctorUserId, userName, textfeelling, meetingMode } = decryptedObj;
         const date = moment().add(1, 'day').toDate().toLocaleDateString();
-        console.log(date)
+        // console.log(date)
         if ("" === textfeelling) {
             return res.status(200).send({
                 success: false,
@@ -342,7 +342,7 @@ export const bookAppointmentController = async (req, res) => {
             message: `Appointment booked succesfully`
         });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -361,14 +361,14 @@ export const bookingAvailabilityController = async (req, res) => {
             });
         }
         const date = moment().add(1, 'day').toDate().toLocaleDateString();
-        console.log(date);
-        console.log(timingSlot);
+        // console.log(date);
+        // console.log(timingSlot);
         const appointment = await appointmentModel.findOne({
             doctor: doctorId,
             time: timingSlot,
             date
         });
-        console.log(appointment)
+        // console.log(appointment)
         if (appointment) {
             return res.status(200).send({
                 message: 'appointment on this time is already booked',
@@ -381,7 +381,7 @@ export const bookingAvailabilityController = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -401,15 +401,15 @@ export const userAppointmentController = async (req, res) => {
                     model: 'user'
                 }
             });
-        console.log(appointments);
-        console.log(appointments[0].doctor.user.name);
+        // console.log(appointments);
+        // console.log(appointments[0].doctor.user.name);
         res.status(200).send({
             success: true,
             message: 'User appointment fetch successfully',
             appointments
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -422,21 +422,21 @@ export const updatePersonalDetails = async (req, res) => {
     const { encryptedObj } = req.body;
     try {
 
-        console.log(req.body);
+        // console.log(req.body);
         const decryptedObj = decryptData(encryptedObj);
         const user = await userModel.findByIdAndUpdate(
             req.body.userId,
             decryptedObj,
             { new: true }
         );
-        console.log(user)
+        // console.log(user)
         res.status(200).send({
             success: true,
             message: 'personal details update successfully',
             user
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -452,7 +452,7 @@ export const makePaymentController = async (req, res) => {
             key_secret: process.env.KEY_SECRET,
         });
 
-        console.log(req.body);
+        // console.log(req.body);
         const { amount, currency, payment_capture } = req.body;
         const option = {
             amount: req.body.amount,
@@ -460,16 +460,16 @@ export const makePaymentController = async (req, res) => {
             receipt: crypto.randomBytes(10).toString("hex")
         }
         instance.orders.create(option, (error, order) => {
-            console.log(order)
+            // console.log(order)
             if (error) {
-                console.log(error);
+                // console.log(error);
                 return res.status(500).json({ message: "Somthing Went Wrong" });
 
             }
             res.status(200).json({ data: order });
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error,
@@ -491,11 +491,11 @@ export const paymentVerificatonController = async (req, res) => {
         // const expectedSign = crypto.createHmac("sha256",process.env.KEY_SECRET).update(sign.toString()).digest("hex");
 
         // if(razorpay_signature === expectedSign) {
-        console.log(req.body)
+        // console.log(req.body)
         return res.status(200).json({
             success: true,
             message: "payment verified succeffully",
-        })
+        });
         // }else{
         //     return res.status(200).json({
         //         message: "Invalid signature sent",
@@ -503,7 +503,7 @@ export const paymentVerificatonController = async (req, res) => {
         // }
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(500).send({
             success: false,
             error,
@@ -513,15 +513,15 @@ export const paymentVerificatonController = async (req, res) => {
 
     // try {
     //     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    //     console.log("we are here")
-    //     console.log(req.body);
+    //   // console.log("we are here")
+    //   // console.log(req.body);
 
     //     const sign = razorpay_order_id + "|" + razorpay_payment_id;
 
     //     const expectedSign = crypto.createHmac("sha256", process.env.KEY_SECRET).update(sign.toString()).digest("hex");
 
     //     if (razorpay_signature === expectedSign) {
-    //         console.log("hiii");
+    //       // console.log("hiii");
     //         return res.status(200).json({
     //             message: "payment verified succeffully",
     //         })
@@ -532,7 +532,7 @@ export const paymentVerificatonController = async (req, res) => {
     //     }
 
     // } catch (error) {
-    //     console.log(error);
+    //   // console.log(error);
     //     res.status(500).send({
     //         success: false,
     //         error,
@@ -542,13 +542,13 @@ export const paymentVerificatonController = async (req, res) => {
 }
 
 export const emailSendController = async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
 
     const user = await userModel.findById(req.body.userId);
-    console.log(user.email);
+    // console.log(user.email);
 
     const temp = await sendEmailhandler(user.email, "For demo", "for demo");
-    console.log(temp);
+    // console.log(temp);
 
     return res.status(200).send({
         message: "email send succeffull",
