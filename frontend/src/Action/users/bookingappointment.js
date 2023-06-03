@@ -42,12 +42,18 @@ const userbooking = async (token, params, user, doctor, timingSlot, textfeelling
     }
 }
 
-const chechbookingAvalability = async (token, params, timingSlot) => {
+const chechbookingAvalability = async (token, params, user, doctor, timingSlot, textfeelling, meetingMode) => {
     try {
 
         const res = await axiosInstance.post(
             "/user/booking-avalibility",
-            { doctorId: params.doctorId, timingSlot },
+            {   doctorId: params.doctorId,
+                userName: user.name,
+                doctorUserId: doctor.user._id,
+                userId: user._id,
+                timingSlot,
+                textfeelling,
+                meetingMode, },
             {
                 headers: {
                     authorization: "Bearer " + token,
@@ -57,7 +63,9 @@ const chechbookingAvalability = async (token, params, timingSlot) => {
         if (res.data.success) {
             return {
                 type: 'data',
-                message: res.data.message
+                message: res.data.message,
+                _id:res.data._id,
+                timerId : res.data.timerId
             }
         } else {
             return {

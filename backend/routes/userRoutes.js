@@ -16,7 +16,8 @@ import {
     paymentVerificatonController,
     emailSendController,
     getDoctorByIdController,
-    verifyVideoMeetingIdController
+    verifyVideoMeetingIdController,
+    checkAppointmentController
 } from "../controllers/userControllers.js";
 import { getAppointmentsController } from "../controllers/commonControllers.js";
 
@@ -57,6 +58,8 @@ router.post('/orders', makePaymentController);
 router.post('/verify', paymentVerificatonController);
 
 router.post('/verify-video-meeting-id', verifyVideoMeetingIdController)
+
+router.post('/check-appointmentInfo',checkAppointmentController)
 
 router.get('/send-email', emailSendController);
 

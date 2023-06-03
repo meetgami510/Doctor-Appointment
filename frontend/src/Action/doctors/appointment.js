@@ -56,7 +56,38 @@ export const updateDoctorappointmentstatus = async (token, record, status) => {
         }
     } catch (error) {
         return {
-            type: "data",
+            type: "error",
+            message: "server error please try again"
+        }
+    }
+}
+
+
+export const checkAppointment = async (token, appointmentInfoid) => {
+    try {
+        const res = await axiosInstance.post("/user/check-appointmentInfo", {
+            appointmentInfoid
+        }, {
+            headers: {
+                authorization: "Bearer " + token,
+            },
+        })
+        console.log(res);
+        if (res.data.success) {
+            return {
+                type: 'data',
+                message: 'appointment get Succeffuley'
+            }
+        } else {
+            return {
+                type: 'error',
+                message: "server error please try again"
+            }
+        }
+
+    } catch (error) {
+        return {
+            type: 'error',
             message: "server error please try again"
         }
     }

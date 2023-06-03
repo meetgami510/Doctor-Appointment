@@ -36,7 +36,6 @@ const appointmentSchema = new Schema(
         meetingLink: {
             type: String,
         },
-
     },
     { timestamps: true }
 );
