@@ -1,6 +1,7 @@
 import doctorModel from '../models/doctorModels.js'
 import userModel from '../models/userModels.js'
 import { sendEmailhandler } from '../utilities/sendEmail.js';
+import mongoose from 'mongoose';
 
 export const getAllUsersController = async (req, res) => {
     try {
@@ -35,61 +36,78 @@ export const getAllDoctorsController = async (req, res) => {
 }
 
 export const changeAccountStatusController = async (req, res) => {
+    const { doctorId, status } = req.body;
+    const session = await mongoose.startSession();
+    const transactionOptions = {
+        readPreference: 'primary',
+        readConcern: { level: 'snapshot' },
+        writeConcern: { w: 'majority' }
+    };
     try {
-        const { doctorId, status } = req.body;
-        const doctor = await doctorModel.findByIdAndUpdate(doctorId, { status });
-        const user = await userModel.findById({ _id: doctor.user });
-        const notifications = user.notifications;
-        notifications.push({
-            type: 'doctor account status updated',
-            message: `your doctor account has been ${status}`,
-            onClickPath: `/notification`
-        });
-        console.log(user.email);
-        const temp =  await sendEmailhandler(user.email,`From Doctor appointment App`,`your doctor account has been ${status}`);
-        user.isDoctor = status === 'approved' ? true : false;
-        await user.save();
-        res.status(201).send({
-            success: true,
-            message: `Account status updated`,
-            data: doctor
-        })
+        const transactionResult = await session.withTransaction(async () => {
+            const doctor = await doctorModel.findByIdAndUpdate(doctorId, { status }, { session });
+            const user = await userModel.findById({ _id: doctor.user }, { session });
+            const notifications = user.notifications;
+            notifications.push({
+                type: 'doctor account status updated',
+                message: `your doctor account has been ${status}`,
+                onClickPath: `/notification`
+            });
+            const temp = await sendEmailhandler(user.email, `From Doctor appointment App`, `your doctor account has been ${status}`);
+            user.isDoctor = status === 'approved' ? true : false;
+            await user.save({ session });
+            res.status(201).send({
+                success: true,
+                message: `Account status updated`,
+                data: doctor
+            })
+        }, transactionOptions);
+        if (transactionResult) {
+            console.log("The reservation was successfully created.");
+        } else {
+            // await session.abortTransaction();
+            console.log("The transaction was intentionally aborted.");
+        }
     } catch (error) {
+
         res.status(500).send({
             message: `error while fetching doctor list : ${error.message}`,
             success: false,
         });
+    } finally {
+        await session.endSession();
     }
 }
 
 
 export const blockUsersControllers = async (req, res) => {
-    try{
+    try {
         const userdeleteId = req.body.userdeleteId;
-        console.log(userdeleteId);
-    
+
+
+
         const isForeignKey = await doctorModel.exists({ foreignKey: ObjectId(userdeleteId) });
-    
+
         let result;
         if (isForeignKey) {
-          const result1 = await doctorModel.deleteMany({ foreignKey: ObjectId(userdeleteId) });
-          result = await userModel.deleteOne({ _id: ObjectId(userdeleteId) });
+            const result1 = await doctorModel.deleteMany({ foreignKey: ObjectId(userdeleteId) });
+            result = await userModel.deleteOne({ _id: ObjectId(userdeleteId) });
         } else {
-          result = await userModel.deleteOne({ _id: ObjectId(userdeleteId) });
+            result = await userModel.deleteOne({ _id: ObjectId(userdeleteId) });
         }
-    
+
         if (result.deletedCount === 1) {
-          return res.status(201).send({
-            success: true,
-            message: `Delete Succeffully`,
-           });
-        }else{
+            return res.status(201).send({
+                success: true,
+                message: `Delete Succeffully`,
+            });
+        } else {
             return res.status(201).send({
                 success: false,
                 message: `MongoDB server Error`,
-               });
+            });
         }
-    }catch(error){
+    } catch (error) {
         res.status(500).send({
             message: `error while fetching doctor list : ${error.message}`,
             success: false,

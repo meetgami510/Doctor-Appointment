@@ -242,12 +242,12 @@ export const verifyVideoMeetingIdController = async (req, res) => {
         })
     }
 }
-
+import mongoose from 'mongoose';
 export const applyDoctorController = async (req, res) => {
+    console.log(req.body);
+    const doctorInfo = req.body;
+    console.log(req.body);
     try {
-        console.log(req.body);
-        const doctorInfo = req.body;
-        console.log(req.body);
         const checkDoctor = await doctorModel.findOne({ user: req.body.userId });
         if (checkDoctor) {
             var message = '';
@@ -260,27 +260,54 @@ export const applyDoctorController = async (req, res) => {
                 success: false
             });
         } else {
-            const user = await userModel.findById(req.body.userId);
-            const newDoctor = new doctorModel(doctorInfo);
-            const obj = await newDoctor.save();
-            console.log(obj)
-            const adminUser = await userModel.findOne({ isAdmin: true });
-            console.log(adminUser)
-            const notifications = adminUser.notifications;
-            notifications.push({
-                type: 'apply-doctor-request',
-                message: `${user.firstName} ${user.lastName}`,
-                data: {
-                    doctorId: newDoctor._id,
-                    name: user.firstName + " " + user.lastName,
-                    onClickPath: '/admin/doctors'
+            console.log("here")
+            const session = await mongoose.startSession();
+            const transactionOptions = {
+                readPreference: 'primary',
+                readConcern: { level: 'snapshot' },
+                writeConcern: { w: 'majority' }
+            };
+            try {
+                const transactionResult = await session.withTransaction(async () => {
+                    const user = await userModel.findById(req.body.userId).session(session);;
+                    const newDoctor = new doctorModel(doctorInfo);
+                    const obj = await newDoctor.save({ session });
+                    console.log(obj)
+                    const adminUser = await userModel.findOne({ isAdmin: true }).session(session);;
+                    console.log(adminUser)
+                    const notifications = adminUser.notifications;
+                    notifications.push({
+                        type: 'apply-doctor-request',
+                        message: `${user.firstName} ${user.lastName}`,
+                        data: {
+                            doctorId: newDoctor._id,
+                            name: user.firstName + " " + user.lastName,
+                            onClickPath: '/admin/doctors'
+                        }
+                    });
+                    await userModel.findByIdAndUpdate(adminUser._id, { notifications }).session(session);;
+                    res.status(201).send({
+                        success: true,
+                        message: 'Doctor account applied successfully'
+                    });
+                }, transactionOptions);
+
+                if (transactionResult) {
+                    console.log("The reservation was successfully created.");
+                } else {
+                    // await session.abortTransaction();
+                    console.log("The transaction was intentionally aborted.");
                 }
-            });
-            await userModel.findByIdAndUpdate(adminUser._id, { notifications });
-            res.status(201).send({
-                success: true,
-                message: 'Doctor account applied successfully'
-            });
+            }
+            catch (error) {
+                console.log(error)
+                res.status(500).send({
+                    message: `error while fetching doctor list : ${error.message}`,
+                    success: false,
+                });
+            } finally {
+                await session.endSession();
+            }
         }
     } catch (error) {
         console.log(error);
@@ -291,6 +318,7 @@ export const applyDoctorController = async (req, res) => {
         })
     }
 }
+
 
 
 export const getAllDoctorController = async (req, res) => {
@@ -314,6 +342,7 @@ export const getAllDoctorController = async (req, res) => {
 
 export const bookAppointmentController = async (req, res) => {
     const { encryptedObj } = req.body;
+    const session = await mongoose.startSession();
     try {
 
         const decryptedObj = decryptData(encryptedObj);
@@ -393,13 +422,14 @@ export const bookAppointmentController = async (req, res) => {
             await session.endSession();
         }
     } catch (error) {
-        console.log(error);
         res.status(500).send({
+            message: `error while fetching doctor list : ${error.message}`,
             success: false,
-            error,
-            message: 'error while booking appointment'
-        })
+        });
+    } finally {
+        await session.endSession();
     }
+
 }
 
 export const bookingAvailabilityController = async (req, res) => {
@@ -415,6 +445,7 @@ export const bookingAvailabilityController = async (req, res) => {
         const date = moment().add(1, 'day').toDate().toLocaleDateString();
         console.log(date);
         console.log(timingSlot);
+
         const appointment = await appointmentModel.findOne({
             doctor: doctorId,
             time: timingSlot,
@@ -432,14 +463,10 @@ export const bookingAvailabilityController = async (req, res) => {
             });
             const temp = await newAppointment.save();
             console.log(temp);
-
-
             const timeoutHandler = async () => {
                 await appointmentModel.findByIdAndDelete(temp._id);
             };
-
             setTimeout(timeoutHandler, 50000);
-
             return res.status(200).send({
                 // timerId: id,
                 _id: temp._id,
@@ -574,27 +601,11 @@ export const makePaymentController = async (req, res) => {
 
 export const paymentVerificatonController = async (req, res) => {
     try {
-        // const {razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body;
-        // console.log(req.body);
-
-        // const razorpay = new Razorpay({
-        //     key_id: process.env.KEY_ID,
-        //     key_secret: process.env.KEY_SECRET,
-        // });
-
-        // const expectedSign = crypto.createHmac("sha256",process.env.KEY_SECRET).update(sign.toString()).digest("hex");
-
-        // if(razorpay_signature === expectedSign) {
         console.log(req.body)
         return res.status(200).json({
             success: true,
             message: "payment verified succeffully",
         })
-        // }else{
-        //     return res.status(200).json({
-        //         message: "Invalid signature sent",
-        //     })
-        // }
 
     } catch (error) {
         console.log(error);
@@ -604,35 +615,6 @@ export const paymentVerificatonController = async (req, res) => {
             message: 'Payment is not Verified'
         })
     }
-
-    // try {
-    //     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    //     console.log("we are here")
-    //     console.log(req.body);
-
-    //     const sign = razorpay_order_id + "|" + razorpay_payment_id;
-
-    //     const expectedSign = crypto.createHmac("sha256", process.env.KEY_SECRET).update(sign.toString()).digest("hex");
-
-    //     if (razorpay_signature === expectedSign) {
-    //         console.log("hiii");
-    //         return res.status(200).json({
-    //             message: "payment verified succeffully",
-    //         })
-    //     } else {
-    //         return res.status(200).json({
-    //             message: "Invalid signature sent",
-    //         })
-    //     }
-
-    // } catch (error) {
-    //     console.log(error);
-    //     res.status(500).send({
-    //         success: false,
-    //         error,
-    //         message: 'Payment is not Verified'
-    //     })
-    // }
 }
 
 export const emailSendController = async (req, res) => {
